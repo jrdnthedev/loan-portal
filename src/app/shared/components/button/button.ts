@@ -10,7 +10,7 @@ export class Button {
   @Input() buttonText = 'New Button';
   @Output() clicked = new EventEmitter<void>();
 
-  hanleClick() {
+  handleClick() {
     this.clicked.emit();
   }
 }
