@@ -18,8 +18,8 @@
   </div>
 
   <div id="load-wizard-footer">
-    <app-button (clicked)="handleBack()" [buttonText]="'back'"></app-button>
-    <app-button (clicked)="handleNext()" [buttonText]="'Next'"></app-button>
-    <app-button (clicked)="handleSubmit()" [buttonText]="'Submit'"></app-button>
+    <app-button (clicked)="onPreviousStep()" [buttonText]="'back'"></app-button>
+    <app-button (clicked)="onNextStep()" [buttonText]="'Next'"></app-button>
+    <app-button (clicked)="submitLoanApplication()" [buttonText]="'Submit'"></app-button>
   </div>
 </div>

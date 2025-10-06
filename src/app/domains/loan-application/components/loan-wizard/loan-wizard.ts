@@ -10,15 +10,15 @@ import { Button } from '../../../../shared/components/button/button';
 export class LoanWizard {
   protected readonly main_header = signal('Loan Application Wizard');
 
-  handleBack() {
+  onPreviousStep(): void {
     console.log('back clicked!');
   }
 
-  handleNext() {
+  onNextStep(): void {
     console.log('next clicked!');
   }
 
-  handleSubmit() {
+  submitLoanApplication(): void {
     console.log('submit clicked!');
   }
 }
