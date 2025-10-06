@@ -1,0 +1,25 @@
+<div id="loan-wizard">
+  <h2>{{ main_header() }}</h2>
+  <!-- Form -->
+  <div>
+    <ul>
+      <li>item 1</li>
+      <li>item 2</li>
+      <li>item 3</li>
+    </ul>
+  </div>
+  <!-- Employee Details -->
+  <div>
+    <ul>
+      <li>item 1</li>
+      <li>item 2</li>
+      <li>item 3</li>
+    </ul>
+  </div>
+
+  <div>
+    <app-button (clicked)="handleBack()" [buttonText]="'back'"></app-button>
+    <app-button (clicked)="handleNext()" [buttonText]="'Next'"></app-button>
+    <app-button (clicked)="handleSubmit()" [buttonText]="'Submit'"></app-button>
+  </div>
+</div>
