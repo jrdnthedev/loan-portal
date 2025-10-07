@@ -8,6 +8,7 @@ import { Component, Input, output } from '@angular/core';
 })
 export class Button {
   @Input() buttonText = 'New Button';
+  @Input() type: 'button' | 'submit' | 'reset' = 'button';
   clicked = output<void>();
 
   handleClick() {

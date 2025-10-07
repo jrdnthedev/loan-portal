@@ -5,8 +5,14 @@
       <h3>Loan Information</h3>
 
       <div class="form-group">
-        <label>Loan Type</label>
-        <input type="text" [value]="loanType | titlecase" readonly class="readonly-input" />
+        <label for="loan-type">Loan Type</label>
+        <input
+          type="text"
+          [value]="loanType | titlecase"
+          readonly
+          id="loan-type"
+          class="readonly-input"
+        />
       </div>
 
       <!-- Loan Amount -->
@@ -475,9 +481,8 @@
     }
     <!-- Form Actions -->
     <div class="form-actions">
-      <app-button buttonText="Save Draft" (clicked)="onSaveDraft()"> </app-button>
-
-      <app-button buttonText="Submit Application" (clicked)="onSubmit()"> </app-button>
+      <app-button buttonText="Save Draft" type="button" (clicked)="onSaveDraft()"></app-button>
+      <app-button buttonText="Submit Application" type="submit"> </app-button>
     </div>
   </form>
 </div>
