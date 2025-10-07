@@ -1,0 +1,485 @@
+<div class="loan-form-container">
+  <h2>{{ loanType | titlecase }} Loan Application</h2>
+
+  <form [formGroup]="loanForm" (ngSubmit)="onSubmit()" id="loan-form">
+    <!-- Loan Type Display -->
+    <div class="form-section">
+      <h3>Loan Information</h3>
+
+      <div class="form-group">
+        <label>Loan Type</label>
+        <input type="text" [value]="loanType | titlecase" readonly class="readonly-input" />
+      </div>
+
+      <!-- Loan Amount -->
+      <div class="form-group" formGroupName="amount">
+        <label for="requested">Loan Amount *</label>
+        <div class="input-group">
+          <span class="currency-symbol">$</span>
+          <input
+            id="requested"
+            type="number"
+            formControlName="requested"
+            [min]="config.minAmount"
+            [max]="config.maxAmount"
+            placeholder="Enter amount"
+          />
+        </div>
+        <div class="field-info">
+          Range: ${{ config.minAmount | number }} - ${{ config.maxAmount | number }}
+        </div>
+        @if (getFieldError('amount.requested')) {
+          <div class="error-message">
+            {{ getFieldError('amount.requested') }}
+          </div>
+        }
+      </div>
+
+      <!-- Loan Term -->
+      <div class="form-group">
+        <label for="termMonths">Loan Term (Months) *</label>
+        <select id="termMonths" formControlName="termMonths">
+          <option value="">Select term</option>
+          <option value="12">12 months (1 year)</option>
+          <option value="24">24 months (2 years)</option>
+          <option value="36">36 months (3 years)</option>
+          <option value="48">48 months (4 years)</option>
+          <option value="60">60 months (5 years)</option>
+          @switch (maxTerm) {
+            @case ('6 years') {
+              <option value="72">72 months (6 years)</option>
+            }
+            @case ('7 years') {
+              <option value="84">84 months (7 years)</option>
+            }
+            @case ('10 years') {
+              <option value="120">120 months (10 years)</option>
+            }
+            @case ('15 years') {
+              <option value="180">180 months (15 years)</option>
+            }
+            @case ('20 years') {
+              <option value="240">240 months (20 years)</option>
+            }
+            @case ('30 years') {
+              <option value="360">360 months (30 years)</option>
+            }
+          }
+        </select>
+        @if (getFieldError('termMonths')) {
+          <div class="error-message">
+            {{ getFieldError('termMonths') }}
+          </div>
+        }
+      </div>
+
+      <!-- Purpose (Personal Loan only) -->
+      @if (hasField('purpose')) {
+        <div class="form-group">
+          <label for="purpose">Purpose *</label>
+          <select id="purpose" formControlName="purpose">
+            <option value="">Select purpose</option>
+            <option value="debt-consolidation">Debt Consolidation</option>
+            <option value="home-improvement">Home Improvement</option>
+            <option value="vacation">Vacation</option>
+            <option value="medical">Medical Expenses</option>
+            <option value="education">Education</option>
+            <option value="other">Other</option>
+          </select>
+          @if (getFieldError('purpose')) {
+            <div class="error-message">
+              {{ getFieldError('purpose') }}
+            </div>
+          }
+        </div>
+      }
+      <!-- Down Payment (Mortgage/Auto) -->
+      @if (hasField('downPayment')) {
+        <div class="form-group">
+          <label for="downPayment">Down Payment *</label>
+          <div class="input-group">
+            <span class="currency-symbol">$</span>
+            <input
+              id="downPayment"
+              type="number"
+              formControlName="downPayment"
+              min="0"
+              placeholder="Enter down payment amount"
+            />
+          </div>
+          @if (getFieldError('downPayment')) {
+            <div class="error-message">
+              {{ getFieldError('downPayment') }}
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Primary Applicant Information -->
+    <div class="form-section" formGroupName="applicant">
+      <h3>Primary Applicant Information</h3>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="fullName">Full Name *</label>
+          <input
+            id="fullName"
+            type="text"
+            formControlName="fullName"
+            placeholder="Enter full name"
+          />
+          @if (getFieldError('applicant.fullName')) {
+            <div class="error-message">
+              {{ getFieldError('applicant.fullName') }}
+            </div>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="dateOfBirth">Date of Birth *</label>
+          <input id="dateOfBirth" type="date" formControlName="dateOfBirth" />
+          @if (getFieldError('applicant.dateOfBirth')) {
+            <div class="error-message">
+              {{ getFieldError('applicant.dateOfBirth') }}
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="ssn">Social Security Number *</label>
+          <input
+            id="ssn"
+            type="text"
+            formControlName="ssn"
+            placeholder="XXX-XX-XXXX"
+            pattern="\d{3}-\d{2}-\d{4}"
+          />
+          @if (getFieldError('applicant.ssn')) {
+            <div class="error-message">
+              {{ getFieldError('applicant.ssn') }}
+            </div>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="income">Annual Income *</label>
+          <div class="input-group">
+            <span class="currency-symbol">$</span>
+            <input
+              id="income"
+              type="number"
+              formControlName="income"
+              min="0"
+              placeholder="Enter annual income"
+            />
+          </div>
+          @if (getFieldError('applicant.income')) {
+            <div class="error-message">
+              {{ getFieldError('applicant.income') }}
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="employmentStatus">Employment Status *</label>
+          <select id="employmentStatus" formControlName="employmentStatus">
+            <option value="">Select employment status</option>
+            <option [value]="employmentStatuses.FullTime">Full Time</option>
+            <option [value]="employmentStatuses.PartTime">Part Time</option>
+            <option [value]="employmentStatuses.SelfEmployed">Self Employed</option>
+            <option [value]="employmentStatuses.Unemployed">Unemployed</option>
+            <option [value]="employmentStatuses.Retired">Retired</option>
+          </select>
+          <div class="error-message" *ngIf="getFieldError('applicant.employmentStatus')">
+            {{ getFieldError('applicant.employmentStatus') }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="creditScore">Credit Score (Optional)</label>
+          <input
+            id="creditScore"
+            type="number"
+            formControlName="creditScore"
+            min="300"
+            max="850"
+            placeholder="Enter credit score"
+          />
+          <div class="error-message" *ngIf="getFieldError('applicant.creditScore')">
+            {{ getFieldError('applicant.creditScore') }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Co-Signer Information (Mortgage only) -->
+    @if (hasField('coSigner')) {
+      <div class="form-section" formGroupName="coSigner">
+        <h3>Co-Signer Information (Optional)</h3>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="coSignerFullName">Full Name</label>
+            <input
+              id="coSignerFullName"
+              type="text"
+              formControlName="fullName"
+              placeholder="Enter co-signer full name"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="coSignerDateOfBirth">Date of Birth</label>
+            <input id="coSignerDateOfBirth" type="date" formControlName="dateOfBirth" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="coSignerSsn">Social Security Number</label>
+            <input
+              id="coSignerSsn"
+              type="text"
+              formControlName="ssn"
+              placeholder="XXX-XX-XXXX"
+              pattern="\d{3}-\d{2}-\d{4}"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="coSignerIncome">Annual Income</label>
+            <div class="input-group">
+              <span class="currency-symbol">$</span>
+              <input
+                id="coSignerIncome"
+                type="number"
+                formControlName="income"
+                min="0"
+                placeholder="Enter annual income"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="coSignerEmploymentStatus">Employment Status</label>
+            <select id="coSignerEmploymentStatus" formControlName="employmentStatus">
+              <option value="">Select employment status</option>
+              <option [value]="employmentStatuses.FullTime">Full Time</option>
+              <option [value]="employmentStatuses.PartTime">Part Time</option>
+              <option [value]="employmentStatuses.SelfEmployed">Self Employed</option>
+              <option [value]="employmentStatuses.Unemployed">Unemployed</option>
+              <option [value]="employmentStatuses.Retired">Retired</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="coSignerCreditScore">Credit Score</label>
+            <input
+              id="coSignerCreditScore"
+              type="number"
+              formControlName="creditScore"
+              min="300"
+              max="850"
+              placeholder="Enter credit score"
+            />
+          </div>
+        </div>
+      </div>
+    }
+    <!-- Property Information (Mortgage only) -->
+    @if (hasField('propertyAddress')) {
+      <div class="form-section" formGroupName="propertyAddress">
+        <h3>Property Information</h3>
+
+        <div class="form-group">
+          <label for="street">Street Address *</label>
+          <input
+            id="street"
+            type="text"
+            formControlName="street"
+            placeholder="Enter street address"
+          />
+          @if (getFieldError('propertyAddress.street')) {
+            <div class="error-message">
+              {{ getFieldError('propertyAddress.street') }}
+            </div>
+          }
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="city">City *</label>
+            <input id="city" type="text" formControlName="city" placeholder="Enter city" />
+            @if (getFieldError('propertyAddress.city')) {
+              <div class="error-message">
+                {{ getFieldError('propertyAddress.city') }}
+              </div>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="state">State *</label>
+            <input id="state" type="text" formControlName="state" placeholder="Enter state" />
+            @if (getFieldError('propertyAddress.state')) {
+              <div class="error-message">
+                {{ getFieldError('propertyAddress.state') }}
+              </div>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="zipCode">ZIP Code *</label>
+            <input
+              id="zipCode"
+              type="text"
+              formControlName="zipCode"
+              placeholder="XXXXX or XXXXX-XXXX"
+              pattern="\d{5}(-\d{4})?"
+            />
+            @if (getFieldError('propertyAddress.zipCode')) {
+              <div class="error-message">
+                {{ getFieldError('propertyAddress.zipCode') }}
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="propertyValue">Property Value *</label>
+          <div class="input-group">
+            <span class="currency-symbol">$</span>
+            <input
+              id="propertyValue"
+              type="number"
+              formControlName="propertyValue"
+              min="0"
+              placeholder="Enter estimated property value"
+            />
+          </div>
+          @if (getFieldError('propertyAddress.propertyValue')) {
+            <div class="error-message">
+              {{ getFieldError('propertyAddress.propertyValue') }}
+            </div>
+          }
+        </div>
+      </div>
+    }
+    <!-- Vehicle Information (Auto loan only) -->
+    @if (hasField('vehicleInfo')) {
+      <div class="form-section" formGroupName="vehicleInfo">
+        <h3>Vehicle Information</h3>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="make">Make *</label>
+            <input id="make" type="text" formControlName="make" placeholder="Enter vehicle make" />
+            @if (getFieldError('vehicleInfo.make')) {
+              <div class="error-message">
+                {{ getFieldError('vehicleInfo.make') }}
+              </div>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="model">Model *</label>
+            <input
+              id="model"
+              type="text"
+              formControlName="model"
+              placeholder="Enter vehicle model"
+            />
+            @if (getFieldError('vehicleInfo.model')) {
+              <div class="error-message">
+                {{ getFieldError('vehicleInfo.model') }}
+              </div>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="year">Year *</label>
+            <input
+              id="year"
+              type="number"
+              formControlName="year"
+              [min]="1900"
+              [max]="currentYear + 1"
+              placeholder="Enter year"
+            />
+            @if (getFieldError('vehicleInfo.year')) {
+              <div class="error-message">
+                {{ getFieldError('vehicleInfo.year') }}
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="vin">VIN Number *</label>
+            <input
+              id="vin"
+              type="text"
+              formControlName="vin"
+              placeholder="Enter 17-character VIN"
+              pattern="[A-HJ-NPR-Z0-9]{17}"
+              maxlength="17"
+            />
+            @if (getFieldError('vehicleInfo.vin')) {
+              <div class="error-message">
+                {{ getFieldError('vehicleInfo.vin') }}
+              </div>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="mileage">Mileage *</label>
+            <input
+              id="mileage"
+              type="number"
+              formControlName="mileage"
+              min="0"
+              placeholder="Enter mileage"
+            />
+            @if (getFieldError('vehicleInfo.mileage')) {
+              <div class="error-message">
+                {{ getFieldError('vehicleInfo.mileage') }}
+              </div>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="value">Vehicle Value *</label>
+            <div class="input-group">
+              <span class="currency-symbol">$</span>
+              <input
+                id="value"
+                type="number"
+                formControlName="value"
+                min="0"
+                placeholder="Enter vehicle value"
+              />
+            </div>
+            @if (getFieldError('vehicleInfo.value')) {
+              <div class="error-message">
+                {{ getFieldError('vehicleInfo.value') }}
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    }
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <app-button buttonText="Save Draft" (clicked)="onSaveDraft()"> </app-button>
+
+      <app-button buttonText="Submit Application" (clicked)="onSubmit()"> </app-button>
+    </div>
+  </form>
+</div>
