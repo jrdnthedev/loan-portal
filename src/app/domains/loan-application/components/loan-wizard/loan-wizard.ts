@@ -12,7 +12,7 @@ import { LoanForm } from '../loan-form/loan-form';
 })
 export class LoanWizard {
   protected readonly main_header = signal('Loan Application Wizard');
-  selectedLoanType: LoanType = LoanType.Personal;
+  selectedLoanType: LoanType = LoanType.Auto;
   loanTypes = LoanType;
   submittedLoan?: Loan;
   savedDraft?: Partial<Loan>;
@@ -27,12 +27,6 @@ export class LoanWizard {
 
   submitLoanApplication(): void {
     console.log('submit clicked!');
-  }
-
-  onLoanTypeChange(loanType: LoanType) {
-    this.selectedLoanType = loanType;
-    this.submittedLoan = undefined;
-    this.savedDraft = undefined;
   }
 
   onFormSubmitted(loan: Loan) {
