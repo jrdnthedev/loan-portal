@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 
 @Component({
   selector: 'app-loan-summary',
@@ -6,4 +6,6 @@ import { Component } from '@angular/core';
   templateUrl: './loan-summary.html',
   styleUrl: './loan-summary.scss',
 })
-export class LoanSummary {}
+export class LoanSummary {
+  protected readonly main_header = signal('Loan Summary');
+}
