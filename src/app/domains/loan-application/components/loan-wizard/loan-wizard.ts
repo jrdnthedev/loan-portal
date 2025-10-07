@@ -6,7 +6,7 @@ import { LoanForm } from '../loan-form/loan-form';
 
 @Component({
   selector: 'app-loan-wizard',
-  imports: [Button, LoanForm],
+  imports: [LoanForm],
   templateUrl: './loan-wizard.html',
   styleUrl: './loan-wizard.scss',
 })
@@ -16,18 +16,6 @@ export class LoanWizard {
   loanTypes = LoanType;
   submittedLoan?: Loan;
   savedDraft?: Partial<Loan>;
-
-  onPreviousStep(): void {
-    console.log('back clicked!');
-  }
-
-  onNextStep(): void {
-    console.log('next clicked!');
-  }
-
-  submitLoanApplication(): void {
-    console.log('submit clicked!');
-  }
 
   onFormSubmitted(loan: Loan) {
     console.log('Loan application submitted:', loan);
