@@ -12,6 +12,10 @@ import { LoanForm } from '../loan-form/loan-form';
 })
 export class LoanWizard {
   protected readonly main_header = signal('Loan Application Wizard');
+  selectedLoanType: LoanType = LoanType.Personal;
+  loanTypes = LoanType;
+  submittedLoan?: Loan;
+  savedDraft?: Partial<Loan>;
 
   onPreviousStep(): void {
     console.log('back clicked!');
@@ -24,10 +28,6 @@ export class LoanWizard {
   submitLoanApplication(): void {
     console.log('submit clicked!');
   }
-  selectedLoanType: LoanType = LoanType.Personal;
-  loanTypes = LoanType;
-  submittedLoan?: Loan;
-  savedDraft?: Partial<Loan>;
 
   onLoanTypeChange(loanType: LoanType) {
     this.selectedLoanType = loanType;
@@ -38,12 +38,10 @@ export class LoanWizard {
   onFormSubmitted(loan: Loan) {
     console.log('Loan application submitted:', loan);
     this.submittedLoan = loan;
-    // Here you would typically send the data to your API
   }
 
   onFormSaved(draft: Partial<Loan>) {
     console.log('Draft saved:', draft);
     this.savedDraft = draft;
-    // Here you would typically save the draft to local storage or API
   }
 }
