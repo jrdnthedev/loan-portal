@@ -1,5 +1,4 @@
 import { Component, signal } from '@angular/core';
-import { Button } from '../../../../shared/components/button/button';
 import { LoanType } from '../../models/loan-type';
 import { Loan } from '../../models/loan';
 import { LoanForm } from '../loan-form/loan-form';
