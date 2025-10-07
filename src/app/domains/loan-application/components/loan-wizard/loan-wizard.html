@@ -2,11 +2,12 @@
   <h2>{{ main_header() }}</h2>
   <!-- Form -->
   <div>
-    <ul>
-      <li>item 1</li>
-      <li>item 2</li>
-      <li>item 3</li>
-    </ul>
+    <app-loan-form
+      [loanType]="selectedLoanType"
+      (formSubmitted)="onFormSubmitted($event)"
+      (formSaved)="onFormSaved($event)"
+    >
+    </app-loan-form>
   </div>
   <!-- Employee Details -->
   <div>
