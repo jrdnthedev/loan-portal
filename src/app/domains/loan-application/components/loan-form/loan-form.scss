@@ -80,7 +80,7 @@ h3 {
 
   .readonly-input {
     background-color: #ecf0f1;
-    color: #7f8c8d;
+    color: #383838;
     cursor: not-allowed;
   }
 }
@@ -93,7 +93,7 @@ h3 {
   .currency-symbol {
     position: absolute;
     left: 0.75rem;
-    color: #7f8c8d;
+    color: #383838;
     font-weight: 500;
     z-index: 1;
     pointer-events: none;
@@ -106,7 +106,7 @@ h3 {
 
 .field-info {
   font-size: 14px;
-  color: #7f8c8d;
+  color: #383838;
   font-style: italic;
 }
 

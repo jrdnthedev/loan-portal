@@ -5,8 +5,14 @@
       <h3>Loan Information</h3>
 
       <div class="form-group">
-        <label>Loan Type</label>
-        <input type="text" [value]="loanType | titlecase" readonly class="readonly-input" />
+        <label for="loan-type">Loan Type</label>
+        <input
+          type="text"
+          [value]="loanType | titlecase"
+          readonly
+          id="loan-type"
+          class="readonly-input"
+        />
       </div>
 
       <!-- Loan Amount -->
