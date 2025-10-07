@@ -1,4 +1,5 @@
 export interface LoanAmount {
-  value: number;
-  currency: string;
+  requested: number;
+  approved?: number;
+  currency?: string;
 }
