@@ -34,9 +34,14 @@ export class LoanApiService {
     return this.http.delete<void>(`${this.apiUrl}/loans/${id}`);
   }
 
-  // Submit loan application (custom endpoint)
   submitLoanApplication(loanData: Partial<Loan>): Observable<Loan> {
-    return this.http.post<Loan>(`${this.apiUrl}/loans/submit`, loanData);
+    // Add submission timestamp and default status
+    const submissionData = {
+      ...loanData,
+      submittedAt: new Date().toISOString(),
+      status: loanData.status || 'pending',
+    };
+    return this.http.post<Loan>(`${this.apiUrl}/loans`, submissionData);
   }
 
   // Applicant endpoints

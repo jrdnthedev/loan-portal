@@ -6,6 +6,9 @@ export interface LoanApplicationState {
   // Current loan being worked on
   currentLoan: Partial<Loan> | null;
 
+  // Last submitted loan (for summary display)
+  submittedLoan: Loan | null;
+
   // User's loan applications
   userLoans: Loan[];
 
@@ -29,6 +32,7 @@ export interface LoanApplicationState {
 
 export const initialLoanApplicationState: LoanApplicationState = {
   currentLoan: null,
+  submittedLoan: null,
   userLoans: [],
   isLoading: false,
   error: null,

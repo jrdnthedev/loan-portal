@@ -1,7 +1,9 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { LoanType } from '../../models/loan-type';
 import { Loan } from '../../models/loan';
 import { LoanForm } from '../loan-form/loan-form';
+import { LoanApplicationStore } from '../../store/loan-application.store';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-loan-wizard',
@@ -16,13 +18,26 @@ export class LoanWizard {
   submittedLoan?: Loan;
   savedDraft?: Partial<Loan>;
 
+  private router = inject(Router);
+  private store = inject(LoanApplicationStore);
+
+  // Expose store observables for the template
+  readonly currentLoan$ = this.store.currentLoan$;
+  readonly isSubmitting$ = this.store.isSubmitting$;
+  readonly error$ = this.store.error$;
+  readonly isLoading$ = this.store.isLoading$;
+
   onFormSubmitted(loan: Loan) {
-    console.log('Loan application submitted:', loan);
-    this.submittedLoan = loan;
+    console.log('Submitting loan:', loan);
+    this.store.updateCurrentLoan(loan);
+    this.store.submitLoanApplication();
+    this.router.navigateByUrl('/loan-application/summary');
   }
 
   onFormSaved(draft: Partial<Loan>) {
     console.log('Draft saved:', draft);
+    this.store.updateCurrentLoan(draft);
+    this.store.saveCurrentLoanDraft();
     this.savedDraft = draft;
   }
 }

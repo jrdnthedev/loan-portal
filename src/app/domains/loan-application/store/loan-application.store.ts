@@ -18,6 +18,7 @@ export class LoanApplicationStore {
 
   // Selectors - expose specific parts of state
   public readonly currentLoan$ = this.select((state) => state.currentLoan);
+  public readonly submittedLoan$ = this.select((state) => state.submittedLoan);
   public readonly userLoans$ = this.select((state) => state.userLoans);
   public readonly isLoading$ = this.select((state) => state.isLoading);
   public readonly error$ = this.select((state) => state.error);
@@ -146,20 +147,34 @@ export class LoanApplicationStore {
 
   submitLoanApplication(): void {
     const currentLoan = this._state$.value.currentLoan;
-    if (!currentLoan) return;
+    if (!currentLoan) {
+      this.setError('No loan application to submit');
+      return;
+    }
+
+    // Ensure we have a complete loan object with required fields
+    const loanToSubmit: Partial<Loan> = {
+      ...currentLoan,
+      id: `loan-${Date.now()}`, // Generate a unique ID
+      status: LoanStatus.Pending,
+    };
 
     this.updateState({ isSubmitting: true });
     this.setError(null);
 
-    this.loanApiService.submitLoanApplication(currentLoan).subscribe({
+    this.loanApiService.submitLoanApplication(loanToSubmit).subscribe({
       next: (submittedLoan) => {
         const updatedLoans = [...this._state$.value.userLoans, submittedLoan];
         this.updateState({
           userLoans: updatedLoans,
-          currentLoan: null,
+          currentLoan: null, // Clear current loan after submission
+          submittedLoan: submittedLoan, // Store submitted loan for summary
           isSubmitting: false,
           formStep: 0,
+          isDraftSaved: false,
+          lastSavedAt: null,
         });
+        console.log('Loan application submitted successfully:', submittedLoan);
       },
       error: (error) => {
         this.setError('Failed to submit loan application');
@@ -172,6 +187,7 @@ export class LoanApplicationStore {
   resetCurrentLoan(): void {
     this.updateState({
       currentLoan: null,
+      submittedLoan: null,
       formStep: 0,
       isDraftSaved: false,
       lastSavedAt: null,
