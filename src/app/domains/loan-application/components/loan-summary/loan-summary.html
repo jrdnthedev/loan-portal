@@ -1,6 +1,12 @@
 <div id="loan-summary">
   <h2>{{ main_header() }}</h2>
   <p>
-    {{ summary() }}
+    @if (submittedLoan$ | async; as loan) {
+      <p>Loan Amount: {{ loan.amount.approved }}</p>
+      <p>Loan Type: {{ loan.type }}</p>
+      <p>Status: {{ loan.status }}</p>
+    } @else {
+      <p>No loan application found.</p>
+    }
   </p>
 </div>

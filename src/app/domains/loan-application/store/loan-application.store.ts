@@ -18,6 +18,7 @@ export class LoanApplicationStore {
 
   // Selectors - expose specific parts of state
   public readonly currentLoan$ = this.select((state) => state.currentLoan);
+  public readonly submittedLoan$ = this.select((state) => state.submittedLoan);
   public readonly userLoans$ = this.select((state) => state.userLoans);
   public readonly isLoading$ = this.select((state) => state.isLoading);
   public readonly error$ = this.select((state) => state.error);
@@ -166,7 +167,8 @@ export class LoanApplicationStore {
         const updatedLoans = [...this._state$.value.userLoans, submittedLoan];
         this.updateState({
           userLoans: updatedLoans,
-          currentLoan: null,
+          currentLoan: null, // Clear current loan after submission
+          submittedLoan: submittedLoan, // Store submitted loan for summary
           isSubmitting: false,
           formStep: 0,
           isDraftSaved: false,
@@ -185,6 +187,7 @@ export class LoanApplicationStore {
   resetCurrentLoan(): void {
     this.updateState({
       currentLoan: null,
+      submittedLoan: null,
       formStep: 0,
       isDraftSaved: false,
       lastSavedAt: null,

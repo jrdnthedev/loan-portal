@@ -3,6 +3,7 @@ import { LoanType } from '../../models/loan-type';
 import { Loan } from '../../models/loan';
 import { LoanForm } from '../loan-form/loan-form';
 import { LoanApplicationStore } from '../../store/loan-application.store';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-loan-wizard',
@@ -17,6 +18,7 @@ export class LoanWizard {
   submittedLoan?: Loan;
   savedDraft?: Partial<Loan>;
 
+  private router = inject(Router);
   private store = inject(LoanApplicationStore);
 
   // Expose store observables for the template
@@ -29,6 +31,7 @@ export class LoanWizard {
     console.log('Submitting loan:', loan);
     this.store.updateCurrentLoan(loan);
     this.store.submitLoanApplication();
+    this.router.navigateByUrl('/loan-application/summary');
   }
 
   onFormSaved(draft: Partial<Loan>) {
