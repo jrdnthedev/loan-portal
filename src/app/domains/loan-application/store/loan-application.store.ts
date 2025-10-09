@@ -146,12 +146,22 @@ export class LoanApplicationStore {
 
   submitLoanApplication(): void {
     const currentLoan = this._state$.value.currentLoan;
-    if (!currentLoan) return;
+    if (!currentLoan) {
+      this.setError('No loan application to submit');
+      return;
+    }
+
+    // Ensure we have a complete loan object with required fields
+    const loanToSubmit: Partial<Loan> = {
+      ...currentLoan,
+      id: `loan-${Date.now()}`, // Generate a unique ID
+      status: LoanStatus.Pending,
+    };
 
     this.updateState({ isSubmitting: true });
     this.setError(null);
 
-    this.loanApiService.submitLoanApplication(currentLoan).subscribe({
+    this.loanApiService.submitLoanApplication(loanToSubmit).subscribe({
       next: (submittedLoan) => {
         const updatedLoans = [...this._state$.value.userLoans, submittedLoan];
         this.updateState({
@@ -159,7 +169,10 @@ export class LoanApplicationStore {
           currentLoan: null,
           isSubmitting: false,
           formStep: 0,
+          isDraftSaved: false,
+          lastSavedAt: null,
         });
+        console.log('Loan application submitted successfully:', submittedLoan);
       },
       error: (error) => {
         this.setError('Failed to submit loan application');
