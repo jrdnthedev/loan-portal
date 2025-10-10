@@ -28,16 +28,24 @@ export class LoanWizard {
   readonly isLoading$ = this.store.isLoading$;
 
   onFormSubmitted(loan: Loan) {
-    console.log('Submitting loan:', loan);
-    this.store.updateCurrentLoan(loan);
-    this.store.submitLoanApplication();
-    this.router.navigateByUrl('/loan-application/summary');
+    try {
+      console.log('Submitting loan:', loan);
+      this.store.updateCurrentLoan(loan);
+      this.store.submitLoanApplication();
+      this.router.navigateByUrl('/loan-application/summary');
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   onFormSaved(draft: Partial<Loan>) {
-    console.log('Draft saved:', draft);
-    this.store.updateCurrentLoan(draft);
-    this.store.saveCurrentLoanDraft();
-    this.savedDraft = draft;
+    try {
+      console.log('Draft saved:', draft);
+      this.store.updateCurrentLoan(draft);
+      this.store.saveCurrentLoanDraft();
+      this.savedDraft = draft;
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
