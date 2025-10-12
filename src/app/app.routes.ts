@@ -14,4 +14,10 @@ export const routes: Routes = [
       ),
     title: 'Loan Application',
   },
+  {
+    path: 'underwriting',
+    loadChildren: () =>
+      import('./domains/underwriting/underwriting.routes').then((m) => m.UNDERWRITING_ROUTES),
+    title: 'Underwriting Routes',
+  },
 ];
