@@ -1,5 +1,5 @@
 <div class="loan-form-container">
-  <form [formGroup]="loanForm" (ngSubmit)="onSubmit()" id="loan-form">
+  <form [formGroup]="loanForm" id="loan-form">
     <!-- Loan Type Display -->
     <div class="form-section">
       <h3>Loan Information</h3>
@@ -482,7 +482,8 @@
     <!-- Form Actions -->
     <div class="form-actions">
       <app-button buttonText="Save Draft" type="button" (clicked)="onSaveDraft()"></app-button>
-      <app-button buttonText="Submit Application" type="submit"> </app-button>
+      <app-button buttonText="Submit Application" type="submit" (clicked)="onSubmit()">
+      </app-button>
     </div>
   </form>
 </div>
