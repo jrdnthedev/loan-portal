@@ -1,8 +1,6 @@
 import { Component, inject } from '@angular/core';
-import { LoanApplicationStore } from '../../../loan-application/store/loan-application.store';
 import { AsyncPipe } from '@angular/common';
-import { RiskScoring } from '../../services/risk-scoring';
-import { LoanApiService } from '../../../loan-application/services/loan-api.service';
+import { UnderwritingStore } from '../../store/underwriting-store';
 
 @Component({
   selector: 'app-loan-details',
@@ -11,14 +9,12 @@ import { LoanApiService } from '../../../loan-application/services/loan-api.serv
   styleUrl: './loan-details.scss',
 })
 export class LoanDetails {
-  private store = inject(LoanApplicationStore);
-  private riskScoring = inject(RiskScoring);
-  private loanService = inject(LoanApiService);
-  readonly currentLoan$ = this.store.currentLoan$;
+  private store = inject(UnderwritingStore);
+  readonly loading$ = this.store.loading$;
   readonly state$ = this.store.state$;
 
   ngOnInit() {
-    this.currentLoan$.subscribe((data) => console.log('currentLoan', data));
+    this.loading$.subscribe((data) => console.log('loading', data));
     this.state$.subscribe((data) => console.log('hello state', data));
   }
 }

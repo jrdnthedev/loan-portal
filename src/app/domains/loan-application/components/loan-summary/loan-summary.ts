@@ -1,6 +1,6 @@
-import { Component, inject, Input, signal } from '@angular/core';
-import { LoanApplicationStore } from '../../store';
+import { Component, inject, signal } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
+import { LoanApplicationStore } from '../../store/loan-application.store';
 
 @Component({
   selector: 'app-loan-summary',
