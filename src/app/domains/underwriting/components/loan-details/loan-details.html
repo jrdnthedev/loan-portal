@@ -1,10 +1,7 @@
 <div id="loan-details">
   <h2>Loan Details</h2>
-  @if (currentLoan$ | async; as loan) {
-    <p>Amount: {{ loan.amount }}</p>
-    <p>Type: {{ loan.type }}</p>
-    <p>Co-signer: {{ loan.coSigner }}</p>
-    <p>Term: {{ loan.termMonths }}</p>
+  @if (loading$ | async; as loading) {
+    <p>loading: {{ loading }}</p>
   } @else {
     <p>No Loans To Report</p>
   }
