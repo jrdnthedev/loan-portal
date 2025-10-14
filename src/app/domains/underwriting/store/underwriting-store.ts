@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, distinctUntilChanged, map, Observable } from 'rxjs';
+import { BehaviorSubject, catchError, distinctUntilChanged, map, Observable } from 'rxjs';
 import { initialUnderwritingState, UnderwritingState } from './underwriting-state';
 import { LoanApiService } from '../../loan-application/services/loan-api.service';
 import { RiskScoring } from '../services/risk-scoring';
+import { Loan } from '../../loan-application/models/loan';
 
 @Injectable({
   providedIn: 'root',
@@ -32,7 +33,21 @@ export class UnderwritingStore {
   }
 
   //Actions
-  loadSubmittedLoans() {}
+  loadSubmittedLoans() {
+    this.loanApiService
+      .getLoans()
+      .pipe(
+        catchError((err: Error) => {
+          console.error('Error loading loans:', err);
+          return [];
+        }),
+      )
+      .subscribe({
+        next: (data: Loan[]) => {
+          this.updateState({ queue: data });
+        },
+      });
+  }
 
   selectLoanForReview() {}
 

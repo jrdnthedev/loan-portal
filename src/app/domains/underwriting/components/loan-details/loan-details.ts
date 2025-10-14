@@ -14,6 +14,7 @@ export class LoanDetails {
   readonly state$ = this.store.state$;
 
   ngOnInit() {
+    this.store.loadSubmittedLoans();
     this.loading$.subscribe((data) => console.log('loading', data));
     this.state$.subscribe((data) => console.log('hello state', data));
   }
