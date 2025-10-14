@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { LoanApplicationStore } from '../../../loan-application/store';
 
 @Component({
   selector: 'app-decision-history',
@@ -6,4 +7,11 @@ import { Component } from '@angular/core';
   templateUrl: './decision-history.html',
   styleUrl: './decision-history.scss',
 })
-export class DecisionHistory {}
+export class DecisionHistory {
+  private store = inject(LoanApplicationStore);
+
+  readonly currentLoan$ = this.store.currentLoan$;
+  readonly state$ = this.store.state$;
+
+  constructor() {}
+}
