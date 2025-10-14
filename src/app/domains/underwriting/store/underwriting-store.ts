@@ -9,8 +9,11 @@ import { RiskScoring } from '../services/risk-scoring';
 })
 export class UnderwritingStore {
   private readonly _state$ = new BehaviorSubject<UnderwritingState>(initialUnderwritingState);
+
+  // Public state observable
   public readonly state$ = this._state$.asObservable();
 
+  // Selectors - expose specific parts of state
   public readonly loading$ = this.select((state) => state.loading);
 
   constructor(
