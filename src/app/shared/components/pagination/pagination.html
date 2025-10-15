@@ -1,6 +1,6 @@
 <div id="pagination">
   <ng-content></ng-content>
-  <div id="control-container">
+  <div id="navigation-controls">
     <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">Previous</button>
 
     @for (page of pages; track $index) {
