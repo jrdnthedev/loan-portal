@@ -1,13 +1,13 @@
 #shell {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 12px;
 }
 
 .row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 4px;
+  gap: 12px;
 }
 
 .row:first-child {
