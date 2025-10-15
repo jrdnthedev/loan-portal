@@ -1,0 +1,15 @@
+#shell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+}
+
+.row:first-child {
+  grid-template-columns: 2fr 1fr;
+}

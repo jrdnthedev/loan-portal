@@ -3,8 +3,13 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: '/loan-application',
+    redirectTo: 'shell',
     pathMatch: 'full',
+  },
+  {
+    path: 'shell',
+    loadComponent: () => import('./layout/components/shell/shell').then((m) => m.Shell),
+    title: 'Layout',
   },
   {
     path: 'loan-application',
