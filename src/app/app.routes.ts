@@ -3,8 +3,13 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: '/loan-application',
+    redirectTo: '/layout',
     pathMatch: 'full',
+  },
+  {
+    path: 'layout',
+    loadChildren: () => import('./layout/layout.routes').then((m) => m.LAYOUT_ROUTES),
+    title: 'Layout',
   },
   {
     path: 'loan-application',
