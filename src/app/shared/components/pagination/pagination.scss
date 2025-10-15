@@ -1,10 +1,12 @@
-.pagination {
+#pagination {
   display: flex;
-  gap: 5px;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
+  gap: 4px;
 }
-
+#control-container {
+  display: flex;
+  gap: 4px;
+}
 button {
   padding: 5px 10px;
   border: 1px solid #ccc;
