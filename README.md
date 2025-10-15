@@ -165,7 +165,86 @@ interface Loan {
 }
 ```
 
-## 🔧 Configuration
+## � Shared Components
+
+### Pagination Component
+
+The application includes a reusable pagination component located at `src/app/shared/components/pagination/`. This component provides paginated data display with navigation controls.
+
+#### Usage
+
+```typescript
+import { Pagination } from './shared/components/pagination/pagination';
+
+@Component({
+  selector: 'app-example',
+  imports: [Pagination],
+  template: `
+    <app-pagination
+      [totalItems]="totalItems"
+      [itemsPerPage]="itemsPerPage"
+      [currentPage]="currentPage"
+      (pageChange)="onPageChange($event)"
+    >
+      <!-- Optional content can be projected here -->
+    </app-pagination>
+  `,
+})
+export class ExampleComponent {
+  currentPage: number = 1;
+  itemsPerPage: number = 10;
+  totalItems: number = 100;
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
+    // Implement your data loading logic here
+    // e.g., this.loadData(page);
+  }
+}
+```
+
+#### Required Functions in Parent Component
+
+When implementing pagination, your parent component must include:
+
+1. **Page Change Handler**: A function to handle page changes
+
+   ```typescript
+   onPageChange(page: number): void {
+     this.currentPage = page;
+     // Load new data based on the page
+     this.loadData(page);
+   }
+   ```
+
+2. **Data Pagination Logic**: Methods to slice or request paginated data
+
+   ```typescript
+   get paginatedData() {
+     const start = (this.currentPage - 1) * this.itemsPerPage;
+     const end = start + this.itemsPerPage;
+     return this.allData.slice(start, end);
+   }
+   ```
+
+3. **Total Items Calculation**: A getter or property for total item count
+   ```typescript
+   get totalItems(): number {
+     return this.allData.length;
+   }
+   ```
+
+#### Component Inputs
+
+- `totalItems: number` - Total number of items to paginate (required)
+- `itemsPerPage: number` - Number of items per page (default: 10)
+- `currentPage: number` - Current active page (default: 1)
+
+#### Component Outputs
+
+- `pageChange: EventEmitter<number>` - Emits the new page number when pagination changes
+
+## �🔧 Configuration
 
 ### Environment Setup
 
