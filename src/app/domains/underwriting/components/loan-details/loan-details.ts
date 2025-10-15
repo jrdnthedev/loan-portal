@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, DecimalPipe, DatePipe, TitleCasePipe } from '@angular/common';
 import { UnderwritingStore } from '../../store/underwriting-store';
+import { Pagination } from '../../../../shared/components/pagination/pagination';
 
 @Component({
   selector: 'app-loan-details',

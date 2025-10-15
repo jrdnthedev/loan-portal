@@ -1,0 +1,26 @@
+#pagination {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+#navigation-controls {
+  display: flex;
+  gap: 4px;
+}
+button {
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+  cursor: pointer;
+}
+
+button.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+button:disabled {
+  background-color: #e9ecef;
+  cursor: not-allowed;
+}
