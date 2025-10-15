@@ -3,12 +3,12 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: '/layout',
+    redirectTo: 'shell',
     pathMatch: 'full',
   },
   {
-    path: 'layout',
-    loadChildren: () => import('./layout/layout.routes').then((m) => m.LAYOUT_ROUTES),
+    path: 'shell',
+    loadComponent: () => import('./layout/components/shell/shell').then((m) => m.Shell),
     title: 'Layout',
   },
   {
