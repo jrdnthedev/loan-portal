@@ -5,5 +5,11 @@ export interface User {
   fullName: string;
   email: string;
   role: UserRole;
-  isActive: boolean;
+  profile: UserOptions;
+}
+
+interface UserOptions {
+  firstName: string;
+  lastName: string;
+  phone: string;
 }
