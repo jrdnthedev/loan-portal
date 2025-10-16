@@ -12,7 +12,10 @@
     >
   </div>
   <div class="row">
-    <app-card><div>User Table</div></app-card>
+    <app-card>
+      <h3>User Table</h3>
+      <app-table [data]="userData()"></app-table>
+    </app-card>
     <app-card><div>Loan Summary</div></app-card>
   </div>
 </section>
