@@ -27,9 +27,11 @@ export class Shell {
         }),
         map((users: User[]) =>
           users.map((user: User) => {
-            const { profile, ...userProps } = user;
+            const { profile, email, id, role } = user;
             return {
-              ...userProps,
+              email,
+              id,
+              role,
               ...profile,
             };
           }),
