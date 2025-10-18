@@ -1,0 +1,4 @@
+@for (loan of userLoans$ | async; track $index) {
+  <p>{{ loan.id }}</p>
+  <p>{{ loan.type }}</p>
+}
