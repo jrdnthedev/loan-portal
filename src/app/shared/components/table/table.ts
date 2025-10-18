@@ -23,7 +23,7 @@ export class Table<T> {
   get headers(): string[] {
     // If columns are provided, use them; otherwise auto-generate from data
     if (this.columns && this.columns.length > 0) {
-      return this.columns.map((col) => col.key);
+      return this.columns.map((col: TableColumn) => col.key);
     }
 
     if (this.data && this.data.length > 0) {
