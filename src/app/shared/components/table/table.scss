@@ -2,7 +2,9 @@ table {
   width: 100%;
   border-collapse: collapse;
 }
-
+#table-wrapper {
+  overflow-x: auto;
+}
 th,
 td {
   padding: 8px;
