@@ -1,5 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
-@import '_variables';
+@use '_variables' as vars;
 
 h1,
 h2,
@@ -16,7 +16,7 @@ html {
   min-height: 100vh;
 }
 #wrapper {
-  background-color: $linen;
+  background-color: vars.$linen;
   min-height: 100vh;
 }
 * {
