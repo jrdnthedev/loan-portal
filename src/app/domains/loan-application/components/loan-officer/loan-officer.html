@@ -1,1 +1,6 @@
-<p>loan-officer works!</p>
+<div id="loan-officer-list">
+  <h3>Loan Officer Stats</h3>
+  @for (user of filteredUsers$ | async; track user.id) {
+    <p>{{ user.id }}</p>
+  }
+</div>
