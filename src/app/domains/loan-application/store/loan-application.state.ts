@@ -36,7 +36,7 @@ export const initialLoanApplicationState: LoanApplicationState = {
   userLoans: [],
   isLoading: false,
   error: null,
-  selectedLoanType: LoanType.Personal,
+  selectedLoanType: 'personal',
   formStep: 0,
   isDraftSaved: false,
   isSubmitting: false,

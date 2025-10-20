@@ -2,7 +2,6 @@ import { Component, Input, OnInit, output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { LoanType } from '../../models/loan-type';
-import { EmploymentStatus } from '../../models/employment-status.enum';
 import { Loan } from '../../models/loan';
 import { LoanTypeConfiguration } from '../../models/loan-form.interface';
 import { Button } from '../../../../shared/components/button/button';
@@ -14,7 +13,7 @@ import { Button } from '../../../../shared/components/button/button';
   styleUrl: './loan-form.scss',
 })
 export class LoanForm implements OnInit {
-  @Input() loanType: LoanType = LoanType.Personal;
+  @Input() loanType: LoanType = 'personal';
   @Input() initialData?: Partial<Loan>;
   maxTerm = '';
 
@@ -22,24 +21,22 @@ export class LoanForm implements OnInit {
   formSaved = output<Partial<Loan>>();
 
   loanForm!: FormGroup;
-  loanTypes = LoanType;
-  employmentStatuses = EmploymentStatus;
 
   // Loan type specific configurations
   loanTypeConfig: Record<LoanType, LoanTypeConfiguration> = {
-    [LoanType.Personal]: {
+    ['personal']: {
       minAmount: 1000,
       maxAmount: 50000,
       maxTermMonths: 84,
       fields: ['amount', 'termMonths', 'applicant', 'purpose'],
     },
-    [LoanType.Mortgage]: {
+    ['mortgage']: {
       minAmount: 50000,
       maxAmount: 1000000,
       maxTermMonths: 360,
       fields: ['amount', 'termMonths', 'applicant', 'coSigner', 'propertyAddress', 'downPayment'],
     },
-    [LoanType.Auto]: {
+    ['auto']: {
       minAmount: 5000,
       maxAmount: 100000,
       maxTermMonths: 84,

@@ -13,8 +13,7 @@ import { Router } from '@angular/router';
 })
 export class LoanWizard {
   protected readonly main_header = signal('Loan Application Wizard');
-  selectedLoanType: LoanType = LoanType.Auto;
-  loanTypes = LoanType;
+  selectedLoanType: LoanType = 'auto';
   submittedLoan?: Loan;
   savedDraft?: Partial<Loan>;
 

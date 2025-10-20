@@ -1,7 +1,1 @@
-export enum LoanStatus {
-  Draft = 'draft',
-  Pending = 'pending',
-  Submitted = 'submitted',
-  Approved = 'approved',
-  Rejected = 'rejected',
-}
+export type LoanStatus = 'draft' | 'pending' | 'submitted' | 'approved' | 'rejected';

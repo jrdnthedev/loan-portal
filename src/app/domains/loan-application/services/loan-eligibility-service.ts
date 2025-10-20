@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { EligibilityResult } from '../models/eligibility-result';
 import { Loan } from '../models/loan';
-import { EmploymentStatus } from '../models/employment-status.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +13,7 @@ export class LoanEligibilityService {
       reasons.push('Income below minimum threshold');
     }
 
-    if (loan.applicant.employmentStatus === EmploymentStatus.Unemployed) {
+    if (loan.applicant.employmentStatus === 'unemployed') {
       reasons.push('Applicant must be employed');
     }
 
