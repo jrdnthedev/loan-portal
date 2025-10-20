@@ -68,6 +68,34 @@
       },
       "status": "rejected",
       "submittedAt": "2024-09-28T09:45:00Z"
+    },
+    {
+      "id": "loan-1761003442036",
+      "type": "auto",
+      "amount": {
+        "requested": 34534,
+        "currency": "USD"
+      },
+      "termMonths": "12",
+      "applicant": {
+        "fullName": "andre jordan mcmorris",
+        "dateOfBirth": "2025-10-14",
+        "ssn": "325-56-5655",
+        "income": 23423,
+        "employmentStatus": "full-time",
+        "creditScore": ""
+      },
+      "vehicleInfo": {
+        "make": "honda",
+        "model": "accord",
+        "year": 2000,
+        "vin": "23423423324342342",
+        "mileage": 234232,
+        "value": 23423
+      },
+      "downPayment": 43453,
+      "status": "pending",
+      "submittedAt": "2025-10-20T23:37:22.037Z"
     }
   ],
   "applicants": [

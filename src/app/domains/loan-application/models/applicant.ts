@@ -1,4 +1,4 @@
-import { EmploymentStatus } from './employment-status.enum';
+import { EmploymentStatus } from './employment-status';
 
 export interface Applicant {
   id: string;

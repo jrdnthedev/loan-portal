@@ -193,15 +193,17 @@
           <label for="employmentStatus">Employment Status *</label>
           <select id="employmentStatus" formControlName="employmentStatus">
             <option value="">Select employment status</option>
-            <option [value]="employmentStatuses.FullTime">Full Time</option>
-            <option [value]="employmentStatuses.PartTime">Part Time</option>
-            <option [value]="employmentStatuses.SelfEmployed">Self Employed</option>
-            <option [value]="employmentStatuses.Unemployed">Unemployed</option>
-            <option [value]="employmentStatuses.Retired">Retired</option>
+            <option [value]="'full-time'">Full Time</option>
+            <option [value]="'part-time'">Part Time</option>
+            <option [value]="'self-employed'">Self Employed</option>
+            <option [value]="'unemployed'">Unemployed</option>
+            <option [value]="'retired'">Retired</option>
           </select>
-          <div class="error-message" *ngIf="getFieldError('applicant.employmentStatus')">
-            {{ getFieldError('applicant.employmentStatus') }}
-          </div>
+          @if (getFieldError('applicant.employmentStatus')) {
+            <div class="error-message">
+              {{ getFieldError('applicant.employmentStatus') }}
+            </div>
+          }
         </div>
 
         <div class="form-group">
@@ -214,9 +216,11 @@
             max="850"
             placeholder="Enter credit score"
           />
-          <div class="error-message" *ngIf="getFieldError('applicant.creditScore')">
-            {{ getFieldError('applicant.creditScore') }}
-          </div>
+          @if (getFieldError('applicant.creditScore')) {
+            <div class="error-message">
+              {{ getFieldError('applicant.creditScore') }}
+            </div>
+          }
         </div>
       </div>
     </div>
@@ -275,11 +279,11 @@
             <label for="coSignerEmploymentStatus">Employment Status</label>
             <select id="coSignerEmploymentStatus" formControlName="employmentStatus">
               <option value="">Select employment status</option>
-              <option [value]="employmentStatuses.FullTime">Full Time</option>
-              <option [value]="employmentStatuses.PartTime">Part Time</option>
-              <option [value]="employmentStatuses.SelfEmployed">Self Employed</option>
-              <option [value]="employmentStatuses.Unemployed">Unemployed</option>
-              <option [value]="employmentStatuses.Retired">Retired</option>
+              <option [value]="'full-time'">Full Time</option>
+              <option [value]="'part-time'">Part Time</option>
+              <option [value]="'self-employed'">Self Employed</option>
+              <option [value]="'unemployed'">Unemployed</option>
+              <option [value]="'retired'">Retired</option>
             </select>
           </div>
 

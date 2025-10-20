@@ -1,5 +1,1 @@
-export enum LoanType {
-  Personal = 'personal',
-  Mortgage = 'mortgage',
-  Auto = 'auto',
-}
+export type LoanType = 'personal' | 'mortgage' | 'auto';

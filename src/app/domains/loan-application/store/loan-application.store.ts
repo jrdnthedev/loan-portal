@@ -160,7 +160,7 @@ export class LoanApplicationStore {
     const loanToSubmit: Partial<Loan> = {
       ...currentLoan,
       id: `loan-${Date.now()}`, // Generate a unique ID
-      status: LoanStatus.Pending,
+      status: 'pending',
     };
 
     this.updateState({ isSubmitting: true });
