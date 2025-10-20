@@ -1,0 +1,27 @@
+@use '_variables' as vars;
+
+.primary-text {
+  color: black;
+  font-size: 14px;
+}
+
+.secondary-text {
+  // color: vars.$linen;
+  font-size: 14px;
+}
+#pending-application-list {
+  display: flex;
+  gap: 12px;
+  flex-direction: column;
+}
+
+.pending-application-list-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  > div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
