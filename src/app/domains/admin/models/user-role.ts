@@ -1,5 +1,5 @@
 export enum UserRole {
-  LoanOfficer = 'loan_officer',
+  LoanOfficer = 'loan-officer',
   Underwriter = 'underwriter',
   Admin = 'admin',
 }
