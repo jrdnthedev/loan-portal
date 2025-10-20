@@ -97,9 +97,13 @@ export class LoanApplicationStore {
   }
 
   setSelectedLoanType(loanType: LoanType): void {
+    const currentLoan = this._state$.value.currentLoan ?? {};
     this.updateState({
-      selectedLoanType: loanType,
-      currentLoan: { ...this._state$.value.currentLoan, type: loanType },
+      currentLoan: {
+        ...initialLoanApplicationState.currentLoan,
+        ...this._state$.value.currentLoan,
+        type: loanType,
+      },
     });
   }
 
@@ -131,7 +135,7 @@ export class LoanApplicationStore {
     this.setError(null);
 
     this.loanApiService.getLoans().subscribe({
-      next: (loans) => {
+      next: (loans: Loan[]) => {
         this.updateState({
           userLoans: loans,
           isLoading: false,
