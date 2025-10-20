@@ -1,6 +1,1 @@
-export enum RiskType {
-  LowIncome = 'low_income',
-  PoorCredit = 'poor_credit',
-  HighDebt = 'high_debt',
-  UnstableEmployment = 'unstable_employment',
-}
+export type RiskType = 'low_income' | 'poor_credit' | 'high_debt' | 'unstable_employment';

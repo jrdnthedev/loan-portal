@@ -13,7 +13,7 @@ export interface AdminState {
 }
 
 const filters: AdminFilters = {
-  role: UserRole.Admin,
+  role: 'admin',
   isActive: false,
   searchTerm: '',
 };

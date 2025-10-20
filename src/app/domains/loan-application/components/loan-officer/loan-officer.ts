@@ -15,6 +15,6 @@ export class LoanOfficer {
 
   ngOnInit() {
     this.store$.loadUsers();
-    this.store$.filterUsersByType(UserRole.LoanOfficer);
+    this.store$.filterUsersByType('loan-officer');
   }
 }
