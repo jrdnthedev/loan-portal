@@ -15,13 +15,13 @@ export class RiskScoring {
 
     if (loan.applicant.income < 30000) {
       score -= 20;
-      flags.push({ type: RiskType.LowIncome, description: 'Income below $30k' });
+      flags.push({ type: 'low_income', description: 'Income below $30k' });
       explanation.push('Low income reduces repayment confidence');
     }
 
     if (loan.applicant.creditScore && loan.applicant.creditScore < 600) {
       score -= 25;
-      flags.push({ type: RiskType.PoorCredit, description: 'Credit score below 600' });
+      flags.push({ type: 'poor_credit', description: 'Credit score below 600' });
       explanation.push('Poor credit history increases default risk');
     }
 

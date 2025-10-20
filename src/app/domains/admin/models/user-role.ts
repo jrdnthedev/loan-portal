@@ -1,5 +1,1 @@
-export enum UserRole {
-  LoanOfficer = 'loan-officer',
-  Underwriter = 'underwriter',
-  Admin = 'admin',
-}
+export type UserRole = 'loan-officer' | 'underwriter' | 'admin';

@@ -1,4 +1,4 @@
-import { DecisionType } from './decision-type.enum';
+import { DecisionType } from './decision-type';
 import { RiskFlag } from './risk-flag';
 
 export interface UnderwritingDecision {
