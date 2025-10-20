@@ -16,10 +16,6 @@ export class Table<T> {
   @Input() data: T[] = [];
   @Input() columns: TableColumn[] = [];
 
-  ngOnInit() {
-    console.log(this.data);
-  }
-
   get headers(): string[] {
     // If columns are provided, use them; otherwise auto-generate from data
     if (this.columns && this.columns.length > 0) {
@@ -33,7 +29,7 @@ export class Table<T> {
   }
 
   getHeaderLabel(key: string): string {
-    const column = this.columns.find((col) => col.key === key);
+    const column = this.columns.find((col: TableColumn) => col.key === key);
     return column ? column.label : key;
   }
 

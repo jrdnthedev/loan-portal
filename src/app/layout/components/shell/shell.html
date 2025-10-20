@@ -14,7 +14,7 @@
   <div class="row">
     <app-card>
       <h3>User Table</h3>
-      <app-table [data]="userData()"></app-table>
+      <app-table [data]="(userData$ | async) || []"></app-table>
     </app-card>
     <app-card
       ><div>
