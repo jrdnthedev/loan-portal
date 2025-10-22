@@ -26,7 +26,10 @@ export class AdminStore {
   constructor(
     private userservice: UserService,
     private auditservice: AuditService,
-  ) {}
+  ) {
+    // Load users when the store is first created
+    this.loadUsers();
+  }
   // State update methods
   private updateState(partialState: Partial<AdminState>): void {
     const currentState = this._state$.value;
