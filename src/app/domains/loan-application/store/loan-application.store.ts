@@ -17,16 +17,20 @@ export class LoanApplicationStore {
   public readonly state$ = this._state$.asObservable();
 
   // Selectors - expose specific parts of state
-  public readonly currentLoan$ = this.select((state) => state.currentLoan);
-  public readonly submittedLoan$ = this.select((state) => state.submittedLoan);
-  public readonly userLoans$ = this.select((state) => state.userLoans);
-  public readonly isLoading$ = this.select((state) => state.isLoading);
-  public readonly error$ = this.select((state) => state.error);
-  public readonly selectedLoanType$ = this.select((state) => state.selectedLoanType);
-  public readonly formStep$ = this.select((state) => state.formStep);
-  public readonly isDraftSaved$ = this.select((state) => state.isDraftSaved);
-  public readonly isSubmitting$ = this.select((state) => state.isSubmitting);
-  public readonly lastSavedAt$ = this.select((state) => state.lastSavedAt);
+  public readonly currentLoan$ = this.select((state: LoanApplicationState) => state.currentLoan);
+  public readonly submittedLoan$ = this.select(
+    (state: LoanApplicationState) => state.submittedLoan,
+  );
+  public readonly userLoans$ = this.select((state: LoanApplicationState) => state.userLoans);
+  public readonly isLoading$ = this.select((state: LoanApplicationState) => state.isLoading);
+  public readonly error$ = this.select((state: LoanApplicationState) => state.error);
+  public readonly selectedLoanType$ = this.select(
+    (state: LoanApplicationState) => state.selectedLoanType,
+  );
+  public readonly formStep$ = this.select((state: LoanApplicationState) => state.formStep);
+  public readonly isDraftSaved$ = this.select((state: LoanApplicationState) => state.isDraftSaved);
+  public readonly isSubmitting$ = this.select((state: LoanApplicationState) => state.isSubmitting);
+  public readonly lastSavedAt$ = this.select((state: LoanApplicationState) => state.lastSavedAt);
 
   // Computed selectors
   public readonly filteredLoans$ = combineLatest([
