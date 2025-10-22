@@ -1,7 +1,6 @@
-import { Component, inject } from '@angular/core';
-import { LoanApplicationStore } from '../../store/loan-application.store';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { map } from 'rxjs';
+import { Loan } from '../../models/loan';
 
 @Component({
   selector: 'app-pending-application',
@@ -10,8 +9,5 @@ import { map } from 'rxjs';
   styleUrl: './pending-application.scss',
 })
 export class PendingApplication {
-  private readonly store$ = inject(LoanApplicationStore);
-  userLoans$ = this.store$.userLoans$.pipe(
-    map((loans) => loans.slice(loans.length - 3, loans.length)),
-  );
+  @Input({ required: true }) loans: Loan[] = [];
 }

@@ -1,6 +1,6 @@
 <div id="pending-application-list">
   <h3>Pending Applications</h3>
-  @for (loan of userLoans$ | async; track loan.id) {
+  @for (loan of loans; track loan.id) {
     <div class="pending-application-list-row">
       <div>
         <p class="secondary-text">{{ loan.id }}</p>

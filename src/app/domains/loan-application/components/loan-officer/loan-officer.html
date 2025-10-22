@@ -1,6 +1,6 @@
 <div id="loan-officer-list">
   <h3>Loan Officer Stats</h3>
-  @for (user of filteredUsers$ | async; track user.id) {
-    <p>{{ user.id }}</p>
+  @for (officer of loanOfficer; track officer.id) {
+    <p>{{ officer.id }}</p>
   }
 </div>

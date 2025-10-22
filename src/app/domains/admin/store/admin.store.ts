@@ -17,11 +17,11 @@ export class AdminStore {
   public readonly state$ = this._state$.asObservable();
 
   //Selectors
-  public readonly isLoading$ = this.select((state) => state.isLoading);
-  public readonly error$ = this.select((state) => state.error);
-  public readonly users$ = this.select((state) => state.users);
-  public readonly filters$ = this.select((state) => state.filters);
-  public readonly filteredUsers$ = this.select((state) => this.filterUsers(state));
+  public readonly isLoading$ = this.select((state: AdminState) => state.isLoading);
+  public readonly error$ = this.select((state: AdminState) => state.error);
+  public readonly users$ = this.select((state: AdminState) => state.users);
+  public readonly filters$ = this.select((state: AdminState) => state.filters);
+  public readonly filteredUsers$ = this.select((state: AdminState) => this.filterUsers(state));
 
   constructor(
     private userservice: UserService,
@@ -45,7 +45,7 @@ export class AdminStore {
 
     // Filter by role if specified
     if (state.filters?.role !== undefined) {
-      filteredUsers = filteredUsers.filter((user) => user.role === state.filters.role);
+      filteredUsers = filteredUsers.filter((user: User) => user.role === state.filters.role);
     }
 
     return filteredUsers;
@@ -57,6 +57,7 @@ export class AdminStore {
 
   setError(error: string | null): void {
     this.updateState({ error });
+    d;
   }
 
   loadUsers(): void {
