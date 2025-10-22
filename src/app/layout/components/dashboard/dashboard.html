@@ -7,7 +7,11 @@
     }
   </app-card>
   <app-card>
-    <app-loan-officer></app-loan-officer>
+    @if (filteredUsers$ | async; as loanOfficers) {
+      <app-loan-officer [loanOfficer]="loanOfficers"></app-loan-officer>
+    } @else {
+      <app-loan-officer [loanOfficer]="[]"></app-loan-officer>
+    }
   </app-card>
   <app-card><p>Notification</p></app-card>
 </div>
