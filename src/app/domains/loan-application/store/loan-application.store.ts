@@ -75,7 +75,9 @@ export class LoanApplicationStore {
     }),
   );
 
-  constructor(private loanApiService: LoanApiService) {}
+  constructor(private loanApiService: LoanApiService) {
+    this.loadUserLoans();
+  }
 
   // State update methods
   private updateState(partialState: Partial<LoanApplicationState>): void {
