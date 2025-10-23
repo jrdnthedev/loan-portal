@@ -1,5 +1,8 @@
+@use '_variables' as vars;
 #wrapper {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 12px;
+  background-color: vars.$linen;
+  min-height: 100vh;
 }
