@@ -16,10 +16,6 @@ html {
   height: 100%;
   min-height: 100vh;
 }
-#wrapper {
-  background-color: vars.$linen;
-  min-height: 100vh;
-}
 * {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 16px;
@@ -28,4 +24,18 @@ html {
 
 h3 {
   font-weight: 500;
+}
+a {
+  text-decoration: none;
+}
+a:focus,
+button:focus {
+  outline: none;
+  border-color: #d82f5a;
+  border-radius: 4px;
+  box-shadow:
+    0 0 4px #d82f5a,
+    0 0 4px #d82f5a,
+    0 0 2px #d82f5a,
+    0 0 4px rgba(216, 47, 90, 0.6);
 }

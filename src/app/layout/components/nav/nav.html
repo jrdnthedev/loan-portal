@@ -1,3 +1,25 @@
 <nav>
-  <a routerLink="/">Home</a>
+  <div id="nav-brand">
+    <h2><a routerLink="/" (click)="closeMenu()">Loan Application</a></h2>
+  </div>
+
+  <!-- Mobile menu button -->
+  <button
+    id="mobile-menu-btn"
+    (click)="toggleMenu()"
+    [attr.aria-expanded]="isMenuOpen()"
+    aria-label="Toggle navigation menu"
+  >
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+  </button>
+
+  <!-- Navigation menu -->
+  <ul id="nav-menu" [class.nav-menu-open]="isMenuOpen()">
+    <li>
+      <a routerLink="/loan-application/wizard" (click)="closeMenu()">Loan Application Wizard</a>
+    </li>
+    <li><a routerLink="/underwriting" (click)="closeMenu()">Underwriting Panel</a></li>
+  </ul>
 </nav>
