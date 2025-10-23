@@ -1,6 +1,6 @@
 <nav>
   <div id="nav-brand">
-    <h2>Loan Application</h2>
+    <h2><a routerLink="/" (click)="closeMenu()">Loan Application</a></h2>
   </div>
 
   <!-- Mobile menu button -->
@@ -17,7 +17,6 @@
 
   <!-- Navigation menu -->
   <ul id="nav-menu" [class.nav-menu-open]="isMenuOpen()">
-    <li><a routerLink="/" (click)="closeMenu()">Home</a></li>
     <li>
       <a routerLink="/loan-application/wizard" (click)="closeMenu()">Loan Application Wizard</a>
     </li>
