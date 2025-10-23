@@ -57,7 +57,6 @@ export class AdminStore {
 
   setError(error: string | null): void {
     this.updateState({ error });
-    d;
   }
 
   loadUsers(): void {

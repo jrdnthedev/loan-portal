@@ -20,12 +20,7 @@
     overflow-x: hidden;
   }
   .row:first-child > *:first-child {
-    flex: 0 0 calc(66.67% - 8px);
-    max-width: calc(66.67% - 8px);
-  }
-
-  .row:first-child > *:last-child {
-    flex: 0 0 calc(33.33% - 4px);
-    max-width: calc(33.33% - 4px);
+    flex: 0 0 calc(100% - 8px);
+    max-width: calc(100% - 8px);
   }
 }
