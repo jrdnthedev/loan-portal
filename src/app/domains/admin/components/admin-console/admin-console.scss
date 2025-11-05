@@ -1,0 +1,17 @@
+section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+@media screen and (min-width: 600px) {
+  section {
+    flex-direction: row;
+    div {
+      flex: 1;
+      &:first-child {
+        flex: 0 1 250px;
+      }
+    }
+  }
+}
