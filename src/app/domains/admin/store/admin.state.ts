@@ -1,7 +1,6 @@
 import { AdminFilters } from '../models/admin-filters';
 import { AuditEntry } from '../models/audit-entry';
 import { User } from '../models/user';
-import { UserRole } from '../models/user-role';
 
 export interface AdminState {
   users: User[];
