@@ -25,4 +25,9 @@ export const routes: Routes = [
       import('./domains/underwriting/underwriting.routes').then((m) => m.UNDERWRITING_ROUTES),
     title: 'Underwriting Routes',
   },
+  {
+    path: 'admin',
+    loadChildren: () => import('./domains/admin/admin.routes').then((m) => m.ADMIN_ROUTES),
+    title: 'Admin Routes',
+  },
 ];
