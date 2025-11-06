@@ -21,6 +21,11 @@ export const ADMIN_ROUTES: Routes = [
         loadComponent: () =>
           import('./components/user-management/user-management').then((m) => m.UserManagement),
       },
+      {
+        path: 'feature_toggle',
+        loadComponent: () =>
+          import('./components/feature-toggle/feature-toggle').then((m) => m.FeatureToggle),
+      },
     ],
   },
 ];
