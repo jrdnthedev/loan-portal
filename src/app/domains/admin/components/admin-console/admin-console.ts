@@ -31,8 +31,6 @@ export class AdminConsole implements OnInit {
   private checkRouteState() {
     const currentUrl = this.router.url;
     // Show welcome only when we're exactly at /admin/admin_console with no child route
-    this.showWelcome.set(
-      currentUrl.endsWith('/admin_console') || currentUrl.endsWith('/admin_console/'),
-    );
+    this.showWelcome.set(currentUrl.endsWith('/admin_console'));
   }
 }
