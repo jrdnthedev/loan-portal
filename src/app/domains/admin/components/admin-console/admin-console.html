@@ -9,18 +9,20 @@
     </nav>
   </div>
   <div>
-    <!-- Show welcome content only when no child route is active -->
-    @if (showWelcome) {
-      <div id="admin_welcome">
-        <h2>Admin Console</h2>
-        <p>Welcome to the admin console. Select an option from the menu to get started:</p>
-        <ul id="admin_options">
-          <li><strong>Audit</strong> - View system audit logs and activity history</li>
-          <li><strong>User Management</strong> - Manage user accounts and permissions</li>
-          <li><strong>Feature Toggle</strong> - Enable or disable application features</li>
-        </ul>
-      </div>
-    }
-    <router-outlet></router-outlet>
+    <app-card>
+      <!-- Show welcome content only when no child route is active -->
+      @if (showWelcome()) {
+        <div id="admin_welcome">
+          <h2>Admin Console</h2>
+          <p>Welcome to the admin console. Select an option from the menu to get started:</p>
+          <ul id="admin_options">
+            <li><strong>Audit</strong> - View system audit logs and activity history</li>
+            <li><strong>User Management</strong> - Manage user accounts and permissions</li>
+            <li><strong>Feature Toggle</strong> - Enable or disable application features</li>
+          </ul>
+        </div>
+      }
+      <router-outlet></router-outlet>
+    </app-card>
   </div>
 </section>
