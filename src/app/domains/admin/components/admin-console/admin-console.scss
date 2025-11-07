@@ -12,6 +12,18 @@ nav ul {
   gap: 8px;
 }
 
+#admin_welcome {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  #admin_options {
+    padding: 0;
+    margin: 0;
+    li {
+      list-style-type: none;
+    }
+  }
+}
 @media screen and (min-width: 600px) {
   section {
     flex-direction: row;
