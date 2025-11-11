@@ -4,6 +4,7 @@ import { Loan } from '../../models/loan';
 import { LoanForm } from '../loan-form/loan-form';
 import { LoanApplicationStore } from '../../store/loan-application.store';
 import { Router } from '@angular/router';
+import { AuditService } from '../../../admin/services/audit-service';
 
 @Component({
   selector: 'app-loan-wizard',
@@ -18,6 +19,7 @@ export class LoanWizard {
 
   private router = inject(Router);
   private store = inject(LoanApplicationStore);
+  private audit = inject(AuditService);
 
   // Expose store observables for the template
   readonly currentLoan$ = this.store.currentLoan$;
@@ -30,6 +32,7 @@ export class LoanWizard {
       console.log('Submitting loan:', loan);
       this.store.updateCurrentLoan(loan);
       this.store.submitLoanApplication();
+      this.audit.logLoanAction(loan.id, `CREATE: Loan ${loan.id}`, loan.applicant.id);
       this.router.navigateByUrl('/loan-application/summary');
     } catch (error) {
       console.log(error);
