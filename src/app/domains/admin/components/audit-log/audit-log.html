@@ -1,3 +1,4 @@
 @for (log of auditLogs$ | async; track $index) {
-  <p>{{ log }}</p>
+  <p>{{ log.userId }}</p>
+  <p>{{ log.action }}</p>
 }
