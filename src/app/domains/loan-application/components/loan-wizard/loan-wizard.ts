@@ -32,7 +32,7 @@ export class LoanWizard {
       console.log('Submitting loan:', loan);
       this.store.updateCurrentLoan(loan);
       this.store.submitLoanApplication();
-      this.audit.logLoanAction(loan.id, `CREATE: Loan ${loan.id}`, loan.applicant.id);
+      this.audit.logLoanAction(loan.id, `CREATE: Loan ${loan.id}`, loan.applicant.id).subscribe();
       this.router.navigateByUrl('/loan-application/summary');
     } catch (error) {
       console.log(error);

@@ -1,4 +1,4 @@
-@for (log of auditLogs$ | async; track $index) {
-  <p>{{ log.userId }}</p>
-  <p>{{ log.action }}</p>
-}
+<div id="logs">
+  <h2>Logs</h2>
+  <app-table [data]="(auditLogs$ | async) || []"></app-table>
+</div>

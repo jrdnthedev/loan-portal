@@ -58,7 +58,7 @@ export class AuditService {
       id: `audit-${Date.now()}`, // Generate a unique ID
       timestamp: new Date().toISOString(),
     };
-
+    console.log('logged audit entry');
     return this.http.post<AuditEntry>(`${this.apiUrl}/audit-logs`, entry);
   }
 
@@ -72,7 +72,7 @@ export class AuditService {
       timestamp: new Date().toISOString(),
       // metadata would be added when the interface supports it
     };
-
+    console.log('logged user action');
     return this.createAuditEntry(auditEntry);
   }
 
@@ -132,6 +132,7 @@ export class AuditService {
    */
   logLoanAction(loanId: string, action: string, userId: string): Observable<AuditEntry> {
     const auditAction = `${action}: Loan ${loanId}`;
+    console.log('logged loan action');
     return this.logUserAction(userId, auditAction, { loanId, type: 'loan' });
   }
 
