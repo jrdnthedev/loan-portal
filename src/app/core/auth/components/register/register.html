@@ -1,3 +1,71 @@
 <app-modal name="register-modal">
-  <p>register works!</p>
+  <div class="auth-form-container">
+    <h2>Create Account</h2>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="auth-form">
+      <div class="form-row">
+        <app-form-input
+          label="First Name"
+          type="text"
+          formControlName="firstName"
+          placeholder="Enter your first name"
+          [required]="true"
+          [errorMessage]="getFieldError('firstName')"
+        >
+        </app-form-input>
+
+        <app-form-input
+          label="Last Name"
+          type="text"
+          formControlName="lastName"
+          placeholder="Enter your last name"
+          [required]="true"
+          [errorMessage]="getFieldError('lastName')"
+        >
+        </app-form-input>
+      </div>
+
+      <app-form-input
+        label="Email Address"
+        type="email"
+        formControlName="email"
+        placeholder="Enter your email"
+        [required]="true"
+        [errorMessage]="getFieldError('email')"
+      >
+      </app-form-input>
+
+      <app-form-input
+        label="Password"
+        type="password"
+        formControlName="password"
+        placeholder="Enter your password (min 8 characters)"
+        [required]="true"
+        [errorMessage]="getFieldError('password')"
+      >
+      </app-form-input>
+
+      <app-form-input
+        label="Confirm Password"
+        type="password"
+        formControlName="confirmPassword"
+        placeholder="Confirm your password"
+        [required]="true"
+        [errorMessage]="getFieldError('confirmPassword')"
+      >
+      </app-form-input>
+
+      <div class="auth-actions">
+        <app-button buttonText="Create Account" type="submit" (clicked)="onSubmit()"> </app-button>
+      </div>
+
+      <div *ngIf="registerError" class="auth-error">
+        {{ registerError }}
+      </div>
+
+      <div class="auth-footer">
+        <p>Already have an account? <a routerLink="/auth/login">Sign In</a></p>
+      </div>
+    </form>
+  </div>
 </app-modal>
