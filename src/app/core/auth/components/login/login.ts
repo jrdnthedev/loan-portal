@@ -53,7 +53,7 @@ export class Login implements OnInit {
 
       this.authService.login(loginData).subscribe({
         next: () => {
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/shell']);
         },
         error: (error) => {
           this.loginError = error.error?.message || 'Login failed. Please try again.';
