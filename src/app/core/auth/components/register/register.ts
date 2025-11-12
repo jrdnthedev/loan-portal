@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
+import { Modal } from '../../../../shared/components/modal/modal';
 
 @Component({
   selector: 'app-register',
-  imports: [],
+  imports: [Modal],
   templateUrl: './register.html',
   styleUrl: './register.scss',
 })
