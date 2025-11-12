@@ -1,10 +1,16 @@
 import { Routes } from '@angular/router';
+import { AuthContainer } from './core/auth/components/auth-container/auth-container';
 
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'shell',
+    redirectTo: 'welcome',
     pathMatch: 'full',
+  },
+  {
+    path: 'welcome',
+    loadChildren: () => import('./core/auth/auth.routes').then((m) => m.AUTH_ROUTES),
+    title: 'Welcome',
   },
   {
     path: 'shell',
