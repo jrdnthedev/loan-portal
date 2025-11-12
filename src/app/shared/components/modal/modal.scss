@@ -25,14 +25,13 @@
 @media screen and (min-width: 600px) {
   [role='dialog'] {
     width: calc(100% - 240px);
-    height: calc(100% - 240px);
+    height: auto;
   }
 }
 
 @media screen and (min-width: 1024px) {
   [role='dialog'] {
     width: calc(100% - 480px);
-    height: calc(100% - 480px);
   }
 }
 
