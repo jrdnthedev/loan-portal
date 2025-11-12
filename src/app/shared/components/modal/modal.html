@@ -1,5 +1,6 @@
 <div id="modal-container">
   <div appKeyTrap role="dialog" [id]="name" [attr.aria-labelledby]="name" aria-modal="true">
+    <div class="close-button"><button (click)="close()">x</button></div>
     <ng-content></ng-content>
   </div>
 </div>
