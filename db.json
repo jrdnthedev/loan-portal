@@ -96,6 +96,90 @@
       "downPayment": 43453,
       "status": "pending",
       "submittedAt": "2025-10-20T23:37:22.037Z"
+    },
+    {
+      "id": "loan-1762876499866",
+      "type": "auto",
+      "amount": {
+        "requested": 100000,
+        "currency": "USD"
+      },
+      "termMonths": "72",
+      "applicant": {
+        "fullName": "john stevens",
+        "dateOfBirth": "1988-05-11",
+        "ssn": "123-20-7858",
+        "income": 200000,
+        "employmentStatus": "full-time",
+        "creditScore": ""
+      },
+      "vehicleInfo": {
+        "make": "Lexus",
+        "model": "ES300",
+        "year": 2003,
+        "vin": "12345678987654321",
+        "mileage": 0,
+        "value": 100000
+      },
+      "downPayment": 25000,
+      "status": "pending",
+      "submittedAt": "2025-11-11T15:54:59.866Z"
+    },
+    {
+      "id": "loan-1762876834720",
+      "type": "auto",
+      "amount": {
+        "requested": 100000,
+        "currency": "USD"
+      },
+      "termMonths": "48",
+      "applicant": {
+        "fullName": "john stevens",
+        "dateOfBirth": "1988-05-11",
+        "ssn": "123-23-3212",
+        "income": 200000,
+        "employmentStatus": "full-time",
+        "creditScore": ""
+      },
+      "vehicleInfo": {
+        "make": "Lexus",
+        "model": "ES300",
+        "year": 2003,
+        "vin": "12345678987654321",
+        "mileage": 0,
+        "value": 100000
+      },
+      "downPayment": 25000,
+      "status": "pending",
+      "submittedAt": "2025-11-11T16:00:34.720Z"
+    },
+    {
+      "id": "loan-1762878182827",
+      "type": "auto",
+      "amount": {
+        "requested": 25000,
+        "currency": "USD"
+      },
+      "termMonths": "36",
+      "applicant": {
+        "fullName": "john stevens",
+        "dateOfBirth": "1988-05-11",
+        "ssn": "123-43-5432",
+        "income": 200000,
+        "employmentStatus": "full-time",
+        "creditScore": ""
+      },
+      "vehicleInfo": {
+        "make": "Lexus",
+        "model": "ES300",
+        "year": 2003,
+        "vin": "12345678987654321",
+        "mileage": 0,
+        "value": 100000
+      },
+      "downPayment": 25000,
+      "status": "pending",
+      "submittedAt": "2025-11-11T16:23:02.827Z"
     }
   ],
   "applicants": [
@@ -192,5 +276,11 @@
       }
     }
   ],
-  "audit-logs": []
+  "audit-logs": [
+    {
+      "id": "audit-1762878182830",
+      "action": "CREATE: Loan 1mzkfi5ic: Loan 1mzkfi5ic",
+      "timestamp": "2025-11-11T16:23:02.830Z"
+    }
+  ]
 }
