@@ -1,9 +1,10 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { LoanType } from '../../models/loan-type';
 import { Loan } from '../../models/loan';
 import { LoanForm } from '../loan-form/loan-form';
 import { LoanApplicationStore } from '../../store/loan-application.store';
 import { Router } from '@angular/router';
+import { AuditService } from '../../../admin/services/audit-service';
 
 @Component({
   selector: 'app-loan-wizard',
@@ -12,13 +13,13 @@ import { Router } from '@angular/router';
   styleUrl: './loan-wizard.scss',
 })
 export class LoanWizard {
-  protected readonly main_header = signal('Loan Application Wizard');
   selectedLoanType: LoanType = 'auto';
   submittedLoan?: Loan;
   savedDraft?: Partial<Loan>;
 
   private router = inject(Router);
   private store = inject(LoanApplicationStore);
+  private audit = inject(AuditService);
 
   // Expose store observables for the template
   readonly currentLoan$ = this.store.currentLoan$;
@@ -31,6 +32,7 @@ export class LoanWizard {
       console.log('Submitting loan:', loan);
       this.store.updateCurrentLoan(loan);
       this.store.submitLoanApplication();
+      this.audit.logLoanAction(loan.id, `CREATE: Loan ${loan.id}`, loan.applicant.id).subscribe();
       this.router.navigateByUrl('/loan-application/summary');
     } catch (error) {
       console.log(error);

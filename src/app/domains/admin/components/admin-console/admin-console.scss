@@ -1,0 +1,37 @@
+section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+nav ul {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#admin_welcome {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  #admin_options {
+    padding: 0;
+    margin: 0;
+    li {
+      list-style-type: none;
+    }
+  }
+}
+@media screen and (min-width: 600px) {
+  section {
+    flex-direction: row;
+    div {
+      flex: 1;
+      &:first-child {
+        flex: 0 1 175px;
+      }
+    }
+  }
+}

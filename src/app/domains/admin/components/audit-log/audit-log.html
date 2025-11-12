@@ -1,1 +1,4 @@
-<p>audit-log works!</p>
+<div id="logs">
+  <h2>Logs</h2>
+  <app-table [data]="(auditLogs$ | async) || []"></app-table>
+</div>

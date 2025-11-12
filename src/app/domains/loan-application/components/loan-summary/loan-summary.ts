@@ -16,10 +16,4 @@ export class LoanSummary {
   readonly currentLoan$ = this.store.currentLoan$;
   readonly submittedLoan$ = this.store.submittedLoan$;
   readonly state$ = this.store.state$;
-
-  ngOnInit() {
-    this.currentLoan$.subscribe((data) => console.log('currentLoan', data));
-    this.submittedLoan$.subscribe((data) => console.log('submittedLoan', data));
-    this.state$.subscribe((data) => console.log('hello state', data));
-  }
 }
