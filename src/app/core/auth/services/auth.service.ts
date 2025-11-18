@@ -75,7 +75,7 @@ export class AuthService {
   login(credentials: LoginRequest): Observable<LoginResponse> {
     this.setLoadingState(true);
 
-    return this.http.post<LoginResponse>(`${this.API_URL}/users`, credentials).pipe(
+    return this.http.post<LoginResponse>(`${this.API_URL}/auth/login`, credentials).pipe(
       tap((response: LoginResponse) => {
         this.tokenService.setTokens(response.accessToken, response.refreshToken);
         this.setAuthenticatedState(response.user);

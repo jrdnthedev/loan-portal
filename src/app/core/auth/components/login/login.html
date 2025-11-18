@@ -27,13 +27,15 @@
         <app-button buttonText="Sign In" type="submit" (clicked)="onSubmit()"> </app-button>
       </div>
 
-      <div *ngIf="loginError" class="auth-error">
-        {{ loginError }}
-      </div>
+      @if (loginError) {
+        <div class="auth-error">
+          {{ loginError }}
+        </div>
+      }
 
       <div class="auth-footer">
-        <p>Don't have an account? <a routerLink="/register">Sign Up</a></p>
-        <p><a routerLink="/auth/forgot-password">Forgot Password?</a></p>
+        <p>Don't have an account? <a routerLink="../register">Sign Up</a></p>
+        <p><a routerLink="../forgot-password">Forgot Password?</a></p>
       </div>
     </form>
   </div>
