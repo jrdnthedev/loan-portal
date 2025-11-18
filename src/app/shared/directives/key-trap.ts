@@ -23,10 +23,12 @@ export class KeyTrap implements OnInit, OnDestroy {
    * Captures the currently active element as the last focused element
    */
   private captureLastFocusedElement(): void {
-    const activeElement = document.activeElement as HTMLElement;
-    // Only capture if it's a valid focusable element (not body or null)
-    if (activeElement && activeElement !== document.body) {
-      this.lastFocusedElement = activeElement;
+    if (typeof document !== 'undefined') {
+      const activeElement = document.activeElement as HTMLElement;
+      // Only capture if it's a valid focusable element (not body or null)
+      if (activeElement && activeElement !== document.body) {
+        this.lastFocusedElement = activeElement;
+      }
     }
   }
 
@@ -59,7 +61,7 @@ export class KeyTrap implements OnInit, OnDestroy {
 
   @HostListener('keydown', ['$event'])
   handleKeyDown(event: KeyboardEvent) {
-    if (event.key === 'Tab') {
+    if (event.key === 'Tab' && typeof document !== 'undefined') {
       const focusableElements = this.el.nativeElement.querySelectorAll(
         'a[href], button:not([disabled]), input:not([disabled]):not(.readonly-input), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
       );
