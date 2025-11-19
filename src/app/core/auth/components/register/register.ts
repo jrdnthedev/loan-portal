@@ -8,15 +8,13 @@ import {
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-
-import { Modal } from '../../../../shared/components/modal/modal';
 import { FormInput } from '../../../../shared/components/form-input/form-input';
 import { Button } from '../../../../shared/components/button/button';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-register',
-  imports: [Modal, FormInput, Button, ReactiveFormsModule, CommonModule, RouterModule],
+  imports: [FormInput, Button, ReactiveFormsModule, CommonModule, RouterModule],
   templateUrl: './register.html',
   styleUrl: './register.scss',
 })
