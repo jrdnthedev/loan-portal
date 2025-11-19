@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { AuthContainer } from './core/auth/components/auth-container/auth-container';
 
 export const routes: Routes = [
   {
@@ -9,7 +8,7 @@ export const routes: Routes = [
   },
   {
     path: 'welcome',
-    loadChildren: () => import('./core/auth/auth.routes').then((m) => m.AUTH_ROUTES),
+    loadComponent: () => import('./layout/components/welcome/welcome').then((m) => m.Welcome),
     title: 'Welcome',
   },
   {

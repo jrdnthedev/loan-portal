@@ -2,8 +2,6 @@ import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-
-import { Modal } from '../../../../shared/components/modal/modal';
 import { FormInput } from '../../../../shared/components/form-input/form-input';
 import { Button } from '../../../../shared/components/button/button';
 import { AuthService } from '../../services/auth.service';
@@ -11,7 +9,7 @@ import { LoginRequest } from '../../interfaces/auth.interface';
 
 @Component({
   selector: 'app-login',
-  imports: [Modal, FormInput, Button, ReactiveFormsModule, CommonModule, RouterModule],
+  imports: [FormInput, Button, ReactiveFormsModule, CommonModule, RouterModule],
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })
