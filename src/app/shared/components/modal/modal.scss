@@ -8,18 +8,24 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1;
 }
 
 [role='dialog'] {
+  position: relative;
   height: 100%;
   width: 100%;
   background-color: white;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  z-index: 2;
 }
 .close-button {
   text-align: right;
+  button {
+    cursor: pointer;
+  }
 }
 
 @media screen and (min-width: 600px) {
