@@ -17,10 +17,28 @@
 
   <!-- Navigation menu -->
   <ul id="nav-menu" [class.nav-menu-open]="isMenuOpen()">
-    <li>
-      <a routerLink="/loan-application/wizard" (click)="closeMenu()">Loan Application Wizard</a>
-    </li>
-    <li><a routerLink="/underwriting" (click)="closeMenu()">Underwriting Panel</a></li>
-    <li><a routerLink="/admin" (click)="closeMenu()">Admin</a></li>
+    @if (!authService.authState()) {
+      <li>
+        <a routerLink="/loan-application/wizard" (click)="closeMenu()">Loan Application Wizard</a>
+      </li>
+      <li><a routerLink="/underwriting" (click)="closeMenu()">Underwriting Panel</a></li>
+      <li><a routerLink="/admin" (click)="closeMenu()">Admin</a></li>
+    }
+    @if (authService.authState()) {
+      <li><a (click)="toggleLogin()">Login</a></li>
+      <li><a (click)="toggleRegister()">Register</a></li>
+    }
   </ul>
 </nav>
+
+@if (isLoginModalOpen()) {
+  <app-modal name="login-modal" (closeBtn)="toggleLogin()">
+    <app-login></app-login>
+  </app-modal>
+}
+
+@if (isRegisterModalOpen()) {
+  <app-modal name="register-modal" (closeBtn)="toggleRegister()">
+    <app-register></app-register>
+  </app-modal>
+}
