@@ -13,7 +13,7 @@ import { AsyncPipe } from '@angular/common';
 })
 export class UserManagement {
   private store$ = inject(AdminStore);
-  userData$ = this.store$.users$.pipe(
+  readonly userData$ = this.store$.users$.pipe(
     catchError((err: Error) => {
       console.error(err);
       return of([]);

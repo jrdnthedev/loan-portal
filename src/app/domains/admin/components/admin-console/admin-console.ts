@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink, RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { filter, map } from 'rxjs/operators';
@@ -12,8 +12,7 @@ import { Card } from '../../../../shared/components/card/card';
 })
 export class AdminConsole implements OnInit {
   showWelcome = signal(true);
-
-  constructor(private router: Router) {}
+  private router = inject(Router);
 
   ngOnInit() {
     // Check initial route
