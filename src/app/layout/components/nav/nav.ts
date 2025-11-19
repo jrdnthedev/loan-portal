@@ -18,7 +18,7 @@ export class Nav {
   isRegisterModalOpen = signal(false);
 
   toggleMenu() {
-    this.isMenuOpen.update((isOpen) => !isOpen);
+    this.isMenuOpen.update((isOpen: boolean) => !isOpen);
   }
 
   closeMenu() {
@@ -26,10 +26,10 @@ export class Nav {
   }
 
   toggleLogin() {
-    this.isLoginModalOpen.update((value) => !value);
+    this.isLoginModalOpen.update((value: boolean) => !value);
   }
 
   toggleRegister() {
-    this.isRegisterModalOpen.update((value) => !value);
+    this.isRegisterModalOpen.update((value: boolean) => !value);
   }
 }
