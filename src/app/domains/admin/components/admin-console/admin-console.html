@@ -21,8 +21,9 @@
             <!-- <li><strong>Feature Toggle</strong> - Enable or disable application features</li> -->
           </ul>
         </div>
+      } @else {
+        <router-outlet></router-outlet>
       }
-      <router-outlet></router-outlet>
     </app-card>
   </div>
 </section>
