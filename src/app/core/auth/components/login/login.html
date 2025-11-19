@@ -1,3 +1,42 @@
-<app-modal name="modal-1">
-  <p>login works!</p>
+<app-modal name="login-modal">
+  <div class="auth-form-container">
+    <h2>Sign In</h2>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form">
+      <app-form-input
+        label="Email Address"
+        type="email"
+        formControlName="email"
+        placeholder="Enter your email"
+        [required]="true"
+        [errorMessage]="getFieldError('email')"
+      >
+      </app-form-input>
+
+      <app-form-input
+        label="Password"
+        type="password"
+        formControlName="password"
+        placeholder="Enter your password"
+        [required]="true"
+        [errorMessage]="getFieldError('password')"
+      >
+      </app-form-input>
+
+      <div class="auth-actions">
+        <app-button buttonText="Sign In" type="submit" (clicked)="onSubmit()"> </app-button>
+      </div>
+
+      @if (loginError) {
+        <div class="auth-error">
+          {{ loginError }}
+        </div>
+      }
+
+      <div class="auth-footer">
+        <p>Don't have an account? <a routerLink="../register">Sign Up</a></p>
+        <p><a routerLink="../forgot-password">Forgot Password?</a></p>
+      </div>
+    </form>
+  </div>
 </app-modal>

@@ -1,0 +1,27 @@
+<div class="form-input-group">
+  @if (label) {
+    <label [for]="inputId" class="form-label">
+      {{ label }}
+      @if (required) {
+        <span class="required-asterisk">*</span>
+      }
+    </label>
+  }
+
+  <input
+    [id]="inputId"
+    [type]="type"
+    [value]="value"
+    [placeholder]="placeholder"
+    [disabled]="disabled"
+    [class.error]="errorMessage"
+    class="form-input"
+    (input)="onInput($event)"
+    (blur)="onBlur()"
+  />
+  @if (errorMessage) {
+    <div class="error-message">
+      {{ errorMessage }}
+    </div>
+  }
+</div>

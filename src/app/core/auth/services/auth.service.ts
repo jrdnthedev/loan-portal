@@ -2,7 +2,7 @@ import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
-import { map, tap, catchError } from 'rxjs/operators';
+import { tap, catchError } from 'rxjs/operators';
 
 import { TokenService } from './token.service';
 import {
@@ -13,12 +13,13 @@ import {
   RefreshTokenResponse,
   AuthState,
 } from '../interfaces/auth.interface';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private readonly API_URL = '/api/auth'; // Update with your API base URL
+  private readonly API_URL = environment.apiUrl;
 
   // Signal-based state management
   private readonly _authState = signal<AuthState>({
@@ -74,8 +75,8 @@ export class AuthService {
   login(credentials: LoginRequest): Observable<LoginResponse> {
     this.setLoadingState(true);
 
-    return this.http.post<LoginResponse>(`${this.API_URL}/login`, credentials).pipe(
-      tap((response) => {
+    return this.http.post<LoginResponse>(`${this.API_URL}/auth/login`, credentials).pipe(
+      tap((response: LoginResponse) => {
         this.tokenService.setTokens(response.accessToken, response.refreshToken);
         this.setAuthenticatedState(response.user);
       }),
@@ -102,7 +103,7 @@ export class AuthService {
     const request: RefreshTokenRequest = { refreshToken };
 
     return this.http.post<RefreshTokenResponse>(`${this.API_URL}/refresh`, request).pipe(
-      tap((response) => {
+      tap((response: RefreshTokenResponse) => {
         this.tokenService.setTokens(response.accessToken, response.refreshToken);
       }),
       catchError((error) => {
@@ -116,7 +117,7 @@ export class AuthService {
     this.setLoadingState(true);
 
     return this.http.post<LoginResponse>(`${this.API_URL}/register`, userData).pipe(
-      tap((response) => {
+      tap((response: LoginResponse) => {
         this.tokenService.setTokens(response.accessToken, response.refreshToken);
         this.setAuthenticatedState(response.user);
       }),
@@ -164,7 +165,7 @@ export class AuthService {
   }
 
   private setLoadingState(isLoading: boolean): void {
-    this._authState.update((state) => ({
+    this._authState.update((state: AuthState) => ({
       ...state,
       isLoading,
     }));

@@ -11,6 +11,8 @@ export class KeyTrap implements OnInit, OnDestroy {
   ngOnInit(): void {
     // Capture the currently focused element when the directive initializes
     this.captureLastFocusedElement();
+    // Focus the first focusable element in the trapped container
+    this.focusFirstElement();
   }
 
   ngOnDestroy(): void {
@@ -23,10 +25,12 @@ export class KeyTrap implements OnInit, OnDestroy {
    * Captures the currently active element as the last focused element
    */
   private captureLastFocusedElement(): void {
-    const activeElement = document.activeElement as HTMLElement;
-    // Only capture if it's a valid focusable element (not body or null)
-    if (activeElement && activeElement !== document.body) {
-      this.lastFocusedElement = activeElement;
+    if (typeof document !== 'undefined') {
+      const activeElement = document.activeElement as HTMLElement;
+      // Only capture if it's a valid focusable element (not body or null)
+      if (activeElement && activeElement !== document.body) {
+        this.lastFocusedElement = activeElement;
+      }
     }
   }
 
@@ -57,12 +61,37 @@ export class KeyTrap implements OnInit, OnDestroy {
     return this.lastFocusedElement;
   }
 
+  /**
+   * Gets all focusable elements within the trapped container
+   */
+  private getFocusableElements(): NodeListOf<HTMLElement> {
+    return this.el.nativeElement.querySelectorAll(
+      'a[href], button:not([disabled]), input:not([disabled]):not(.readonly-input), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+    );
+  }
+
+  /**
+   * Focuses the first focusable element in the trapped container
+   */
+  public focusFirstElement(): void {
+    if (typeof document !== 'undefined') {
+      const focusableElements = this.getFocusableElements();
+
+      if (focusableElements.length > 0) {
+        const firstElement = focusableElements[0] as HTMLElement;
+        try {
+          firstElement.focus();
+        } catch (error) {
+          console.warn('Failed to focus first element:', error);
+        }
+      }
+    }
+  }
+
   @HostListener('keydown', ['$event'])
   handleKeyDown(event: KeyboardEvent) {
-    if (event.key === 'Tab') {
-      const focusableElements = this.el.nativeElement.querySelectorAll(
-        'a[href], button:not([disabled]), input:not([disabled]):not(.readonly-input), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
-      );
+    if (event.key === 'Tab' && typeof document !== 'undefined') {
+      const focusableElements = this.getFocusableElements();
 
       if (focusableElements.length === 0) {
         return;

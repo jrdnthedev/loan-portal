@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, output } from '@angular/core';
 import { KeyTrap } from '../../directives/key-trap';
 
 @Component({
@@ -9,4 +9,9 @@ import { KeyTrap } from '../../directives/key-trap';
 })
 export class Modal {
   @Input() name = '';
+  closeBtn = output<void>();
+
+  close() {
+    this.closeBtn.emit();
+  }
 }
