@@ -1,6 +1,7 @@
 nav {
   display: flex;
   justify-content: space-between;
+  position: relative;
   align-items: center;
   gap: 12px;
   padding: 12px;
@@ -16,34 +17,49 @@ nav {
 
 #mobile-menu-btn {
   display: none;
-  flex-direction: column;
-  justify-content: space-around;
-  width: 25px;
-  height: 25px;
-  background: transparent;
+  background: none;
   border: none;
+  width: 20px;
+  height: 22px;
   cursor: pointer;
   padding: 0;
   z-index: 10;
 
-  .hamburger-line {
-    width: 25px;
-    height: 2px;
-    background-color: #333;
-    transition: all 0.3s linear;
-    transform-origin: 1px;
+  .hamburger-line,
+  .hamburger-line::before,
+  .hamburger-line::after {
+    display: block;
+    background-color: #000;
+    position: absolute;
+    height: 4px;
+    width: 20px;
+    transition: transform 400ms cubic-bezier(0.23, 1, 0.32, 1);
+    border-radius: 2px;
+    margin-top: 9px;
+    margin-right: 9px;
+  }
+
+  .hamburger-line::before {
+    content: '';
+    margin-top: -8px;
+  }
+
+  .hamburger-line::after {
+    content: '';
+    margin-top: 8px;
   }
 
   &[aria-expanded='true'] {
     .hamburger-line {
-      &:first-child {
-        transform: rotate(45deg);
+      background: rgba(255, 255, 255, 0);
+      &::before {
+        margin-top: 0px;
+        transform: rotate(405deg);
       }
-      &:nth-child(2) {
-        opacity: 0;
-      }
-      &:nth-child(3) {
-        transform: rotate(-45deg);
+
+      &::after {
+        margin-top: 0px;
+        transform: rotate(-405deg);
       }
     }
   }

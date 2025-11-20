@@ -4,17 +4,16 @@
   </div>
 
   <!-- Mobile menu button -->
-  <button
-    id="mobile-menu-btn"
-    (click)="toggleMenu()"
-    [attr.aria-expanded]="isMenuOpen()"
-    aria-label="Toggle navigation menu"
-  >
-    <span class="hamburger-line"></span>
-    <span class="hamburger-line"></span>
-    <span class="hamburger-line"></span>
-  </button>
-
+  <div id="mobile-btn-wrapper">
+    <button
+      id="mobile-menu-btn"
+      (click)="toggleMenu()"
+      [attr.aria-expanded]="isMenuOpen()"
+      aria-label="Toggle navigation menu"
+    >
+      <span class="hamburger-line"></span>
+    </button>
+  </div>
   <!-- Navigation menu -->
   <ul id="nav-menu" [class.nav-menu-open]="isMenuOpen()">
     @for (item of navItems(); track item.label) {
