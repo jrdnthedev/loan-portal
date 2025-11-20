@@ -14,13 +14,6 @@ module.exports = (req, res, next) => {
     return;
   }
 
-  // Add delay to simulate real API response times
-  if (req.path !== '/') {
-    setTimeout(next, 200);
-  } else {
-    next();
-  }
-
   // Add custom routes for authentication
   if (req.path === '/auth/login' && req.method === 'POST') {
     const { email, password } = req.body;
@@ -32,11 +25,9 @@ module.exports = (req, res, next) => {
           id: 'user-001',
           email: 'john.doe@example.com',
           role: 'customer',
-          profile: {
-            firstName: 'John',
-            lastName: 'Doe',
-            phone: '+1-555-0123',
-          },
+          firstName: 'John',
+          lastName: 'Doe',
+          phone: '+1-555-0123',
         },
         token: 'mock-jwt-token-customer',
         expiresIn: 3600,
@@ -48,11 +39,9 @@ module.exports = (req, res, next) => {
           id: 'user-002',
           email: 'loan.officer@bank.com',
           role: 'loan-officer',
-          profile: {
-            firstName: 'Sarah',
-            lastName: 'Williams',
-            phone: '+1-555-0456',
-          },
+          firstName: 'Sarah',
+          lastName: 'Williams',
+          phone: '+1-555-0456',
         },
         token: 'mock-jwt-token-loan-officer',
         expiresIn: 3600,
@@ -77,5 +66,10 @@ module.exports = (req, res, next) => {
     return;
   }
 
-  next();
+  // Add delay to simulate real API response times for other routes
+  if (req.path !== '/') {
+    setTimeout(next, 200);
+  } else {
+    next();
+  }
 };

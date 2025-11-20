@@ -12,10 +12,10 @@ import { Modal } from '../../../shared/components/modal/modal';
   styleUrl: './nav.scss',
 })
 export class Nav {
-  isMenuOpen = signal(false);
+  isMenuOpen = signal<boolean>(false);
   authService = inject(AuthService);
-  isLoginModalOpen = signal(false);
-  isRegisterModalOpen = signal(false);
+  isLoginModalOpen = signal<boolean>(false);
+  isRegisterModalOpen = signal<boolean>(false);
 
   toggleMenu() {
     this.isMenuOpen.update((isOpen: boolean) => !isOpen);
@@ -25,11 +25,19 @@ export class Nav {
     this.isMenuOpen.set(false);
   }
 
-  toggleLogin() {
-    this.isLoginModalOpen.update((value: boolean) => !value);
+  openLogin() {
+    this.isLoginModalOpen.set(true);
   }
 
-  toggleRegister() {
-    this.isRegisterModalOpen.update((value: boolean) => !value);
+  closeLogin() {
+    this.isLoginModalOpen.set(false);
+  }
+
+  openRegister() {
+    this.isRegisterModalOpen.set(true);
+  }
+
+  closeRegister() {
+    this.isRegisterModalOpen.set(false);
   }
 }

@@ -23,22 +23,26 @@
       </li>
       <li><a routerLink="/underwriting" (click)="closeMenu()">Underwriting Panel</a></li>
       <li><a routerLink="/admin" (click)="closeMenu()">Admin</a></li>
-      <li><a (click)="closeMenu(); authService.logout()">Logout</a></li>
+      <li>
+        <a (click)="closeMenu(); authService.logout()"
+          >Logout, {{ authService.user()?.firstName }}</a
+        >
+      </li>
     } @else {
-      <li><a (click)="toggleLogin()">Login</a></li>
-      <li><a (click)="toggleRegister()">Register</a></li>
+      <li><a (click)="openLogin()">Login</a></li>
+      <li><a (click)="openRegister()">Register</a></li>
     }
   </ul>
 </nav>
 
 @if (isLoginModalOpen()) {
-  <app-modal name="login-modal" (closeBtn)="toggleLogin()">
-    <app-login (loginSuccess)="toggleLogin()"></app-login>
+  <app-modal name="login-modal" (closeBtn)="closeLogin()">
+    <app-login (loginSuccess)="closeLogin()"></app-login>
   </app-modal>
 }
 
 @if (isRegisterModalOpen()) {
-  <app-modal name="register-modal" (closeBtn)="toggleRegister()">
-    <app-register></app-register>
+  <app-modal name="register-modal" (closeBtn)="closeRegister()">
+    <app-register (registerSuccess)="closeRegister()"></app-register>
   </app-modal>
 }

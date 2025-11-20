@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -20,6 +20,7 @@ export class Login implements OnInit {
 
   loginForm!: FormGroup;
   loginError = '';
+  loginSuccess = output<void>();
 
   ngOnInit(): void {
     this.initializeForm();
@@ -51,6 +52,7 @@ export class Login implements OnInit {
 
       this.authService.login(loginData).subscribe({
         next: () => {
+          this.loginSuccess.emit();
           this.router.navigate(['/shell']);
         },
         error: (error) => {
