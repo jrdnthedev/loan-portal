@@ -21,7 +21,9 @@
         @if (item.route) {
           <a [routerLink]="item.route" (click)="closeMenu()">{{ item.label }}</a>
         } @else if (item.action) {
-          <a (click)="item.action()" tabindex="0">{{ item.label }}</a>
+          <a (click)="item.action()" (keydown.enter)="item.action()" tabindex="0">{{
+            item.label
+          }}</a>
         }
       </li>
     }
