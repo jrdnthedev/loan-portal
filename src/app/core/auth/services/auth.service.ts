@@ -76,8 +76,9 @@ export class AuthService {
 
     return this.http.post<LoginResponse>(`${this.API_URL}/auth/login`, credentials).pipe(
       tap((response: LoginResponse) => {
+        console.log(response);
         //change to access and refresh tokens when available
-        this.tokenService.setTokens(response.token, response.token);
+        // this.tokenService.setTokens(response.token, response.token);
         this.setAuthenticatedState(response.user);
       }),
       catchError((error) => {
