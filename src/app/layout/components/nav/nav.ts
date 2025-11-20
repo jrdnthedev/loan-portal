@@ -25,11 +25,19 @@ export class Nav {
     this.isMenuOpen.set(false);
   }
 
-  toggleLogin() {
-    this.isLoginModalOpen.update((value: boolean) => !value);
+  openLogin() {
+    this.isLoginModalOpen.set(true);
   }
 
-  toggleRegister() {
-    this.isRegisterModalOpen.update((value: boolean) => !value);
+  closeLogin() {
+    this.isLoginModalOpen.set(false);
+  }
+
+  openRegister() {
+    this.isRegisterModalOpen.set(true);
+  }
+
+  closeRegister() {
+    this.isRegisterModalOpen.set(false);
   }
 }
