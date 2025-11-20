@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
-
 import { TokenService } from './token.service';
 import {
   User,
@@ -77,7 +76,8 @@ export class AuthService {
 
     return this.http.post<LoginResponse>(`${this.API_URL}/auth/login`, credentials).pipe(
       tap((response: LoginResponse) => {
-        this.tokenService.setTokens(response.accessToken, response.refreshToken);
+        //change to access and refresh tokens when available
+        this.tokenService.setTokens(response.token, response.token);
         this.setAuthenticatedState(response.user);
       }),
       catchError((error) => {
@@ -90,7 +90,7 @@ export class AuthService {
   logout(): void {
     this.tokenService.clearTokens();
     this.setUnauthenticatedState();
-    this.router.navigate(['/login']);
+    this.router.navigate(['/welcome']);
   }
 
   refreshToken(): Observable<RefreshTokenResponse> {
