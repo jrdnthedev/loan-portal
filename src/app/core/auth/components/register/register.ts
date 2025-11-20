@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, output } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -25,7 +25,7 @@ export class Register implements OnInit {
 
   registerForm!: FormGroup;
   registerError = '';
-
+  registerSuccess = output<void>();
   ngOnInit(): void {
     this.initializeForm();
   }
@@ -85,7 +85,8 @@ export class Register implements OnInit {
 
       this.authService.register(registerData).subscribe({
         next: () => {
-          this.router.navigate(['/dashboard']);
+          this.registerSuccess.emit();
+          this.router.navigate(['/welcome']);
         },
         error: (error) => {
           this.registerError = error.error?.message || 'Registration failed. Please try again.';
