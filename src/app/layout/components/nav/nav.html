@@ -23,7 +23,11 @@
       </li>
       <li><a routerLink="/underwriting" (click)="closeMenu()">Underwriting Panel</a></li>
       <li><a routerLink="/admin" (click)="closeMenu()">Admin</a></li>
-      <li><a (click)="closeMenu(); authService.logout()">Logout</a></li>
+      <li>
+        <a (click)="closeMenu(); authService.logout()"
+          >Logout, {{ authService.user()?.firstName }}</a
+        >
+      </li>
     } @else {
       <li><a (click)="openLogin()">Login</a></li>
       <li><a (click)="openRegister()">Register</a></li>

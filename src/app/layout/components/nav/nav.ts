@@ -12,10 +12,10 @@ import { Modal } from '../../../shared/components/modal/modal';
   styleUrl: './nav.scss',
 })
 export class Nav {
-  isMenuOpen = signal(false);
+  isMenuOpen = signal<boolean>(false);
   authService = inject(AuthService);
-  isLoginModalOpen = signal(false);
-  isRegisterModalOpen = signal(false);
+  isLoginModalOpen = signal<boolean>(false);
+  isRegisterModalOpen = signal<boolean>(false);
 
   toggleMenu() {
     this.isMenuOpen.update((isOpen: boolean) => !isOpen);
