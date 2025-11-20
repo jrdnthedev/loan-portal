@@ -1,6 +1,6 @@
 <nav>
   <div id="nav-brand">
-    <h2><a routerLink="/" (click)="closeMenu()">Loan Application</a></h2>
+    <h2><a [routerLink]="homeRoute()" (click)="closeMenu()">Loan Application</a></h2>
   </div>
 
   <!-- Mobile menu button -->
@@ -17,20 +17,14 @@
 
   <!-- Navigation menu -->
   <ul id="nav-menu" [class.nav-menu-open]="isMenuOpen()">
-    @if (authService.authState().isAuthenticated) {
+    @for (item of navItems(); track item.label) {
       <li>
-        <a routerLink="/loan-application/wizard" (click)="closeMenu()">Loan Application Wizard</a>
+        @if (item.route) {
+          <a [routerLink]="item.route" (click)="closeMenu()">{{ item.label }}</a>
+        } @else if (item.action) {
+          <a (click)="item.action()" tabindex="0">{{ item.label }}</a>
+        }
       </li>
-      <li><a routerLink="/underwriting" (click)="closeMenu()">Underwriting Panel</a></li>
-      <li><a routerLink="/admin" (click)="closeMenu()">Admin</a></li>
-      <li>
-        <a (click)="closeMenu(); authService.logout()"
-          >Logout, {{ authService.user()?.firstName }}</a
-        >
-      </li>
-    } @else {
-      <li><a (click)="openLogin()">Login</a></li>
-      <li><a (click)="openRegister()">Register</a></li>
     }
   </ul>
 </nav>
