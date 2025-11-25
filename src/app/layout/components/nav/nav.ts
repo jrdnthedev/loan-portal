@@ -21,7 +21,7 @@ interface NavItem {
 })
 export class Nav {
   isMenuOpen = signal<boolean>(false);
-  authService = inject(AuthService);
+  private authService = inject(AuthService);
   isLoginModalOpen = signal<boolean>(false);
   isRegisterModalOpen = signal<boolean>(false);
   homeRoute = computed(() => {

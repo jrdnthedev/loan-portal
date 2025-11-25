@@ -7,6 +7,7 @@ import { User } from '../../../domains/admin/models/user';
 import { catchError, map, of } from 'rxjs';
 import { AdminStore } from '../../../domains/admin/store/admin.store';
 import { AsyncPipe } from '@angular/common';
+import { AuthService } from '../../../core';
 
 @Component({
   selector: 'app-shell',
@@ -16,6 +17,7 @@ import { AsyncPipe } from '@angular/common';
 })
 export class Shell {
   private store$ = inject(AdminStore);
+  authService = inject(AuthService);
   userData$ = this.store$.users$.pipe(
     catchError((err: Error) => {
       console.error(err);
