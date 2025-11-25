@@ -1,5 +1,5 @@
-import { Component, Input } from '@angular/core';
-import { User } from '../../models/user';
+import { Component, inject } from '@angular/core';
+import { AuthService } from '../../../../core/auth/services/auth.service';
 
 @Component({
   selector: 'app-profile',
@@ -8,5 +8,5 @@ import { User } from '../../models/user';
   styleUrl: './profile.scss',
 })
 export class Profile {
-  @Input() user!: User;
+  authService = inject(AuthService);
 }

@@ -1,1 +1,10 @@
-<p>profile works!</p>
+@let user = authService.authState().user;
+
+<h3>Profile Details</h3>
+@if (user) {
+  <p>{{ user.firstName }}</p>
+  <p>{{ user.lastName }}</p>
+  <p>{{ user.id }}</p>
+  <p>{{ user.email }}</p>
+  <p>{{ user.role }}</p>
+}
