@@ -2,9 +2,9 @@
   <h3>Loan Officer Stats</h3>
   @for (officer of loanOfficer; track officer.id) {
     <div class="loan-officer-section">
-      <p>{{ officer.profile.firstName }} {{ officer.profile.lastName }}</p>
+      <p>{{ officer.firstName }} {{ officer.lastName }}</p>
       <p>{{ officer.email }}</p>
-      <p>{{ officer.profile.phone }}</p>
+      <p>{{ officer.phone }}</p>
     </div>
   }
 </div>
