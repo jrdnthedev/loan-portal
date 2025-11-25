@@ -43,3 +43,10 @@ button:focus {
     0 0 2px #d82f5a,
     0 0 4px rgba(216, 47, 90, 0.6);
 }
+
+.auth-form-container {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
