@@ -63,13 +63,19 @@ export class Nav {
       }
 
       // Logout item (always visible when authenticated)
-      items.push({
-        label: `Logout, ${authState.user?.firstName}`,
-        action: () => {
-          this.closeMenu();
-          this.authService.logout();
+      items.push(
+        {
+          label: 'Profile',
+          route: 'admin/profile',
         },
-      });
+        {
+          label: `Logout, ${authState.user?.firstName}`,
+          action: () => {
+            this.closeMenu();
+            this.authService.logout();
+          },
+        },
+      );
     } else {
       // Unauthenticated items
       items.push(

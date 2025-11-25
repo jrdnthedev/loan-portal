@@ -28,4 +28,8 @@ export const ADMIN_ROUTES: Routes = [
       },
     ],
   },
+  {
+    path: 'profile',
+    loadComponent: () => import('./components/profile/profile').then((m) => m.Profile),
+  },
 ];
