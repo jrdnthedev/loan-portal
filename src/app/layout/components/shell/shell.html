@@ -11,10 +11,13 @@
     >
   </div>
   <div class="row">
-    <app-card>
-      <h3>User Table</h3>
-      <app-table [data]="(userData$ | async) || []"></app-table>
-    </app-card>
+    @if (authService.hasRole('loan-officer')) {
+      <app-card>
+        <h3>User Table</h3>
+        <app-table [data]="(userData$ | async) || []"></app-table>
+      </app-card>
+    }
+
     <app-card
       ><div>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
