@@ -20,9 +20,8 @@ export class UserManagement {
     }),
     map((users: User[]) =>
       users.map((user: User) => {
-        const { firstName, email, id, role } = user;
+        const { email, id, role } = user;
         return {
-          firstName,
           email,
           id,
           role,
