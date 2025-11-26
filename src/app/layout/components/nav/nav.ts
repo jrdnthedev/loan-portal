@@ -81,11 +81,17 @@ export class Nav {
       items.push(
         {
           label: 'Login',
-          action: () => this.openLogin(),
+          action: () => {
+            this.closeMenu();
+            this.openLogin();
+          },
         },
         {
           label: 'Register',
-          action: () => this.openRegister(),
+          action: () => {
+            this.closeMenu();
+            this.openRegister();
+          },
         },
       );
     }
