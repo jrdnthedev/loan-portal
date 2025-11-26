@@ -1,0 +1,27 @@
+section,
+#profile_body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.profile_row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#profile_header {
+  text-align: center;
+}
+
+@media screen and (min-width: 600px) {
+  .profile_row {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  app-card {
+    width: 400px;
+    margin: 0 auto;
+  }
+}

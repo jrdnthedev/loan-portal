@@ -1,1 +1,27 @@
-<p>profile works!</p>
+@let user = authService.authState().user;
+
+@if (user) {
+  <section>
+    <div id="profile_header">
+      <p>{{ user.firstName }} {{ user.lastName }} ({{ user.role }})</p>
+    </div>
+    <app-card>
+      <div id="profile_body">
+        <div class="profile_row">
+          <span>FirstName: {{ user.firstName }}</span>
+          <span>LastName: {{ user.lastName }}</span>
+        </div>
+        <div class="profile_row">
+          <span>User ID: {{ user.id }}</span>
+          <span>Role: {{ user.role }}</span>
+        </div>
+        <div>
+          <p>Email: {{ user.email }}</p>
+          <p>Phone: {{ user.phone }}</p>
+        </div>
+      </div>
+    </app-card>
+  </section>
+} @else {
+  <p>no user found</p>
+}
