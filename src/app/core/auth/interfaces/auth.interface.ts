@@ -1,10 +1,4 @@
-export interface User {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  role: string;
-}
+import { User } from '../../../domains/admin/models/user';
 
 export interface LoginRequest {
   email: string;

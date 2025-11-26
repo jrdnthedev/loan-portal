@@ -5,7 +5,6 @@ import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 import { TokenService } from './token.service';
 import {
-  User,
   LoginRequest,
   LoginResponse,
   RefreshTokenRequest,
@@ -13,6 +12,7 @@ import {
   AuthState,
 } from '../interfaces/auth.interface';
 import { environment } from '../../../../environments/environment';
+import { User } from '../../../domains/admin/models/user';
 
 @Injectable({
   providedIn: 'root',
@@ -62,6 +62,7 @@ export class AuthService {
           firstName: payload.firstName,
           lastName: payload.lastName,
           role: payload.role,
+          phone: payload.phone,
         };
         this.setAuthenticatedState(user);
       } catch (error) {
