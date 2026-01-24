@@ -21,11 +21,11 @@ export class LoanWizard {
   private store = inject(LoanApplicationStore);
   private audit = inject(AuditService);
 
-  // Expose store observables for the template
-  readonly currentLoan$ = this.store.currentLoan$;
-  readonly isSubmitting$ = this.store.isSubmitting$;
-  readonly error$ = this.store.error$;
-  readonly isLoading$ = this.store.isLoading$;
+  // Expose store signals for the template
+  readonly currentLoan = this.store.currentLoan;
+  readonly isSubmitting = this.store.isSubmitting;
+  readonly error = this.store.error;
+  readonly isLoading = this.store.isLoading;
 
   onFormSubmitted(loan: Loan) {
     try {

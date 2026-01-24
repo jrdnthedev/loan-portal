@@ -1,6 +1,6 @@
 <div id="dashboard">
   <app-card>
-    @if (recentLoans$ | async; as loans) {
+    @if (recentLoans(); as loans) {
       <app-pending-application [loans]="loans"></app-pending-application>
     } @else {
       <app-pending-application [loans]="[]"></app-pending-application>
