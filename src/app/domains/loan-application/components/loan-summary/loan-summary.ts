@@ -1,9 +1,10 @@
 import { Component, inject, signal } from '@angular/core';
 import { LoanApplicationStore } from '../../store/loan-application.store';
+import { CurrencyPipe } from '@angular/common';
 
 @Component({
   selector: 'app-loan-summary',
-  imports: [],
+  imports: [CurrencyPipe],
   templateUrl: './loan-summary.html',
   styleUrl: './loan-summary.scss',
 })
