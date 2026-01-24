@@ -1,5 +1,4 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, distinctUntilChanged, map, Observable } from 'rxjs';
+import { Injectable, signal, computed } from '@angular/core';
 import { AdminState, initialAdminState } from './admin.state';
 import { UserService } from '../services/user-service';
 import { User } from '../models/user';
@@ -11,20 +10,20 @@ import { AuditEntry } from '../models/audit-entry';
   providedIn: 'root',
 })
 export class AdminStore {
-  // Private state subject
-  private readonly _state$ = new BehaviorSubject<AdminState>(initialAdminState);
+  // Private state signal
+  private readonly _state = signal<AdminState>(initialAdminState);
 
-  // Public state observable
-  public readonly state$ = this._state$.asObservable();
+  // Public state signal (readonly)
+  public readonly state = this._state.asReadonly();
 
-  //Selectors
-  public readonly isLoading$ = this.select((state: AdminState) => state.isLoading);
-  public readonly error$ = this.select((state: AdminState) => state.error);
-  public readonly users$ = this.select((state: AdminState) => state.users);
-  public readonly auditLogs$ = this.select((state: AdminState) => state.auditLogs);
-  public readonly selectedUserId$ = this.select((state: AdminState) => state.selectedUserId);
-  public readonly filters$ = this.select((state: AdminState) => state.filters);
-  public readonly filteredUsers$ = this.select((state: AdminState) => this.filterUsers(state));
+  // Computed selectors
+  public readonly isLoading = computed(() => this._state().isLoading);
+  public readonly error = computed(() => this._state().error);
+  public readonly users = computed(() => this._state().users);
+  public readonly auditLogs = computed(() => this._state().auditLogs);
+  public readonly selectedUserId = computed(() => this._state().selectedUserId);
+  public readonly filters = computed(() => this._state().filters);
+  public readonly filteredUsers = computed(() => this.filterUsers(this._state()));
 
   constructor(
     private userservice: UserService,
@@ -36,12 +35,7 @@ export class AdminStore {
   }
   // State update methods
   private updateState(partialState: Partial<AdminState>): void {
-    const currentState = this._state$.value;
-    this._state$.next({ ...currentState, ...partialState });
-  }
-
-  private select<T>(selector: (state: AdminState) => T): Observable<T> {
-    return this.state$.pipe(map(selector), distinctUntilChanged());
+    this._state.update((currentState) => ({ ...currentState, ...partialState }));
   }
 
   private filterUsers(state: AdminState): User[] {
@@ -87,7 +81,7 @@ export class AdminStore {
    */
   filterUsersByType(userType: UserRole | null): void {
     this.updateState({
-      filters: { ...this._state$.value.filters, role: userType ?? undefined },
+      filters: { ...this._state().filters, role: userType ?? undefined },
     });
   }
 
@@ -97,7 +91,7 @@ export class AdminStore {
    */
   updateSearchFilter(searchTerm: string): void {
     this.updateState({
-      filters: { ...this._state$.value.filters, searchTerm },
+      filters: { ...this._state().filters, searchTerm },
     });
   }
 
@@ -116,7 +110,7 @@ export class AdminStore {
 
   toggleUserActiveStatus(isActive: boolean): void {
     this.updateState({
-      filters: { ...(this._state$.value.filters ?? {}), isActive },
+      filters: { ...(this._state().filters ?? {}), isActive },
     });
   }
 
