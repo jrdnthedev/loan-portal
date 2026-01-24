@@ -3,7 +3,6 @@ import { Card } from '../../../shared/components/card/card';
 import { PendingApplication } from '../../../domains/loan-application/components/pending-application/pending-application';
 import { LoanOfficer } from '../../../domains/loan-application/components/loan-officer/loan-officer';
 import { LoanApplicationStore } from '../../../domains/loan-application/store/loan-application.store';
-import { Loan } from '../../../domains/loan-application/models/loan';
 import { AdminStore } from '../../../domains/admin/store/admin.store';
 
 @Component({
@@ -15,10 +14,14 @@ import { AdminStore } from '../../../domains/admin/store/admin.store';
 export class Dashboard {
   private readonly loanStore = inject(LoanApplicationStore);
   private readonly adminStore = inject(AdminStore);
-  // Get the last 3 loans for the pending applications display
+  // Get the last 3 pending loans for the pending applications display
   recentLoans = computed(() => {
-    const loans = this.loanStore.userLoans();
-    return loans.slice(Math.max(0, loans.length - 3));
+    return this.loanStore.getFilteredLoans({
+      status: 'pending',
+      limit: 3,
+      sortBy: 'date',
+      sortOrder: 'desc',
+    });
   });
   filteredUsers = this.adminStore.filteredUsers;
 

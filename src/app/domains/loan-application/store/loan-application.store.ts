@@ -202,6 +202,63 @@ export class LoanApplicationStore {
     this.updateState({ searchQuery: query });
   }
 
+  // Flexible filtering method that can be used by any component
+  getFilteredLoans(
+    options: {
+      status?: LoanStatus | 'all';
+      searchQuery?: string;
+      limit?: number;
+      sortBy?: 'date' | 'amount' | 'status';
+      sortOrder?: 'asc' | 'desc';
+    } = {},
+  ): Loan[] {
+    const loans = this._state().userLoans;
+    let filtered = [...loans];
+
+    // Filter by status
+    if (options.status && options.status !== 'all') {
+      filtered = filtered.filter((loan) => loan.status === options.status);
+    }
+
+    // Filter by search query
+    if (options.searchQuery?.trim()) {
+      const query = options.searchQuery.toLowerCase();
+      filtered = filtered.filter(
+        (loan) =>
+          loan.id.toLowerCase().includes(query) ||
+          loan.applicant.fullName.toLowerCase().includes(query) ||
+          loan.type.toLowerCase().includes(query),
+      );
+    }
+
+    // Sort loans
+    if (options.sortBy) {
+      filtered.sort((a, b) => {
+        let comparison = 0;
+        switch (options.sortBy) {
+          case 'date':
+            comparison =
+              new Date(a.submittedAt || 0).getTime() - new Date(b.submittedAt || 0).getTime();
+            break;
+          case 'amount':
+            comparison = (a.amount?.requested || 0) - (b.amount?.requested || 0);
+            break;
+          case 'status':
+            comparison = a.status.localeCompare(b.status);
+            break;
+        }
+        return options.sortOrder === 'desc' ? -comparison : comparison;
+      });
+    }
+
+    // Limit results
+    if (options.limit && options.limit > 0) {
+      filtered = filtered.slice(0, options.limit);
+    }
+
+    return filtered;
+  }
+
   // Helper method to get current state value
   getCurrentState(): LoanApplicationState {
     return this._state();
