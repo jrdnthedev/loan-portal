@@ -6,10 +6,11 @@ import { LoanOfficer } from '../../../domains/loan-application/components/loan-o
 import { LoanApplicationStore } from '../../../domains/loan-application/store/loan-application.store';
 import { Loan } from '../../../domains/loan-application/models/loan';
 import { AdminStore } from '../../../domains/admin/store/admin.store';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [Card, PendingApplication, LoanOfficer],
+  imports: [Card, PendingApplication, LoanOfficer, AsyncPipe],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })
