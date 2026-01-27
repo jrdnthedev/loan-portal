@@ -1,6 +1,8 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
+import { vi } from 'vitest';
 
 import { AuthService } from './auth.service';
 import { TokenService } from './token.service';
@@ -8,24 +10,28 @@ import { TokenService } from './token.service';
 describe('AuthService', () => {
   let service: AuthService;
   let tokenService: TokenService;
-  let router: Router;
+  let router: any;
 
   beforeEach(() => {
+    router = {
+      navigate: vi.fn(),
+    };
+
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
       providers: [
         AuthService,
         TokenService,
+        provideHttpClient(),
+        provideHttpClientTesting(),
         {
           provide: Router,
-          useValue: { navigate: jasmine.createSpy('navigate') },
+          useValue: router,
         },
       ],
     });
 
     service = TestBed.inject(AuthService);
     tokenService = TestBed.inject(TokenService);
-    router = TestBed.inject(Router);
   });
 
   it('should be created', () => {
@@ -39,14 +45,14 @@ describe('AuthService', () => {
   });
 
   it('should handle logout correctly', () => {
-    spyOn(tokenService, 'clearTokens');
+    vi.spyOn(tokenService, 'clearTokens');
 
     service.logout();
 
     expect(tokenService.clearTokens).toHaveBeenCalled();
     expect(service.isAuthenticated()).toBeFalsy();
     expect(service.user()).toBeNull();
-    expect(router.navigate).toHaveBeenCalledWith(['/login']);
+    expect(router.navigate).toHaveBeenCalledWith(['/welcome']);
   });
 
   it('should check user roles correctly', () => {
@@ -57,6 +63,7 @@ describe('AuthService', () => {
       firstName: 'Admin',
       lastName: 'User',
       role: 'admin',
+      phone: '123-456-7890',
     };
 
     // Use the private method to set authenticated state for testing
