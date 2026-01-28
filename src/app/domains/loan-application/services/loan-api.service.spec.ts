@@ -1,11 +1,8 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { LoanApiService } from './loan-api.service';
 import { Loan } from '../models/loan';
-import { LoanType } from '../models/loan-type';
-import { LoanStatus } from '../models/loan-status';
-import { EmploymentStatus } from '../models/employment-status';
-import { Applicant } from '../models/applicant';
 
 describe('LoanApiService', () => {
   let service: LoanApiService;
@@ -13,8 +10,7 @@ describe('LoanApiService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [LoanApiService],
+      providers: [LoanApiService, provideHttpClient(), provideHttpClientTesting()],
     });
     service = TestBed.inject(LoanApiService);
     httpMock = TestBed.inject(HttpTestingController);
@@ -22,6 +18,7 @@ describe('LoanApiService', () => {
 
   afterEach(() => {
     httpMock.verify();
+    TestBed.resetTestingModule();
   });
 
   it('should be created', () => {
@@ -32,7 +29,7 @@ describe('LoanApiService', () => {
     const mockLoans: Loan[] = [
       {
         id: 'loan-001',
-        type: 'personal' as LoanType,
+        type: 'personal',
         amount: { requested: 25000, approved: 22000 },
         termMonths: 36,
         applicant: {
@@ -41,10 +38,10 @@ describe('LoanApiService', () => {
           dateOfBirth: '1985-06-15',
           ssn: '***-**-1234',
           income: 75000,
-          employmentStatus: 'full-time' as EmploymentStatus,
+          employmentStatus: 'full-time',
           creditScore: 720,
         },
-        status: 'approved' as LoanStatus,
+        status: 'approved',
         submittedAt: '2024-10-01T10:30:00Z',
       },
     ];
@@ -61,7 +58,7 @@ describe('LoanApiService', () => {
   it('should fetch a single loan', () => {
     const mockLoan: Loan = {
       id: 'loan-001',
-      type: 'personal' as LoanType,
+      type: 'personal',
       amount: { requested: 25000, approved: 22000 },
       termMonths: 36,
       applicant: {
@@ -70,10 +67,10 @@ describe('LoanApiService', () => {
         dateOfBirth: '1985-06-15',
         ssn: '***-**-1234',
         income: 75000,
-        employmentStatus: 'full-time' as EmploymentStatus,
+        employmentStatus: 'full-time',
         creditScore: 720,
       },
-      status: 'approved' as LoanStatus,
+      status: 'approved',
       submittedAt: '2024-10-01T10:30:00Z',
     };
 
@@ -88,14 +85,14 @@ describe('LoanApiService', () => {
 
   it('should create a loan', () => {
     const newLoanData: Partial<Loan> = {
-      type: 'personal' as LoanType,
+      type: 'personal',
       amount: { requested: 15000 },
       termMonths: 24,
     };
 
     const mockResponse: Loan = {
       id: 'loan-new',
-      type: 'personal' as LoanType,
+      type: 'personal',
       amount: { requested: 15000 },
       termMonths: 24,
       applicant: {
@@ -104,9 +101,9 @@ describe('LoanApiService', () => {
         dateOfBirth: '1985-06-15',
         ssn: '***-**-1234',
         income: 75000,
-        employmentStatus: 'full-time' as EmploymentStatus,
+        employmentStatus: 'full-time',
       },
-      status: 'pending' as LoanStatus,
+      status: 'pending',
     };
 
     service.createLoan(newLoanData).subscribe((loan) => {
@@ -121,14 +118,14 @@ describe('LoanApiService', () => {
 
   it('should submit loan application', () => {
     const loanData: Partial<Loan> = {
-      type: 'auto' as LoanType,
+      type: 'auto',
       amount: { requested: 30000 },
       termMonths: 60,
     };
 
     const mockResponse: Loan = {
       id: 'loan-submitted',
-      type: 'auto' as LoanType,
+      type: 'auto',
       amount: { requested: 30000 },
       termMonths: 60,
       applicant: {
@@ -137,9 +134,9 @@ describe('LoanApiService', () => {
         dateOfBirth: '1985-06-15',
         ssn: '***-**-1234',
         income: 75000,
-        employmentStatus: 'full-time' as EmploymentStatus,
+        employmentStatus: 'full-time',
       },
-      status: 'pending' as LoanStatus,
+      status: 'pending',
       submittedAt: '2024-10-06T12:00:00Z',
     };
 
