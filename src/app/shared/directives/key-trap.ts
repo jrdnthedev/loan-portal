@@ -2,6 +2,7 @@ import { Directive, ElementRef, HostListener, OnInit, OnDestroy } from '@angular
 
 @Directive({
   selector: '[appKeyTrap]',
+  standalone: true,
 })
 export class KeyTrap implements OnInit, OnDestroy {
   private lastFocusedElement: HTMLElement | null = null;
