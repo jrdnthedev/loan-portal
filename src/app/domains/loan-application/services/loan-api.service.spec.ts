@@ -3,6 +3,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { LoanApiService } from './loan-api.service';
 import { Loan } from '../models/loan';
+import { Applicant } from '../models/applicant';
 
 describe('LoanApiService', () => {
   let service: LoanApiService;
@@ -153,12 +154,12 @@ describe('LoanApiService', () => {
     const loanId = 'loan-001';
     const updatedLoanData: Partial<Loan> = {
       amount: { requested: 35000, approved: 30000 },
-      status: 'approved' as LoanStatus,
+      status: 'approved',
     };
 
     const mockResponse: Loan = {
       id: loanId,
-      type: 'personal' as LoanType,
+      type: 'personal',
       amount: { requested: 35000, approved: 30000 },
       termMonths: 36,
       applicant: {
@@ -167,10 +168,10 @@ describe('LoanApiService', () => {
         dateOfBirth: '1985-06-15',
         ssn: '***-**-1234',
         income: 75000,
-        employmentStatus: 'full-time' as EmploymentStatus,
+        employmentStatus: 'full-time',
         creditScore: 720,
       },
-      status: 'approved' as LoanStatus,
+      status: 'approved',
       submittedAt: '2024-10-01T10:30:00Z',
     };
 
@@ -204,7 +205,7 @@ describe('LoanApiService', () => {
         dateOfBirth: '1985-06-15',
         ssn: '***-**-1234',
         income: 75000,
-        employmentStatus: 'full-time' as EmploymentStatus,
+        employmentStatus: 'full-time',
         creditScore: 720,
       },
       {
@@ -213,7 +214,7 @@ describe('LoanApiService', () => {
         dateOfBirth: '1990-03-22',
         ssn: '***-**-5678',
         income: 65000,
-        employmentStatus: 'part-time' as EmploymentStatus,
+        employmentStatus: 'part-time',
         creditScore: 680,
       },
     ];
@@ -235,7 +236,7 @@ describe('LoanApiService', () => {
       dateOfBirth: '1985-06-15',
       ssn: '***-**-1234',
       income: 75000,
-      employmentStatus: 'full-time' as EmploymentStatus,
+      employmentStatus: 'full-time',
       creditScore: 720,
     };
 
@@ -254,7 +255,7 @@ describe('LoanApiService', () => {
       dateOfBirth: '1988-07-10',
       ssn: '***-**-9999',
       income: 85000,
-      employmentStatus: 'self-employed' as EmploymentStatus,
+      employmentStatus: 'self-employed',
     };
 
     const mockResponse: Applicant = {
@@ -263,7 +264,7 @@ describe('LoanApiService', () => {
       dateOfBirth: '1988-07-10',
       ssn: '***-**-9999',
       income: 85000,
-      employmentStatus: 'self-employed' as EmploymentStatus,
+      employmentStatus: 'self-employed',
       creditScore: 750,
     };
 
@@ -290,7 +291,7 @@ describe('LoanApiService', () => {
       dateOfBirth: '1985-06-15',
       ssn: '***-**-1234',
       income: 80000,
-      employmentStatus: 'full-time' as EmploymentStatus,
+      employmentStatus: 'full-time',
       creditScore: 740,
     };
 
@@ -325,7 +326,7 @@ describe('LoanApiService', () => {
     const mockLoans: Loan[] = [
       {
         id: 'loan-search-1',
-        type: 'personal' as LoanType,
+        type: 'personal',
         amount: { requested: 15000 },
         termMonths: 24,
         applicant: {
@@ -334,9 +335,9 @@ describe('LoanApiService', () => {
           dateOfBirth: '1985-06-15',
           ssn: '***-**-1234',
           income: 75000,
-          employmentStatus: 'full-time' as EmploymentStatus,
+          employmentStatus: 'full-time',
         },
-        status: 'pending' as LoanStatus,
+        status: 'pending',
         submittedAt: '2024-10-01T10:30:00Z',
       },
     ];
@@ -361,7 +362,7 @@ describe('LoanApiService', () => {
     const mockLoans: Loan[] = [
       {
         id: 'loan-approved-1',
-        type: 'auto' as LoanType,
+        type: 'auto',
         amount: { requested: 25000, approved: 22000 },
         termMonths: 60,
         applicant: {
@@ -370,9 +371,9 @@ describe('LoanApiService', () => {
           dateOfBirth: '1985-06-15',
           ssn: '***-**-1234',
           income: 75000,
-          employmentStatus: 'full-time' as EmploymentStatus,
+          employmentStatus: 'full-time',
         },
-        status: 'approved' as LoanStatus,
+        status: 'approved',
         submittedAt: '2024-10-01T10:30:00Z',
       },
     ];
@@ -391,7 +392,7 @@ describe('LoanApiService', () => {
     const mockLoans: Loan[] = [
       {
         id: 'loan-applicant-1',
-        type: 'personal' as LoanType,
+        type: 'personal',
         amount: { requested: 20000 },
         termMonths: 36,
         applicant: {
@@ -400,9 +401,9 @@ describe('LoanApiService', () => {
           dateOfBirth: '1985-06-15',
           ssn: '***-**-1234',
           income: 75000,
-          employmentStatus: 'full-time' as EmploymentStatus,
+          employmentStatus: 'full-time',
         },
-        status: 'pending' as LoanStatus,
+        status: 'pending',
         submittedAt: '2024-10-01T10:30:00Z',
       },
     ];
