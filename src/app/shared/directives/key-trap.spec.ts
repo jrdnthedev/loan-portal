@@ -16,8 +16,25 @@ import { vi } from 'vitest';
     </div>
   `,
 })
+@Component({
+  template: `
+    <div appKeyTrap id="trap-container">
+      <button id="first-btn">First Button</button>
+      <input id="input-field" type="text" placeholder="Input field" />
+      <select id="select-field">
+        <option value="option1">Option 1</option>
+      </select>
+      <textarea id="textarea-field"></textarea>
+      <a id="link" href="#test">Link</a>
+      <button id="last-btn">Last Button</button>
+      <button id="disabled-btn" disabled>Disabled Button</button>
+      <input id="disabled-input" type="text" disabled />
+      <div id="non-focusable">Non-focusable</div>
+    </div>
+    <button id="external-btn">External Button</button>
+  `,
+})
 class TestComponent {}
-
 describe('KeyTrap', () => {
   let component: TestComponent;
   let fixture: ComponentFixture<TestComponent>;

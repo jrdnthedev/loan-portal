@@ -33,7 +33,7 @@ export class Table<T> {
     return column ? column.label : key;
   }
 
-  getValue(row: T, key: string): T {
+  getValue(row: T, key: string): any {
     return (row as any)[key];
   }
 }

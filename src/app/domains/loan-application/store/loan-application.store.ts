@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, combineLatest, map, distinctUntilChanged } from 'rxjs';
+import { Injectable, signal, computed } from '@angular/core';
+import { Observable, map } from 'rxjs';
 import { LoanApplicationState, initialLoanApplicationState } from './loan-application.state';
 import { Loan } from '../models/loan';
 import { LoanType } from '../models/loan-type';
@@ -10,74 +10,69 @@ import { LoanApiService } from '../services/loan-api.service';
   providedIn: 'root',
 })
 export class LoanApplicationStore {
-  // Private state subject
-  private readonly _state$ = new BehaviorSubject<LoanApplicationState>(initialLoanApplicationState);
+  // Private state signal
+  private readonly _state = signal<LoanApplicationState>(initialLoanApplicationState);
 
-  // Public state observable
-  public readonly state$ = this._state$.asObservable();
+  // Public state signal (readonly)
+  public readonly state = this._state.asReadonly();
 
-  // Selectors - expose specific parts of state
-  public readonly currentLoan$ = this.select((state: LoanApplicationState) => state.currentLoan);
-  public readonly submittedLoan$ = this.select(
-    (state: LoanApplicationState) => state.submittedLoan,
-  );
-  public readonly userLoans$ = this.select((state: LoanApplicationState) => state.userLoans);
-  public readonly isLoading$ = this.select((state: LoanApplicationState) => state.isLoading);
-  public readonly error$ = this.select((state: LoanApplicationState) => state.error);
-  public readonly selectedLoanType$ = this.select(
-    (state: LoanApplicationState) => state.selectedLoanType,
-  );
-  public readonly formStep$ = this.select((state: LoanApplicationState) => state.formStep);
-  public readonly isDraftSaved$ = this.select((state: LoanApplicationState) => state.isDraftSaved);
-  public readonly isSubmitting$ = this.select((state: LoanApplicationState) => state.isSubmitting);
-  public readonly lastSavedAt$ = this.select((state: LoanApplicationState) => state.lastSavedAt);
+  // Computed selectors - expose specific parts of state
+  public readonly currentLoan = computed(() => this._state().currentLoan);
+  public readonly submittedLoan = computed(() => this._state().submittedLoan);
+  public readonly userLoans = computed(() => this._state().userLoans);
+  public readonly isLoading = computed(() => this._state().isLoading);
+  public readonly error = computed(() => this._state().error);
+  public readonly selectedLoanType = computed(() => this._state().selectedLoanType);
+  public readonly formStep = computed(() => this._state().formStep);
+  public readonly isDraftSaved = computed(() => this._state().isDraftSaved);
+  public readonly isSubmitting = computed(() => this._state().isSubmitting);
+  public readonly lastSavedAt = computed(() => this._state().lastSavedAt);
 
-  // Computed selectors
-  public readonly filteredLoans$ = combineLatest([
-    this.userLoans$,
-    this.select((state) => state.statusFilter),
-    this.select((state) => state.searchQuery),
-  ]).pipe(
-    map(([loans, statusFilter, searchQuery]) => {
-      let filtered = loans;
+  // Computed selectors with logic
+  public readonly filteredLoans = computed(() => {
+    const loans = this._state().userLoans;
+    const statusFilter = this._state().statusFilter;
+    const searchQuery = this._state().searchQuery;
 
-      // Filter by status
-      if (statusFilter !== 'all') {
-        filtered = filtered.filter((loan) => loan.status === statusFilter);
-      }
+    let filtered = loans;
 
-      // Filter by search query
-      if (searchQuery.trim()) {
-        const query = searchQuery.toLowerCase();
-        filtered = filtered.filter(
-          (loan) =>
-            loan.id.toLowerCase().includes(query) ||
-            loan.applicant.fullName.toLowerCase().includes(query) ||
-            loan.type.toLowerCase().includes(query),
-        );
-      }
+    // Filter by status
+    if (statusFilter !== 'all') {
+      filtered = filtered.filter((loan) => loan.status === statusFilter);
+    }
 
-      return filtered;
-    }),
-  );
+    // Filter by search query
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(
+        (loan) =>
+          loan.id.toLowerCase().includes(query) ||
+          loan.applicant.fullName.toLowerCase().includes(query) ||
+          loan.type.toLowerCase().includes(query),
+      );
+    }
 
-  public readonly canProceedToNextStep$ = combineLatest([this.currentLoan$, this.formStep$]).pipe(
-    map(([currentLoan, step]) => {
-      // Add your business logic for determining if user can proceed
-      if (!currentLoan) return false;
+    return filtered;
+  });
 
-      switch (step) {
-        case 0: // Loan type selection
-          return !!currentLoan.type;
-        case 1: // Basic info
-          return !!(currentLoan.amount?.requested && currentLoan.termMonths);
-        case 2: // Applicant info
-          return !!(currentLoan.applicant?.fullName && currentLoan.applicant?.dateOfBirth);
-        default:
-          return true;
-      }
-    }),
-  );
+  public readonly canProceedToNextStep = computed(() => {
+    const currentLoan = this._state().currentLoan;
+    const step = this._state().formStep;
+
+    // Add your business logic for determining if user can proceed
+    if (!currentLoan) return false;
+
+    switch (step) {
+      case 0: // Loan type selection
+        return !!currentLoan.type;
+      case 1: // Basic info
+        return !!(currentLoan.amount?.requested && currentLoan.termMonths);
+      case 2: // Applicant info
+        return !!(currentLoan.applicant?.fullName && currentLoan.applicant?.dateOfBirth);
+      default:
+        return true;
+    }
+  });
 
   constructor(private loanApiService: LoanApiService) {
     this.loadUserLoans();
@@ -85,12 +80,7 @@ export class LoanApplicationStore {
 
   // State update methods
   private updateState(partialState: Partial<LoanApplicationState>): void {
-    const currentState = this._state$.value;
-    this._state$.next({ ...currentState, ...partialState });
-  }
-
-  private select<T>(selector: (state: LoanApplicationState) => T): Observable<T> {
-    return this.state$.pipe(map(selector), distinctUntilChanged());
+    this._state.update((currentState) => ({ ...currentState, ...partialState }));
   }
 
   // Actions
@@ -103,11 +93,11 @@ export class LoanApplicationStore {
   }
 
   setSelectedLoanType(loanType: LoanType): void {
-    const currentLoan = this._state$.value.currentLoan ?? {};
+    const currentLoan = this._state().currentLoan ?? {};
     this.updateState({
       currentLoan: {
         ...initialLoanApplicationState.currentLoan,
-        ...this._state$.value.currentLoan,
+        ...this._state().currentLoan,
         type: loanType,
       },
     });
@@ -118,7 +108,7 @@ export class LoanApplicationStore {
   }
 
   updateCurrentLoan(loanData: Partial<Loan>): void {
-    const currentLoan = this._state$.value.currentLoan;
+    const currentLoan = this._state().currentLoan;
     this.updateState({
       currentLoan: { ...currentLoan, ...loanData },
       isDraftSaved: false,
@@ -126,7 +116,7 @@ export class LoanApplicationStore {
   }
 
   saveCurrentLoanDraft(): void {
-    const currentLoan = this._state$.value.currentLoan;
+    const currentLoan = this._state().currentLoan;
     if (currentLoan) {
       // Here you could call API to save draft
       this.updateState({
@@ -156,7 +146,7 @@ export class LoanApplicationStore {
   }
 
   submitLoanApplication(): void {
-    const currentLoan = this._state$.value.currentLoan;
+    const currentLoan = this._state().currentLoan;
     if (!currentLoan) {
       this.setError('No loan application to submit');
       return;
@@ -174,7 +164,7 @@ export class LoanApplicationStore {
 
     this.loanApiService.submitLoanApplication(loanToSubmit).subscribe({
       next: (submittedLoan) => {
-        const updatedLoans = [...this._state$.value.userLoans, submittedLoan];
+        const updatedLoans = [...this._state().userLoans, submittedLoan];
         this.updateState({
           userLoans: updatedLoans,
           currentLoan: null, // Clear current loan after submission
@@ -212,13 +202,74 @@ export class LoanApplicationStore {
     this.updateState({ searchQuery: query });
   }
 
+  // Flexible filtering method that can be used by any component
+  getFilteredLoans(
+    options: {
+      status?: LoanStatus | 'all';
+      searchQuery?: string;
+      limit?: number;
+      sortBy?: 'date' | 'amount' | 'status';
+      sortOrder?: 'asc' | 'desc';
+    } = {},
+  ): Loan[] {
+    const loans = this._state().userLoans;
+    let filtered = [...loans];
+
+    // Filter by status
+    if (options.status && options.status !== 'all') {
+      filtered = filtered.filter((loan) => loan.status === options.status);
+    }
+
+    // Filter by search query
+    if (options.searchQuery?.trim()) {
+      const query = options.searchQuery.toLowerCase();
+      filtered = filtered.filter(
+        (loan) =>
+          loan.id.toLowerCase().includes(query) ||
+          loan.applicant.fullName.toLowerCase().includes(query) ||
+          loan.type.toLowerCase().includes(query),
+      );
+    }
+
+    // Sort loans
+    if (options.sortBy) {
+      filtered.sort((a, b) => {
+        let comparison = 0;
+        switch (options.sortBy) {
+          case 'date':
+            comparison =
+              new Date(a.submittedAt || 0).getTime() - new Date(b.submittedAt || 0).getTime();
+            break;
+          case 'amount':
+            comparison = (a.amount?.requested || 0) - (b.amount?.requested || 0);
+            break;
+          case 'status':
+            comparison = a.status.localeCompare(b.status);
+            break;
+        }
+        return options.sortOrder === 'desc' ? -comparison : comparison;
+      });
+    }
+
+    // Limit results
+    if (options.limit && options.limit > 0) {
+      filtered = filtered.slice(0, options.limit);
+    }
+
+    return filtered;
+  }
+
   // Helper method to get current state value
   getCurrentState(): LoanApplicationState {
-    return this._state$.value;
+    return this._state();
   }
 
   // Method to get specific loan by ID
   getLoanById(id: string): Observable<Loan | undefined> {
-    return this.userLoans$.pipe(map((loans) => loans.find((loan) => loan.id === id)));
+    return new Observable((subscriber) => {
+      const loan = this.userLoans().find((loan: Loan) => loan.id === id);
+      subscriber.next(loan);
+      subscriber.complete();
+    });
   }
 }
