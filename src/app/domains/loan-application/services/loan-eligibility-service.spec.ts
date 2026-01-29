@@ -139,7 +139,7 @@ describe('LoanEligibilityService', () => {
     const result: EligibilityResult = service.checkEligibility(ineligibleLoan);
 
     expect(result.isEligible).toBe(false);
-    expect(result.reasons).toHaveSize(3);
+    expect(result.reasons).toHaveLength(3);
     expect(result.reasons).toContain('Income below minimum threshold');
     expect(result.reasons).toContain('Applicant must be employed');
     expect(result.reasons).toContain('Loan amount exceeds limit');
