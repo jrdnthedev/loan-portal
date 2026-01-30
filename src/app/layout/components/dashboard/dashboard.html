@@ -1,16 +1,24 @@
 <div id="dashboard">
   <app-card>
-    @if (recentLoans(); as loans) {
-      <app-pending-application [loans]="loans"></app-pending-application>
-    } @else {
-      <app-pending-application [loans]="[]"></app-pending-application>
+    @if (isLoadingLoans()) {
+      <!-- Skeleton loader -->
+      <app-loading-stencil [type]="'card'"></app-loading-stencil>
+    } @else if (recentLoans(); as loans) {
+      @if (loans.length > 0) {
+        <app-pending-application [loans]="loans"></app-pending-application>
+      } @else {
+        <p class="empty-state">No pending applications</p>
+      }
     }
   </app-card>
   <app-card>
-    @if (filteredUsers(); as loanOfficers) {
+    @if (isLoadingUsers()) {
+      <!-- Skeleton loader -->
+      <app-loading-stencil [type]="'card'"></app-loading-stencil>
+    } @else if (filteredUsers(); as loanOfficers) {
       <app-loan-officer [loanOfficer]="loanOfficers"></app-loan-officer>
     } @else {
-      <app-loan-officer [loanOfficer]="[]"></app-loan-officer>
+      <p class="empty-state">No pending applications</p>
     }
   </app-card>
   <app-card>

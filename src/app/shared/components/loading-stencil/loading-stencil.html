@@ -1,0 +1,64 @@
+<div class="loading-stencil" [attr.data-type]="type()">
+  @switch (type()) {
+    @case ('card') {
+      <div class="stencil-cards">
+        @for (item of items; track $index) {
+          <div class="stencil-card">
+            <div class="stencil-header">
+              <div class="stencil-avatar"></div>
+              <div class="stencil-lines">
+                <div class="stencil-line stencil-line-title"></div>
+                <div class="stencil-line stencil-line-subtitle"></div>
+              </div>
+            </div>
+            <div class="stencil-content">
+              <div class="stencil-line"></div>
+              <div class="stencil-line"></div>
+              <div class="stencil-line stencil-line-short"></div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+    @case ('table') {
+      <div class="stencil-table">
+        <div class="stencil-table-header">
+          @for (col of [1, 2, 3, 4]; track $index) {
+            <div class="stencil-line stencil-line-header"></div>
+          }
+        </div>
+        @for (row of tableRows; track $index) {
+          <div class="stencil-table-row">
+            @for (col of [1, 2, 3, 4]; track $index) {
+              <div class="stencil-line"></div>
+            }
+          </div>
+        }
+      </div>
+    }
+    @case ('form') {
+      <div class="stencil-form">
+        @for (item of items; track $index) {
+          <div class="stencil-field">
+            <div class="stencil-line stencil-line-label"></div>
+            <div class="stencil-line stencil-line-input"></div>
+          </div>
+        }
+        <div class="stencil-button"></div>
+      </div>
+    }
+    @case ('list') {
+      <div class="stencil-list">
+        @for (item of items; track $index) {
+          <div class="stencil-list-item">
+            <div class="stencil-avatar stencil-avatar-small"></div>
+            <div class="stencil-lines">
+              <div class="stencil-line stencil-line-title"></div>
+              <div class="stencil-line stencil-line-short"></div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  }
+</div>
