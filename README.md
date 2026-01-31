@@ -167,6 +167,96 @@ interface Loan {
 
 ## � Shared Components
 
+### Button Component
+
+The application includes a reusable button component with a comprehensive variant system for different action types. Located at `src/app/shared/components/button/`.
+
+#### Usage
+
+```typescript
+import { Button } from './shared/components/button/button';
+
+@Component({
+  selector: 'app-example',
+  imports: [Button],
+  template: `
+    <app-button
+      variant="primary"
+      buttonText="Submit Application"
+      type="submit"
+      (clicked)="onSubmit()"
+    />
+
+    <app-button variant="danger" buttonText="Delete" (clicked)="onDelete()" />
+
+    <app-button variant="ghost" buttonText="Cancel" (clicked)="onCancel()" />
+  `,
+})
+export class ExampleComponent {
+  onSubmit(): void {
+    // Handle form submission
+  }
+
+  onDelete(): void {
+    // Handle delete action
+  }
+
+  onCancel(): void {
+    // Handle cancel action
+  }
+}
+```
+
+#### Button Variants
+
+The button component supports 8 different variants, each with distinct visual styling to convey specific action types:
+
+| Variant     | Color           | Use Case                | Example Actions           |
+| ----------- | --------------- | ----------------------- | ------------------------- |
+| `primary`   | Blue            | Main actions            | Submit, Create, Confirm   |
+| `secondary` | Slate Gray      | Less emphasized actions | Cancel, Back, Close       |
+| `success`   | Green           | Positive actions        | Save, Approve, Accept     |
+| `danger`    | Red             | Destructive actions     | Delete, Remove, Reject    |
+| `warning`   | Orange          | Cautionary actions      | Reset, Archive, Discard   |
+| `info`      | Cyan            | Informational actions   | Learn More, Help, Details |
+| `ghost`     | Transparent     | Minimal style           | Close, Dismiss, Skip      |
+| `link`      | Text Link Style | Navigation              | View Details, Go to Page  |
+
+#### Component Inputs
+
+- `buttonText: string` - The text displayed on the button (default: 'New Button')
+- `type: 'button' | 'submit' | 'reset'` - HTML button type (default: 'button')
+- `variant: ButtonVariant` - Visual variant (default: 'primary')
+
+#### Component Outputs
+
+- `clicked: EventEmitter<void>` - Emits when button is clicked (throttled to prevent double-clicks)
+
+#### Button Type
+
+The `ButtonVariant` type is exported and can be used throughout your application:
+
+```typescript
+import { ButtonVariant } from './shared/components/button/button';
+
+export type ButtonVariant =
+  | 'primary'
+  | 'secondary'
+  | 'success'
+  | 'danger'
+  | 'warning'
+  | 'info'
+  | 'ghost'
+  | 'link';
+```
+
+#### Features
+
+- **Throttled Clicks**: Built-in 2-second throttle to prevent accidental double-submissions
+- **Hover Effects**: Smooth elevation changes on hover for better user feedback
+- **Disabled State**: Automatic styling for disabled buttons
+- **Accessibility**: Proper semantic HTML button element with type attribute
+
 ### Pagination Component
 
 The application includes a reusable pagination component located at `src/app/shared/components/pagination/`. This component provides paginated data display with navigation controls.

@@ -12,16 +12,30 @@ section,
 }
 
 #profile_header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   text-align: center;
 }
-
+#profile_footer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
 @media screen and (min-width: 600px) {
   .profile_row {
     flex-direction: row;
     justify-content: space-between;
   }
   app-card {
-    width: 400px;
+    width: calc(100vw - 15vw);
+    margin: 0 auto;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  app-card {
+    width: 845px;
     margin: 0 auto;
   }
 }
