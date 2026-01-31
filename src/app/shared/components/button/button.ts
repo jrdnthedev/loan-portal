@@ -1,6 +1,16 @@
 import { Component, Input, OnInit, output } from '@angular/core';
 import { Subject, throttleTime } from 'rxjs';
 
+export type ButtonVariant =
+  | 'primary'
+  | 'secondary'
+  | 'success'
+  | 'danger'
+  | 'warning'
+  | 'info'
+  | 'ghost'
+  | 'link';
+
 @Component({
   selector: 'app-button',
   imports: [],
@@ -10,6 +20,7 @@ import { Subject, throttleTime } from 'rxjs';
 export class Button implements OnInit {
   @Input() buttonText = 'New Button';
   @Input() type: 'button' | 'submit' | 'reset' = 'button';
+  @Input() variant: ButtonVariant = 'primary';
   clicked = output<void>();
   private submitClick = new Subject<void>();
 
