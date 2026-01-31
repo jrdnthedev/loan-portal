@@ -1,27 +1,46 @@
 @let user = authService.authState().user;
 
-@if (user) {
-  <section>
-    <div id="profile_header">
-      <p>{{ user.firstName }} {{ user.lastName }} ({{ user.role }})</p>
-    </div>
+<section>
+  @if (user) {
     <app-card>
+      <div id="profile_header">
+        <p id="">{{ user.firstName }} {{ user.lastName }}</p>
+        <p>{{ user.email }}</p>
+        <p>{{ user.phone }}</p>
+        <p><app-badge [title]="user.role"></app-badge></p>
+      </div>
       <div id="profile_body">
+        <h2>Activity Summary</h2>
         <div class="profile_row">
-          <span>FirstName: {{ user.firstName }}</span>
-          <span>LastName: {{ user.lastName }}</span>
+          <span>Applications Reviewed:</span>
+          <span>247</span>
         </div>
         <div class="profile_row">
-          <span>User ID: {{ user.id }}</span>
-          <span>Role: {{ user.role }}</span>
+          <span>Pending Tasks:</span>
+          <span>12</span>
         </div>
-        <div>
-          <p>Email: {{ user.email }}</p>
-          <p>Phone: {{ user.phone }}</p>
+        <div class="profile_row">
+          <span>Member Since:</span>
+          <span>Jan 2023</span>
         </div>
       </div>
+      <div id="profile_footer">
+        <app-button
+          type="button"
+          buttonText="View Dasboard"
+          (clicked)="handleDashboardClick()"
+        ></app-button>
+        <app-button
+          type="button"
+          buttonText="Activity Log"
+          (clicked)="handleActivityLogClick()"
+        ></app-button>
+      </div>
     </app-card>
-  </section>
-} @else {
-  <p>no user found</p>
-}
+    <app-card> test </app-card>
+  } @else {
+    <app-card>
+      <p>no user found</p>
+    </app-card>
+  }
+</section>
