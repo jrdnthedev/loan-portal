@@ -22,6 +22,13 @@
     }
   </app-card>
   <app-card>
-    <p>notifications</p>
+    @if (isLoadingUsers()) {
+      <!-- Skeleton loader -->
+      <app-loading-stencil [type]="'card'"></app-loading-stencil>
+    } @else if (filteredUsers(); as loanOfficers) {
+      <p>notifications</p>
+    } @else {
+      <p class="empty-state">No pending applications</p>
+    }
   </app-card>
 </div>
