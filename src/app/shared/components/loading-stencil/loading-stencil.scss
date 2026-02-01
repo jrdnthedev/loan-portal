@@ -11,7 +11,6 @@
   width: 100%;
 
   .stencil-line,
-  .stencil-avatar,
   .stencil-button {
     background: linear-gradient(to right, #f0f0f0 8%, #e0e0e0 18%, #f0f0f0 33%);
     background-size: 800px 104px;
@@ -51,18 +50,6 @@
     &.stencil-line-header {
       height: 18px;
       font-weight: 600;
-    }
-  }
-
-  .stencil-avatar {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    flex-shrink: 0;
-
-    &.stencil-avatar-small {
-      width: 40px;
-      height: 40px;
     }
   }
 
