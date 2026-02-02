@@ -39,7 +39,61 @@
         ></app-button>
       </div>
     </app-card>
-    <app-card> test </app-card>
+    <app-card>
+      <div id="profile_body">
+        <h2>Accessibility</h2>
+        <div class="profile_row">
+          <span>High Contrast Mode</span>
+          <span><input type="checkbox" /></span>
+        </div>
+        <div class="profile_row">
+          <span>Keyboard Navigation</span>
+          <span><input type="checkbox" /></span>
+        </div>
+        <div class="profile_row">
+          <span>Screen Reader</span>
+          <span><input type="checkbox" /></span>
+        </div>
+      </div>
+    </app-card>
+    <app-card>
+      <div id="profile_body">
+        <h2>Personal Information</h2>
+        <div class="profile_row">
+          <div>
+            <label>First Name</label>
+            <div><input type="text" /></div>
+          </div>
+
+          <div>
+            <label>Last Name</label>
+            <div><input type="text" /></div>
+          </div>
+        </div>
+        <div class="profile_row">
+          <div>
+            <label>Email Address</label>
+            <div><input type="text" /></div>
+          </div>
+
+          <div>
+            <label>Phone</label>
+            <div><input type="text" /></div>
+          </div>
+        </div>
+        <div class="profile_row">
+          <div>
+            <label>Role</label>
+            <div><input type="text" /></div>
+          </div>
+
+          <div>
+            <label>User ID</label>
+            <div><input type="text" /></div>
+          </div>
+        </div>
+      </div>
+    </app-card>
   } @else {
     <app-card>
       <p>no user found</p>
