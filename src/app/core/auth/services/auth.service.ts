@@ -148,6 +148,10 @@ export class AuthService {
     return currentUser ? roles.includes(currentUser.role) : false;
   }
 
+  updateUser(user: User): void {
+    this.setAuthenticatedState(user);
+  }
+
   private setAuthenticatedState(user: User): void {
     this._authState.set({
       user,

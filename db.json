@@ -258,22 +258,18 @@
       "email": "john.doe@example.com",
       "password": "password123",
       "role": "customer",
-      "profile": {
-        "firstName": "John",
-        "lastName": "Doe",
-        "phone": "+1-555-0123"
-      }
+      "firstName": "John",
+      "lastName": "Doe",
+      "phone": "+1-555-0123"
     },
     {
       "id": "user-002",
       "email": "loan.officer@bank.com",
       "password": "admin123",
       "role": "loan-officer",
-      "profile": {
-        "firstName": "Sarah",
-        "lastName": "Williams",
-        "phone": "+1-555-0456"
-      }
+      "firstName": "Sarah",
+      "lastName": "Williams",
+      "phone": "+1-555-0456"
     }
   ],
   "audit-logs": [
