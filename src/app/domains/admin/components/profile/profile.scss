@@ -1,5 +1,5 @@
 section,
-#profile_body {
+.profile_body {
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -32,6 +32,13 @@ section,
   app-card {
     width: calc(100vw - 15vw);
     margin: 0 auto;
+  }
+  #personal_information {
+    .profile_row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
   }
 }
 

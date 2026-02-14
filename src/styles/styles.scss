@@ -33,7 +33,10 @@ a {
 }
 
 a:focus,
-button:focus {
+button:focus,
+.form-input:focus,
+select:focus,
+input:focus {
   outline: none;
   border-color: #d82f5a;
   border-radius: 4px;

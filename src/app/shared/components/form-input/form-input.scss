@@ -26,12 +26,6 @@
   transition: all 0.2s ease;
   background-color: #fff;
 
-  &:focus {
-    outline: none;
-    border-color: #3498db;
-    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
-  }
-
   &:disabled {
     background-color: #f8f9fa;
     color: #6c757d;
