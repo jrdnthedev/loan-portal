@@ -1,16 +1,14 @@
-@let user = authService.authState().user;
-
 <section>
-  @if (user) {
+  @if (user()) {
     <app-card>
       <div id="profile_header">
         <span class="avatar"></span>
-        <p id="">{{ user.firstName }} {{ user.lastName }}</p>
-        <p>{{ user.email }}</p>
-        <p>{{ user.phone }}</p>
-        <p><app-badge [title]="user.role"></app-badge></p>
+        <p id="">{{ user()?.firstName }} {{ user()?.lastName }}</p>
+        <p>{{ user()?.email }}</p>
+        <p>{{ user()?.phone }}</p>
+        <p><app-badge [title]="user()?.role || ''"></app-badge></p>
       </div>
-      <div id="profile_body">
+      <div class="profile_body">
         <h2>Activity Summary</h2>
         <div class="profile_row">
           <span>Applications Reviewed:</span>
@@ -40,7 +38,7 @@
       </div>
     </app-card>
     <app-card>
-      <div id="profile_body">
+      <div class="profile_body">
         <h2>Accessibility</h2>
         <div class="profile_row">
           <span>High Contrast Mode</span>
@@ -57,40 +55,73 @@
       </div>
     </app-card>
     <app-card>
-      <div id="profile_body">
+      <div class="profile_body" id="personal_information">
         <h2>Personal Information</h2>
         <div class="profile_row">
           <div>
-            <label>First Name</label>
-            <div><input type="text" /></div>
+            <app-form-input
+              label="FirstName"
+              type="text"
+              [formField]="loginForm.firstname"
+              placeholder="Enter your first name"
+              [required]="true"
+            >
+            </app-form-input>
           </div>
 
           <div>
-            <label>Last Name</label>
-            <div><input type="text" /></div>
+            <app-form-input
+              label="LastName"
+              type="text"
+              [formField]="loginForm.lastname"
+              placeholder="Enter your last name"
+              [required]="true"
+            >
+            </app-form-input>
           </div>
         </div>
         <div class="profile_row">
           <div>
-            <label>Email Address</label>
-            <div><input type="text" /></div>
+            <app-form-input
+              label="Email"
+              type="email"
+              [formField]="loginForm.email"
+              placeholder="Enter your Email"
+              [required]="true"
+            >
+            </app-form-input>
           </div>
 
           <div>
-            <label>Phone</label>
-            <div><input type="text" /></div>
+            <app-form-input
+              label="Phone"
+              type="text"
+              [formField]="loginForm.phone"
+              placeholder="Enter your Phone Number"
+              [required]="true"
+            >
+            </app-form-input>
           </div>
         </div>
         <div class="profile_row">
           <div>
-            <label>Role</label>
-            <div><input type="text" /></div>
+            <app-form-input
+              label="Role"
+              type="text"
+              [value]="profileModel().role"
+              [disabled]="true"
+            >
+            </app-form-input>
           </div>
 
           <div>
-            <label>User ID</label>
-            <div><input type="text" /></div>
+            <app-form-input label="ID" type="text" [value]="profileModel().id" [disabled]="true">
+            </app-form-input>
           </div>
+        </div>
+        <div>
+          <app-button buttonText="Update" type="button" (clicked)="updateInformation()">
+          </app-button>
         </div>
       </div>
     </app-card>
