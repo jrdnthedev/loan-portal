@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-form-input',
   imports: [CommonModule],
+  standalone: true,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -22,8 +23,8 @@ export class FormInput implements ControlValueAccessor {
   @Input() required: boolean = false;
   @Input() errorMessage: string = '';
   @Input() disabled: boolean = false;
+  @Input() value: string = '';
 
-  value: string = '';
   inputId: string = `input-${Math.random().toString(36).substring(2, 9)}`;
 
   private onChange = (value: string) => {};
