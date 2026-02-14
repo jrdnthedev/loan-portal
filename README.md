@@ -7,8 +7,11 @@ A modern, secure loan application management system built with Angular 20. This 
 - 🔐 **JWT-based Authentication** - Secure user authentication with automatic token refresh
 - 🛡️ **Role-based Access Control** - Different access levels for admins, loan officers, and applicants
 - 📋 **Loan Application Management** - Complete workflow for loan applications
-- 👥 **User Management** - Handle multiple user types and roles
-- 🎯 **Signal-based State Management** - Modern Angular reactive patterns
+- 👥 **User Management** - Handle multiple user types and roles with filtering and search
+- 📊 **Admin Dashboard** - Comprehensive admin console with user management and audit logging
+- 📝 **Audit Logging** - Complete audit trail for user management actions
+- 🎯 **Signal-based State Management** - Modern Angular reactive patterns with computed signals and effects
+- 👤 **User Profile Management** - Real-time profile updates with synchronized state
 - 📱 **Responsive Design** - Works seamlessly across devices
 - 🔒 **Security First** - Protected routes and secure API communication
 - ⚡ **Server-Side Rendering** - Enhanced performance with Angular SSR
@@ -22,7 +25,9 @@ src/app/
 ├── core/                 # Core functionality and services
 │   └── auth/            # Authentication system
 ├── domains/             # Business domain modules
-│   └── loan-application/ # Loan management domain
+│   ├── admin/           # Admin domain (user management, audit logs)
+│   ├── loan-application/ # Loan management domain
+│   └── underwriting/    # Underwriting domain
 ├── layout/              # Layout components
 └── shared/              # Shared components and utilities
 ```
@@ -132,6 +137,28 @@ The application includes a comprehensive authentication system with:
 - Route guards (Auth, Role, Guest)
 - HTTP interceptors
 - Signal-based reactive state
+- Real-time user state updates
+
+### Auth Service Methods
+
+```typescript
+// Login
+login(credentials: LoginRequest): Observable<LoginResponse>
+
+// Logout
+logout(): void
+
+// Update user state (for profile updates)
+updateUser(user: User): void
+
+// Check roles
+hasRole(role: string): boolean
+hasAnyRole(roles: string[]): boolean
+
+// Computed signals
+user = computed(() => this.authState().user);
+isAuthenticated = computed(() => this.authState().isAuthenticated);
+```
 
 For detailed authentication documentation, see [docs/auth.md](docs/auth.md).
 
@@ -140,6 +167,106 @@ For detailed authentication documentation, see [docs/auth.md](docs/auth.md).
 - **Admin**: Full system access and user management
 - **Loan Officer**: Loan application review and management
 - **Applicant**: Submit and track loan applications
+
+## 👨‍💼 Admin Domain
+
+The admin domain provides comprehensive user and system management capabilities:
+
+### Features
+
+- **User Management**: View, filter, and manage all system users
+- **Audit Logging**: Track all user management actions with timestamps
+- **Role-based Filtering**: Filter users by role (Admin, Loan Officer, Applicant)
+- **User Profile Management**: Update user information with real-time state synchronization
+- **Activity Tracking**: Monitor user actions and system changes
+
+### Admin Store (Signal-based State Management)
+
+The admin domain uses a centralized store with Angular signals for reactive state management:
+
+```typescript
+import { AdminStore } from '@domains/admin/store/admin.store';
+
+@Component({
+  // ...
+})
+export class AdminComponent {
+  adminStore = inject(AdminStore);
+
+  // Reactive computed properties
+  users = this.adminStore.users;
+  filteredUsers = this.adminStore.filteredUsers;
+  auditLogs = this.adminStore.auditLogs;
+  isLoading = this.adminStore.isLoading;
+
+  // Filter users by role
+  filterByRole(role: UserRole): void {
+    this.adminStore.filterUsersByType(role);
+  }
+
+  // Load audit logs for a specific user
+  viewUserAudit(userId: string): void {
+    this.adminStore.selectUser(userId);
+  }
+}
+```
+
+### Audit Logging System
+
+All user management actions are automatically logged:
+
+```typescript
+// Log user management actions
+this.adminStore.logUserManagementAction(targetUserId, 'UPDATE_PROFILE', performedByUserId);
+
+// Load audit logs by date range
+this.adminStore.loadAuditLogsByDateRange(startDate, endDate);
+
+// Load audit logs for specific user
+this.adminStore.loadAuditLogsByUser(userId);
+```
+
+### User Profile Updates
+
+The profile component demonstrates advanced signal-based patterns:
+
+- **Reactive User State**: Uses `computed()` signals to react to auth state changes
+- **Effect-based Synchronization**: Automatically syncs form model when user data updates
+- **Multi-store Updates**: Updates both AuthService and AdminStore on profile changes
+- **Audit Trail**: Logs all profile modifications
+
+```typescript
+// Computed signal for reactive user data
+user = computed(() => this.authService.authState().user);
+
+// Effect to sync form with user changes
+constructor() {
+  effect(() => {
+    const currentUser = this.user();
+    if (currentUser) {
+      this.profileModel.set({
+        firstname: currentUser.firstName || '',
+        lastname: currentUser.lastName || '',
+        // ...
+      });
+    }
+  });
+}
+
+// Update with state synchronization
+updateInformation(): void {
+  this.userService.updateUser(userId, updatedUser).subscribe({
+    next: (response) => {
+      // Update auth state
+      this.authService.updateUser(response);
+      // Refresh admin store
+      this.adminStore.loadUsers();
+      // Log action
+      this.adminStore.logUserManagementAction(/*...*/);
+    }
+  });
+}
+```
 
 ## 🏦 Loan Management
 
