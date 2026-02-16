@@ -119,8 +119,15 @@
             </app-form-input>
           </div>
         </div>
-        <div>
+        <div id="personal_information__footer">
           <app-button buttonText="Update" type="button" (clicked)="updateInformation()">
+          </app-button>
+          <app-button
+            buttonText="Reset"
+            type="reset"
+            variant="warning"
+            (clicked)="resetInformation()"
+          >
           </app-button>
         </div>
       </div>

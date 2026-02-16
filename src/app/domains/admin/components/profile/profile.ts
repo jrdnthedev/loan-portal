@@ -62,8 +62,23 @@ export class Profile {
   handleDashboardClick(): void {
     this.route.navigateByUrl('/shell');
   }
+
   handleActivityLogClick(): void {
     console.log('activity log button clicked!');
+  }
+
+  resetInformation(): void {
+    const currentUser = this.user();
+    if (currentUser) {
+      this.profileModel.set({
+        firstname: currentUser.firstName || '',
+        lastname: currentUser.lastName || '',
+        email: currentUser.email || '',
+        phone: currentUser.phone || '1234567',
+        role: currentUser.role || '',
+        id: currentUser.id || '',
+      });
+    }
   }
 
   updateInformation(): void {
