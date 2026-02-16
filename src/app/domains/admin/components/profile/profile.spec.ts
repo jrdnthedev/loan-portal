@@ -62,4 +62,30 @@ describe('Profile', () => {
     component.handleActivityLogClick();
     expect(consoleSpy).toHaveBeenCalledWith('activity log button clicked!');
   });
+
+  it('should reset form data to original user values', () => {
+    // Modify the form data
+    component.profileModel.set({
+      firstname: 'Modified',
+      lastname: 'Name',
+      email: 'modified@example.com',
+      phone: '999-9999',
+      role: 'user',
+      id: '123',
+    });
+
+    // Verify form was modified
+    expect(component.profileModel().firstname).toBe('Modified');
+    expect(component.profileModel().lastname).toBe('Name');
+
+    // Reset the form
+    component.resetInformation();
+
+    // Verify form is reset to original user data
+    expect(component.profileModel().firstname).toBe('John');
+    expect(component.profileModel().lastname).toBe('Doe');
+    expect(component.profileModel().email).toBe('john@example.com');
+    expect(component.profileModel().phone).toBe('555-1234');
+    expect(component.profileModel().role).toBe('admin');
+  });
 });
