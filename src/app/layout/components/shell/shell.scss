@@ -17,7 +17,6 @@
   .row > * {
     flex: 0 0 calc(50% - 6px);
     max-width: calc(50% - 6px);
-    overflow-x: hidden;
   }
   .row:first-child > *:first-child {
     flex: 0 0 calc(100% - 8px);
