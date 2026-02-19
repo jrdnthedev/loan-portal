@@ -14,8 +14,7 @@
     "serve:ssr:loan-portal": "node dist/loan-portal/server/server.mjs",
     "prepare": "husky",
     "backend": "cd backend && npm run dev",
-    "dev": "concurrently \"npm run backend\" \"npm start\"",
-    "api:watch": "npx json-server --config json-server.json --watch db.json"
+    "dev": "concurrently \"npm run backend\" \"npm start\""
   },
   "prettier": {
     "printWidth": 100,
