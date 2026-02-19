@@ -1,0 +1,96 @@
+// This is your Prisma schema file
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  role      String   // customer, loan-officer, admin
+  firstName String
+  lastName  String
+  phone     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model LoanType {
+  id           String  @id
+  name         String
+  description  String
+  minAmount    Int
+  maxAmount    Int
+  minTerm      Int
+  maxTerm      Int
+  interestRate Float
+  loans        Loan[]
+}
+
+model Applicant {
+  id               String   @id @default(cuid())
+  fullName         String
+  dateOfBirth      String
+  ssn              String
+  income           Int
+  employmentStatus String
+  creditScore      Int?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  
+  loansAsApplicant Loan[]     @relation("PrimaryApplicant")
+  loansAsCoSigner  Loan[]     @relation("CoSigner")
+}
+
+model VehicleInfo {
+  id      String @id @default(cuid())
+  make    String
+  model   String
+  year    Int
+  vin     String
+  mileage Int
+  value   Int
+  
+  loan    Loan   @relation(fields: [loanId], references: [id], onDelete: Cascade)
+  loanId  String @unique
+}
+
+model Loan {
+  id                String    @id @default(cuid())
+  type              String
+  requestedAmount   Int
+  approvedAmount    Int?
+  currency          String    @default("USD")
+  termMonths        Int
+  status            String    @default("pending") // pending, approved, rejected
+  downPayment       Int?
+  submittedAt       DateTime  @default(now())
+  reviewedAt        DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  
+  loanType          LoanType      @relation(fields: [type], references: [id])
+  applicant         Applicant     @relation("PrimaryApplicant", fields: [applicantId], references: [id])
+  applicantId       String
+  coSigner          Applicant?    @relation("CoSigner", fields: [coSignerId], references: [id])
+  coSignerId        String?
+  vehicleInfo       VehicleInfo?
+  
+  @@index([status])
+  @@index([type])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  action    String
+  userId    String?
+  metadata  Json?
+  timestamp DateTime @default(now())
+  
+  @@index([timestamp])
+}
