@@ -13,8 +13,8 @@
     "test:karma": "ng test",
     "serve:ssr:loan-portal": "node dist/loan-portal/server/server.mjs",
     "prepare": "husky",
-    "api": "npx json-server --config json-server.json db.json",
-    "dev": "concurrently \"npm run api\" \"npm start\"",
+    "backend": "cd backend && npm run dev",
+    "dev": "concurrently \"npm run backend\" \"npm start\"",
     "api:watch": "npx json-server --config json-server.json --watch db.json"
   },
   "prettier": {
