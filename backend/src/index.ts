@@ -6,6 +6,7 @@ import loanRoutes from './routes/loan.routes';
 import applicantRoutes from './routes/applicant.routes';
 import loanTypeRoutes from './routes/loan-type.routes';
 import auditLogRoutes from './routes/audit-log.routes';
+import userRoutes from './routes/user.routes';
 import { errorHandler } from './middleware/error.middleware';
 
 dotenv.config();
@@ -38,6 +39,7 @@ app.use('/auth', authRoutes);
 app.use('/loans', loanRoutes);
 app.use('/applicants', applicantRoutes);
 app.use('/loan-types', loanTypeRoutes);
+app.use('/users', userRoutes);
 app.use('/audit-logs', auditLogRoutes);
 
 // Error handling
