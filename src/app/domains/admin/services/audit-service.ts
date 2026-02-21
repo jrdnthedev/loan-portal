@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { AuditEntry } from '../models/audit-entry';
 
 export interface AuditFilters {
@@ -13,9 +14,12 @@ export interface AuditFilters {
 
 export interface PaginatedAuditResponse {
   data: AuditEntry[];
-  total: number;
-  page: number;
-  limit: number;
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
 }
 
 @Injectable({
@@ -30,7 +34,9 @@ export class AuditService {
    * Get all audit logs
    */
   getAuditLogs(): Observable<AuditEntry[]> {
-    return this.http.get<AuditEntry[]>(`${this.apiUrl}/audit-logs`);
+    return this.http
+      .get<PaginatedAuditResponse>(`${this.apiUrl}/audit-logs`)
+      .pipe(map((response) => response.data));
   }
 
   /**
@@ -124,7 +130,9 @@ export class AuditService {
       params = params.set('endDate', filters.dateRange.end);
     }
 
-    return this.http.get<AuditEntry[]>(`${this.apiUrl}/audit-logs`, { params });
+    return this.http
+      .get<PaginatedAuditResponse>(`${this.apiUrl}/audit-logs`, { params })
+      .pipe(map((response) => response.data));
   }
 
   /**
