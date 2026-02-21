@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { Loan } from '../models/loan';
 import { Applicant } from '../models/applicant';
 import { environment } from '../../../../environments/environment';
@@ -15,7 +15,9 @@ export class LoanApiService {
 
   // Loan endpoints
   getLoans(): Observable<Loan[]> {
-    return this.http.get<Loan[]>(`${this.apiUrl}/loans`);
+    return this.http
+      .get<Loan[] | { data: Loan[] }>(`${this.apiUrl}/loans`)
+      .pipe(map((response) => (Array.isArray(response) ? response : (response?.data ?? []))));
   }
 
   getLoan(id: string): Observable<Loan> {
