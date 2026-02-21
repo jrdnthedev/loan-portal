@@ -18,7 +18,9 @@ A modern, secure loan application management system built with Angular 20. This 
 
 ## 🏗️ Architecture
 
-The application follows a domain-driven design with the following structure:
+The application follows a domain-driven design with a modern architecture:
+
+### Frontend (Angular 20)
 
 ```
 src/app/
@@ -32,6 +34,70 @@ src/app/
 └── shared/              # Shared components and utilities
 ```
 
+### Backend (Node.js + Express + PostgreSQL)
+
+```
+backend/
+├── src/
+│   ├── controllers/     # Request handlers
+│   ├── routes/         # API routes
+│   ├── middleware/     # Auth & error handling
+│   ├── lib/           # Prisma client
+│   └── scripts/       # Database seeding
+├── prisma/
+│   └── schema.prisma  # Database schema
+└── .env               # Environment configuration
+```
+
+## 🔌 Backend Integration
+
+The application uses a production-ready Node.js backend with:
+
+- **Express.js** - Web framework
+- **PostgreSQL** - Relational database
+- **Prisma ORM** - Type-safe database access
+- **JWT Authentication** - Secure token-based auth
+- **Role-based Authorization** - Customer, Loan Officer, Admin roles
+
+### API Endpoints
+
+The backend provides RESTful API endpoints:
+
+- `POST /auth/login` - User authentication
+- `POST /auth/register` - User registration
+- `GET /loans` - List loans (paginated)
+- `POST /loans` - Create loan application
+- `GET /loan-types` - Get loan types
+- `GET /applicants` - List applicants
+- `GET /audit-logs` - View audit logs (Admin)
+
+### Environment Configuration
+
+**Development** (`src/environments/environment.ts`):
+
+```typescript
+export const environment = {
+  production: false,
+  apiUrl: 'http://localhost:3001',
+};
+```
+
+**Production** (`src/environments/environment.prod.ts`):
+
+```typescript
+export const environment = {
+  production: true,
+  apiUrl: 'https://your-production-api.com',
+};
+```
+
+For complete backend documentation, see:
+
+- **[Backend API Documentation](docs/backend-api.md)** - Complete API reference
+- **[Backend Migration Guide](docs/backend-migration.md)** - Migrate from json-server
+- **[Docker Setup](docs/backend-docker-setup.md)** - PostgreSQL with Docker
+- **[SQLite Setup](docs/backend-sqlite-setup.md)** - Quick development setup
+
 ## 🚀 Quick Start
 
 ### Prerequisites
@@ -39,6 +105,7 @@ src/app/
 - Node.js 18.x or higher
 - npm 9.x or higher
 - Angular CLI 20.x
+- PostgreSQL 14+ (or Docker Desktop for containerized PostgreSQL)
 
 ### Installation
 
@@ -49,19 +116,63 @@ git clone <repository-url>
 cd loan-portal
 ```
 
-2. Install dependencies:
+2. Install frontend dependencies:
 
 ```bash
 npm install
 ```
 
-3. Start the development server:
+3. Set up the backend:
+
+**Option A: Using Docker (Recommended)**
 
 ```bash
+cd backend
+docker-compose up -d
+npm install
+npm run prisma:generate
+npm run prisma:migrate
+npm run seed
+npm run dev
+```
+
+See [Docker Setup Guide](docs/backend-docker-setup.md) for detailed instructions.
+
+**Option B: Using SQLite (Quick Development)**
+
+```bash
+cd backend
+# Follow instructions in docs/backend-sqlite-setup.md
+```
+
+See [SQLite Setup Guide](docs/backend-sqlite-setup.md) for detailed instructions.
+
+**Option C: Using PostgreSQL (Production-ready)**
+
+```bash
+cd backend
+npm install
+# Configure .env with PostgreSQL connection
+npm run prisma:generate
+npm run prisma:migrate
+npm run seed
+npm run dev
+```
+
+See [Backend API Documentation](docs/backend-api.md) for detailed instructions.
+
+4. Start the frontend development server:
+
+```bash
+# In project root
 npm start
 ```
 
-4. Open your browser and navigate to `http://localhost:4200/`
+5. Open your browser and navigate to `http://localhost:4200/`
+
+6. Login with test credentials:
+   - **Customer**: `john.doe@example.com` / `password123`
+   - **Loan Officer**: `loan.officer@bank.com` / `admin123`
 
 ## 🛠️ Development
 
@@ -130,19 +241,19 @@ ng e2e
 
 ## 🔐 Authentication System
 
-The application includes a comprehensive authentication system with:
+The application includes a comprehensive JWT-based authentication system integrated with the backend:
 
-- JWT token management
-- Automatic token refresh
+- JWT token management with backend validation
+- Signal-based reactive state management
 - Route guards (Auth, Role, Guest)
-- HTTP interceptors
-- Signal-based reactive state
+- HTTP interceptors for automatic token inclusion
 - Real-time user state updates
+- Role-based access control
 
 ### Auth Service Methods
 
 ```typescript
-// Login
+// Login with backend
 login(credentials: LoginRequest): Observable<LoginResponse>
 
 // Logout
@@ -160,7 +271,23 @@ user = computed(() => this.authState().user);
 isAuthenticated = computed(() => this.authState().isAuthenticated);
 ```
 
+### Authentication Flow
+
+1. User submits credentials to `/auth/login`
+2. Backend validates credentials and returns JWT token
+3. Frontend stores token in localStorage
+4. HTTP interceptor adds `Authorization: Bearer <token>` to all requests
+5. Backend validates token on protected routes
+6. Guards control access based on authentication and roles
+
 For detailed authentication documentation, see [docs/auth.md](docs/auth.md).
+
+### Test Credentials
+
+After seeding the backend database:
+
+- **Customer**: `john.doe@example.com` / `password123`
+- **Loan Officer**: `loan.officer@bank.com` / `admin123`
 
 ## 👥 User Roles
 
@@ -465,19 +592,27 @@ When implementing pagination, your parent component must include:
 
 ### Environment Setup
 
-Update environment files for different deployment targets:
+The application uses environment files for configuration:
 
-- `src/environments/environment.ts` - Development
-- `src/environments/environment.prod.ts` - Production
-
-### Authentication Configuration
-
-Update the API URL in the auth service:
+**Development** (`src/environments/environment.ts`):
 
 ```typescript
-// src/app/core/auth/services/auth.service.ts
-private readonly API_URL = 'https://your-api-domain.com/api/auth';
+export const environment = {
+  production: false,
+  apiUrl: 'http://localhost:3001', // Backend API URL
+};
 ```
+
+**Production** (`src/environments/environment.prod.ts`):
+
+```typescript
+export const environment = {
+  production: true,
+  apiUrl: 'https://your-production-api.com', // Production API URL
+};
+```
+
+The `AuthService` and other services automatically use `environment.apiUrl` for all API requests.
 
 ## 📝 Code Quality
 
@@ -567,15 +702,53 @@ Common scopes used in this project:
 
 ## 🚀 Deployment
 
-### Production Build
+### Frontend Deployment
+
+Build for production:
 
 ```bash
 ng build --configuration production
 ```
 
-### Docker Support
+Build artifacts will be stored in `dist/` directory. Deploy to your hosting provider (Netlify, Vercel, AWS S3, etc.).
 
-Create a Dockerfile for containerized deployment:
+### Backend Deployment
+
+1. **Set up production database:**
+   - Create PostgreSQL database
+   - Note connection string
+
+2. **Configure environment variables:**
+
+   ```env
+   DATABASE_URL="postgresql://user:password@host:5432/dbname"
+   PORT=3001
+   NODE_ENV=production
+   JWT_SECRET=very-secure-random-string-change-this
+   JWT_EXPIRES_IN=24h
+   CORS_ORIGIN=https://your-frontend-domain.com
+   ```
+
+3. **Build and deploy:**
+   ```bash
+   cd backend
+   npm run build
+   npm start
+   ```
+
+Deploy to platforms like:
+
+- Heroku (with Heroku Postgres)
+- AWS (EC2 + RDS)
+- DigitalOcean (App Platform + Managed PostgreSQL)
+- Railway
+- Render
+
+See [Backend API Documentation](docs/backend-api.md) for detailed deployment instructions.
+
+### Docker Deployment
+
+Frontend Dockerfile:
 
 ```dockerfile
 FROM node:18-alpine
@@ -587,11 +760,41 @@ EXPOSE 4000
 CMD ["npm", "run", "serve:ssr:loan-portal"]
 ```
 
+Backend Dockerfile:
+
+```dockerfile
+FROM node:18-alpine
+WORKDIR /app
+COPY backend/package*.json ./
+RUN npm ci --only=production
+COPY backend/dist ./dist
+COPY backend/prisma ./prisma
+RUN npx prisma generate
+EXPOSE 3001
+CMD ["npm", "start"]
+```
+
+Use Docker Compose for both services. See [Docker Setup Guide](docs/backend-docker-setup.md).
+
 ## 📚 Documentation
 
-- [Authentication System](docs/auth.md) - Detailed auth documentation
+Comprehensive documentation is available in the [docs/](docs/) folder:
+
+### Quick Links
+
+- **[📖 Documentation Index](docs/README.md)** - Complete documentation overview
+- **[🔐 Authentication System](docs/auth.md)** - JWT auth and authorization
+- **[🔌 Backend API](docs/backend-api.md)** - API endpoints and usage
+- **[🚀 Backend Migration](docs/backend-migration.md)** - Migrate from json-server
+- **[🐳 Docker Setup](docs/backend-docker-setup.md)** - PostgreSQL with Docker
+- **[💾 SQLite Setup](docs/backend-sqlite-setup.md)** - Quick development
+- **[📝 Loan Form Component](docs/loan-form-component.md)** - Reusable form docs
+
+### External Resources
+
 - [Angular CLI Reference](https://angular.dev/tools/cli) - Official CLI documentation
 - [Angular Documentation](https://angular.dev) - Framework documentation
+- [Prisma Documentation](https://www.prisma.io/docs) - ORM documentation
 
 ## 🤝 Contributing
 

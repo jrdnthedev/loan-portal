@@ -41,13 +41,31 @@ export const appConfig: ApplicationConfig = {
 };
 ```
 
-### 2. Update API URL
+### 2. Configure Backend API
 
-In `src/app/core/auth/services/auth.service.ts`, update the API_URL to match your backend:
+The authentication system is configured to use the backend API URL from environment settings.
+
+**Environment Configuration:**
+
+`src/environments/environment.ts` (Development):
 
 ```typescript
-private readonly API_URL = 'https://your-api-domain.com/api/auth';
+export const environment = {
+  production: false,
+  apiUrl: 'http://localhost:3001',
+};
 ```
+
+`src/environments/environment.prod.ts` (Production):
+
+```typescript
+export const environment = {
+  production: true,
+  apiUrl: 'https://your-production-api.com',
+};
+```
+
+The `AuthService` automatically uses `environment.apiUrl` for all API calls. No additional configuration needed.
 
 ## Usage
 
@@ -186,118 +204,132 @@ export class DashboardComponent {
 }
 ```
 
-## API Endpoints Expected
+## Backend API Integration
 
-The auth service expects the following API endpoints:
+The authentication system integrates with the Node.js backend API. See [Backend API Documentation](./backend-api.md) for complete details.
 
-### POST /api/auth/login
+### POST /auth/login
+
+Login with email and password.
+
+**Request:**
 
 ```json
 {
-  "email": "user@example.com",
+  "email": "john.doe@example.com",
   "password": "password123"
 }
 ```
 
-Response:
+**Response:**
 
 ```json
 {
   "user": {
-    "id": "user-id",
-    "email": "user@example.com",
+    "id": "user-001",
+    "email": "john.doe@example.com",
+    "role": "customer",
     "firstName": "John",
-    "lastName": "Doe",
-    "role": "user"
+    "lastName": "Doe"
   },
-  "accessToken": "jwt-access-token",
-  "refreshToken": "jwt-refresh-token"
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "expiresIn": 86400
 }
 ```
 
-### POST /api/auth/refresh
+### POST /auth/register
+
+Register a new user.
+
+**Request:**
 
 ```json
 {
-  "refreshToken": "jwt-refresh-token"
+  "email": "new.user@example.com",
+  "password": "securePassword123",
+  "firstName": "New",
+  "lastName": "User",
+  "phone": "+1-555-1234",
+  "role": "customer"
 }
 ```
 
-Response:
+**Response:**
 
 ```json
 {
-  "accessToken": "new-jwt-access-token",
-  "refreshToken": "new-jwt-refresh-token"
-}
-```
-
-### POST /api/auth/register
-
-```json
-{
-  "email": "user@example.com",
-  "password": "password123",
-  "firstName": "John",
-  "lastName": "Doe"
-}
-```
-
-### POST /api/auth/forgot-password
-
-```json
-{
-  "email": "user@example.com"
-}
-```
-
-### POST /api/auth/reset-password
-
-```json
-{
-  "token": "reset-token",
-  "newPassword": "newpassword123"
+  "user": {
+    "id": "user-002",
+    "email": "new.user@example.com",
+    "role": "customer",
+    "firstName": "New",
+    "lastName": "User"
+  },
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "expiresIn": 86400
 }
 ```
 
 ## JWT Token Structure
 
-The access token should include the following claims:
+The backend returns JWT tokens with the following structure:
+
+**Token Payload:**
 
 ```json
 {
-  "sub": "user-id",
-  "email": "user@example.com",
-  "firstName": "John",
-  "lastName": "Doe",
-  "role": "user",
-  "exp": 1234567890,
-  "iat": 1234567890
+  "userId": "user-001",
+  "email": "john.doe@example.com",
+  "role": "customer",
+  "iat": 1708564800,
+  "exp": 1708651200
 }
 ```
 
+**Token Usage:**
+
+All authenticated API requests must include the JWT token in the Authorization header:
+
+```
+Authorization: Bearer <token>
+```
+
+The HTTP interceptor automatically adds this header to all outgoing requests.
+
+## Test Credentials
+
+After running the backend seed script, use these credentials:
+
+**Customer Account:**
+
+- Email: `john.doe@example.com`
+- Password: `password123`
+
+**Loan Officer Account:**
+
+- Email: `loan.officer@bank.com`
+- Password: `admin123`
+
 ## Security Features
 
-- **Automatic token refresh**: Tokens are automatically refreshed when they expire
+- **JWT-based authentication**: Secure token-based authentication with the backend
 - **Secure storage**: Tokens are stored in localStorage (consider upgrading to httpOnly cookies for production)
 - **Route protection**: Guards prevent unauthorized access to protected routes
 - **Role-based access**: Fine-grained access control based on user roles
-- **Automatic logout**: Users are logged out when refresh tokens expire
+- **HTTP interceptor**: Automatically adds authentication headers to API requests
+- **Automatic logout**: Users are logged out when tokens expire or become invalid
 
 ## Best Practices
 
-1. **Environment Variables**: Store API URLs in environment files
+1. **Environment Variables**: API URLs are configured in environment files (`environment.ts`)
 2. **Error Handling**: Implement proper error handling for auth failures
 3. **Loading States**: Use the loading signals to show appropriate UI states
 4. **Token Security**: Consider using httpOnly cookies for token storage in production
 5. **Role Management**: Define clear role hierarchies and permissions
 6. **Testing**: Write unit tests for auth services and guards
 
-## Contributing
+## Related Documentation
 
-When adding new auth features:
-
-1. Update interfaces in `auth.interface.ts`
-2. Add new methods to `AuthService`
-3. Create appropriate guards if needed
-4. Update this README with usage examples
+- [Backend API](./backend-api.md) - Complete backend API documentation
+- [Backend Migration](./backend-migration.md) - Migrating from json-server to backend
+- [Docker Setup](./backend-docker-setup.md) - Running backend with Docker
