@@ -66,7 +66,7 @@ export class LoanApplicationStore {
       case 0: // Loan type selection
         return !!currentLoan.type;
       case 1: // Basic info
-        return !!(currentLoan.amount?.requested && currentLoan.termMonths);
+        return !!(currentLoan.requestedAmount && currentLoan.termMonths);
       case 2: // Applicant info
         return !!(currentLoan.applicant?.fullName && currentLoan.applicant?.dateOfBirth);
       default:
@@ -132,6 +132,7 @@ export class LoanApplicationStore {
 
     this.loanApiService.getLoans().subscribe({
       next: (loans: Loan[]) => {
+        console.log(loans);
         this.updateState({
           userLoans: loans,
           isLoading: false,
@@ -241,7 +242,7 @@ export class LoanApplicationStore {
               new Date(a.submittedAt || 0).getTime() - new Date(b.submittedAt || 0).getTime();
             break;
           case 'amount':
-            comparison = (a.amount?.requested || 0) - (b.amount?.requested || 0);
+            comparison = (a.requestedAmount || 0) - (b.requestedAmount || 0);
             break;
           case 'status':
             comparison = a.status.localeCompare(b.status);
