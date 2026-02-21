@@ -21,7 +21,7 @@ describe('LoanEligibilityService', () => {
     const validLoan: Loan = {
       id: 'loan-001',
       type: 'personal' as LoanType,
-      amount: { requested: 25000 },
+      requestedAmount: 25000,
       termMonths: 36,
       applicant: {
         id: 'applicant-001',
@@ -46,7 +46,7 @@ describe('LoanEligibilityService', () => {
     const lowIncomeLoan: Loan = {
       id: 'loan-002',
       type: 'personal' as LoanType,
-      amount: { requested: 15000 },
+      requestedAmount: 15000,
       termMonths: 24,
       applicant: {
         id: 'applicant-002',
@@ -71,7 +71,7 @@ describe('LoanEligibilityService', () => {
     const unemployedLoan: Loan = {
       id: 'loan-003',
       type: 'personal' as LoanType,
-      amount: { requested: 15000 },
+      requestedAmount: 15000,
       termMonths: 24,
       applicant: {
         id: 'applicant-003',
@@ -96,7 +96,7 @@ describe('LoanEligibilityService', () => {
     const highAmountLoan: Loan = {
       id: 'loan-004',
       type: 'personal' as LoanType,
-      amount: { requested: 150000 }, // Exceeds 100000 limit
+      requestedAmount: 150000, // Exceeds 100000 limit
       termMonths: 60,
       applicant: {
         id: 'applicant-004',
@@ -121,7 +121,7 @@ describe('LoanEligibilityService', () => {
     const ineligibleLoan: Loan = {
       id: 'loan-005',
       type: 'personal' as LoanType,
-      amount: { requested: 120000 }, // Exceeds limit
+      requestedAmount: 120000, // Exceeds limit
       termMonths: 60,
       applicant: {
         id: 'applicant-005',
@@ -149,7 +149,7 @@ describe('LoanEligibilityService', () => {
     const edgeIncomeLoan: Loan = {
       id: 'loan-006',
       type: 'personal' as LoanType,
-      amount: { requested: 30000 },
+      requestedAmount: 30000,
       termMonths: 36,
       applicant: {
         id: 'applicant-006',
@@ -174,7 +174,7 @@ describe('LoanEligibilityService', () => {
     const edgeAmountLoan: Loan = {
       id: 'loan-007',
       type: 'personal' as LoanType,
-      amount: { requested: 100000 }, // Exactly at limit
+      requestedAmount: 100000, // Exactly at limit
       termMonths: 60,
       applicant: {
         id: 'applicant-007',

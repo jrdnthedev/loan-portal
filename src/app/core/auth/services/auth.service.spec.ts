@@ -52,7 +52,7 @@ describe('AuthService', () => {
     expect(tokenService.clearTokens).toHaveBeenCalled();
     expect(service.isAuthenticated()).toBeFalsy();
     expect(service.user()).toBeNull();
-    expect(router.navigate).toHaveBeenCalledWith(['/welcome']);
+    expect(router.navigate).toHaveBeenCalledWith(['/welcome'], { queryParams: {} });
   });
 
   it('should check user roles correctly', () => {

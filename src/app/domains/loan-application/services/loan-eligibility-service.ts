@@ -17,7 +17,7 @@ export class LoanEligibilityService {
       reasons.push('Applicant must be employed');
     }
 
-    if (loan.amount.requested > 100000) {
+    if (loan.requestedAmount > 100000) {
       reasons.push('Loan amount exceeds limit');
     }
 

@@ -112,6 +112,7 @@ export class Nav {
   }
 
   closeLogin() {
+    console.log('close login');
     this.isLoginModalOpen.set(false);
   }
 
