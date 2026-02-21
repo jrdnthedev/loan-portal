@@ -1,4 +1,4 @@
-# Loan Portal Backend
+# Loan Portal Backend API
 
 A production-ready Node.js backend for the Loan Portal application, built with Express, TypeScript, PostgreSQL, and Prisma ORM.
 
@@ -341,14 +341,6 @@ backend/
 └── tsconfig.json
 ```
 
-## 🔄 Migrating from json-server
-
-The backend is fully compatible with your existing Angular application. The API endpoints match json-server's structure:
-
-1. Update your Angular environment files to point to the new backend
-2. Update the auth interceptor to use the new JWT token format
-3. All endpoints remain the same (`/loans`, `/applicants`, etc.)
-
 ## 🚨 Error Handling
 
 The API uses standard HTTP status codes:
@@ -373,17 +365,6 @@ The API uses standard HTTP status codes:
 | `JWT_EXPIRES_IN` | JWT expiration time                  | 24h                   |
 | `CORS_ORIGIN`    | Allowed CORS origin                  | http://localhost:4200 |
 
-## 🤝 Contributing
-
-1. Create a feature branch
-2. Make your changes
-3. Run tests (if available)
-4. Submit a pull request
-
-## 📄 License
-
-ISC
-
 ## 🆘 Troubleshooting
 
 ### Database Connection Issues
@@ -402,6 +383,13 @@ ISC
 - Regenerate Prisma Client: `npm run prisma:generate`
 - Reset database: `npx prisma migrate reset`
 
-## 📞 Support
+## 📞 Related Documentation
 
-For issues or questions, please create an issue in the repository.
+- [Docker Setup](./backend-docker-setup.md) - Using Docker for PostgreSQL
+- [SQLite Setup](./backend-sqlite-setup.md) - Quick development with SQLite
+- [Migration Guide](./backend-migration.md) - Migrating from json-server
+- [Authentication](./auth.md) - Frontend authentication integration
+
+## 📄 License
+
+ISC

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, output } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, output } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -18,7 +18,7 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './register.html',
   styleUrl: './register.scss',
 })
-export class Register implements OnInit {
+export class Register implements OnInit, OnDestroy {
   private authService = inject(AuthService);
   private router = inject(Router);
   private fb = inject(FormBuilder);
@@ -28,6 +28,12 @@ export class Register implements OnInit {
   registerSuccess = output<void>();
   ngOnInit(): void {
     this.initializeForm();
+  }
+
+  ngOnDestroy(): void {
+    // Reset form when component is destroyed (modal closed)
+    this.registerForm?.reset();
+    this.registerError = '';
   }
 
   private initializeForm(): void {
@@ -86,7 +92,7 @@ export class Register implements OnInit {
       this.authService.register(registerData).subscribe({
         next: () => {
           this.registerSuccess.emit();
-          this.router.navigate(['/welcome']);
+          this.router.navigate(['/shell']);
         },
         error: (error) => {
           this.registerError = error.error?.message || 'Registration failed. Please try again.';

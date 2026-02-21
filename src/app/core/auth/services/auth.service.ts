@@ -57,7 +57,7 @@ export class AuthService {
       try {
         const payload = JSON.parse(atob(token.split('.')[1]));
         const user: User = {
-          id: payload.sub,
+          id: payload.id ?? payload.sub,
           email: payload.email,
           firstName: payload.firstName,
           lastName: payload.lastName,
@@ -77,9 +77,10 @@ export class AuthService {
 
     return this.http.post<LoginResponse>(`${this.API_URL}/auth/login`, credentials).pipe(
       tap((response: LoginResponse) => {
-        console.log(response);
-        //change to access and refresh tokens when available
-        // this.tokenService.setTokens(response.token, response.token);
+        const accessToken = response.token ?? response.accessToken;
+        if (accessToken) {
+          this.tokenService.setTokens(accessToken, response.refreshToken ?? accessToken);
+        }
         this.setAuthenticatedState(response.user);
       }),
       catchError((error) => {
@@ -92,7 +93,8 @@ export class AuthService {
   logout(): void {
     this.tokenService.clearTokens();
     this.setUnauthenticatedState();
-    this.router.navigate(['/welcome']);
+    // Clear returnUrl query param by navigating without it
+    this.router.navigate(['/welcome'], { queryParams: {} });
   }
 
   refreshToken(): Observable<RefreshTokenResponse> {
@@ -118,9 +120,12 @@ export class AuthService {
   register(userData: any): Observable<LoginResponse> {
     this.setLoadingState(true);
 
-    return this.http.post<LoginResponse>(`${this.API_URL}/register`, userData).pipe(
+    return this.http.post<LoginResponse>(`${this.API_URL}/auth/register`, userData).pipe(
       tap((response: LoginResponse) => {
-        this.tokenService.setTokens(response.accessToken, response.refreshToken);
+        const accessToken = response.token ?? response.accessToken;
+        if (accessToken) {
+          this.tokenService.setTokens(accessToken, response.refreshToken ?? accessToken);
+        }
         this.setAuthenticatedState(response.user);
       }),
       catchError((error) => {

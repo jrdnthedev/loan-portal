@@ -17,7 +17,7 @@ describe('Dashboard', () => {
     {
       id: 'loan-001',
       type: 'personal',
-      amount: { requested: 25000 },
+      requestedAmount: 25000,
       termMonths: 36,
       applicant: {
         id: 'applicant-001',
@@ -33,7 +33,7 @@ describe('Dashboard', () => {
     {
       id: 'loan-002',
       type: 'auto',
-      amount: { requested: 30000 },
+      requestedAmount: 30000,
       termMonths: 48,
       applicant: {
         id: 'applicant-002',
@@ -49,7 +49,7 @@ describe('Dashboard', () => {
     {
       id: 'loan-003',
       type: 'mortgage',
-      amount: { requested: 250000 },
+      requestedAmount: 250000,
       termMonths: 360,
       applicant: {
         id: 'applicant-003',

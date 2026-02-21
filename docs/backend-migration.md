@@ -74,19 +74,18 @@ Server should start on `http://localhost:3001`
 
 ### 7. Update Angular App
 
-Update your environment files:
+The Angular environment has already been configured to use the backend:
 
 **src/environments/environment.ts**
 
 ```typescript
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:3001', // Changed from json-server
+  apiUrl: 'http://localhost:3001',
 };
 ```
 
-**Update Auth Service** (if using JWT):
-The new backend uses proper JWT tokens instead of mock tokens. Your auth interceptor should already be compatible, but verify the token is stored and sent correctly.
+The authentication system is already integrated with JWT tokens from the backend.
 
 ### 8. Test the Migration
 
@@ -147,7 +146,7 @@ Most endpoints remain the same. Loans endpoint now includes pagination:
 }
 ```
 
-**Update your Angular service:**
+**Angular service already handles this:**
 
 ```typescript
 getLoans(page = 1, limit = 10): Observable<LoansResponse> {
@@ -197,28 +196,6 @@ npx prisma migrate reset
 npm run seed
 ```
 
-## Keeping json-server as Backup
-
-You can keep json-server running on a different port temporarily:
-
-**Update json-server.json:**
-
-```json
-{
-  "port": 3002
-}
-```
-
-Switch between backends in Angular environment:
-
-```typescript
-// Use new backend
-apiUrl: 'http://localhost:3001';
-
-// Or fall back to json-server
-apiUrl: 'http://localhost:3002';
-```
-
 ## Production Deployment
 
 When ready for production:
@@ -243,18 +220,9 @@ When ready for production:
    - Use managed services: AWS RDS, Heroku Postgres, DigitalOcean
    - Or deploy your own PostgreSQL server
 
-## Need Help?
+## Related Documentation
 
-- Check [backend/README.md](backend/README.md) for full documentation
-- Test API endpoints with Prisma Studio: `npm run prisma:studio`
-- View database: `psql -U postgres -d loan_portal_db`
-
-## Rollback Plan
-
-If you need to rollback to json-server:
-
-1. Stop Express backend
-2. Start json-server: `npm run json-server` (from root)
-3. Update Angular environment to point to port 3001 (json-server)
-
-Keep `db.json` file intact until you're confident with the migration.
+- [Backend API](./backend-api.md) - Full backend API documentation
+- [Docker Setup](./backend-docker-setup.md) - Using Docker for PostgreSQL
+- [SQLite Setup](./backend-sqlite-setup.md) - Alternative quick development setup
+- [Authentication](./auth.md) - Frontend authentication integration

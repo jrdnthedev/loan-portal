@@ -1,6 +1,23 @@
-# Mock JSON API Setup
+# Mock JSON API Setup (Legacy)
 
-This project includes a mock JSON API server using `json-server` for development and testing purposes.
+> **⚠️ DEPRECATED:** This documentation is for historical reference only. The loan portal now uses a production-ready Node.js + PostgreSQL backend. See the [Backend API Documentation](./backend-api.md) and [Migration Guide](./backend-migration.md) for current setup instructions.
+
+This project **previously used** a mock JSON API server using `json-server` for development and testing purposes. It has been replaced with a full Express.js backend with PostgreSQL.
+
+## Current Recommended Setup
+
+For new development, please use:
+
+1. **[Backend API](./backend-api.md)** - Production-ready Node.js + Express + PostgreSQL backend
+2. **[Backend Migration Guide](./backend-migration.md)** - Step-by-step migration from json-server
+3. **[Docker Setup](./backend-docker-setup.md)** - Easy PostgreSQL setup with Docker
+4. **[SQLite Setup](./backend-sqlite-setup.md)** - Quick development without PostgreSQL
+
+---
+
+## Legacy Documentation (json-server)
+
+The sections below document the old json-server setup for historical reference.
 
 ## Quick Start
 
@@ -170,4 +187,30 @@ The mock API includes basic authentication simulation:
 
 ## Production
 
-For production, replace the `environment.apiUrl` in `environment.prod.ts` with your actual API endpoint.
+For production, use the Node.js backend instead of json-server. See [Backend API Documentation](./backend-api.md) for deployment instructions.
+
+## Why We Moved to a Real Backend
+
+The json-server was sufficient for initial prototyping but had limitations:
+
+- ❌ No real authentication/authorization
+- ❌ Limited query capabilities
+- ❌ No data relationships or integrity
+- ❌ Not production-ready
+- ❌ No transaction support
+
+The new backend provides:
+
+- ✅ Real JWT authentication
+- ✅ Role-based authorization
+- ✅ PostgreSQL with proper relationships
+- ✅ Production-ready architecture
+- ✅ Transaction support and data integrity
+- ✅ Audit logging
+- ✅ Better performance and scalability
+
+## Related Documentation
+
+- [Backend API](./backend-api.md) - Complete backend API documentation
+- [Backend Migration Guide](./backend-migration.md) - Migrate from json-server
+- [Authentication](./auth.md) - Frontend authentication integration

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllAuditLogs } from '../controllers/audit-log.controller';
+import { getAllAuditLogs, createAuditLog } from '../controllers/audit-log.controller';
 import { authenticate, authorize } from '../middleware/auth.middleware';
 
 const router = Router();
@@ -9,5 +9,6 @@ router.use(authenticate);
 router.use(authorize('admin', 'loan-officer'));
 
 router.get('/', getAllAuditLogs);
+router.post('/', createAuditLog);
 
 export default router;

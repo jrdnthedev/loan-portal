@@ -66,3 +66,9 @@ When ready for production PostgreSQL:
 - ❌ No advanced PostgreSQL features
 
 For serious development and production, use PostgreSQL.
+
+## Related Documentation
+
+- [Backend API](./backend-api.md) - Main backend documentation
+- [Docker Setup](./backend-docker-setup.md) - Using Docker for PostgreSQL
+- [Migration Guide](./backend-migration.md) - Migrating from json-server

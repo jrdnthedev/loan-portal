@@ -7,7 +7,74 @@ on:
     branches: [main, develop]
 
 jobs:
-  build-and-test:
+  backend:
+    name: Backend Build & Test
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: loan_portal_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install backend dependencies
+        working-directory: ./backend
+        run: npm ci
+
+      - name: Check backend code formatting
+        working-directory: ./backend
+        run: npx prettier --check "src/**/*.{ts,js,json}"
+
+      - name: Generate Prisma Client
+        working-directory: ./backend
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/loan_portal_test
+        run: npm run prisma:generate
+
+      - name: Run Prisma migrations
+        working-directory: ./backend
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/loan_portal_test
+        run: npx prisma migrate deploy
+
+      - name: Build backend
+        working-directory: ./backend
+        run: npm run build
+
+      - name: Archive backend build
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-build
+          path: backend/dist/
+          retention-days: 7
+
+  frontend:
+    name: Frontend Build & Test
     runs-on: ubuntu-latest
 
     strategy:
@@ -28,7 +95,7 @@ jobs:
         run: npm ci
 
       - name: Check code formatting
-        run: npx prettier --check "**/*.{ts,js,html,scss,css,json,md}"
+        run: npx prettier --check "src/**/*.{ts,js,html,scss,css,json}" "*.{json,md}"
 
       - name: Build application
         run: npm run build
@@ -44,10 +111,10 @@ jobs:
           files: ./coverage/coverage-final.json
           fail_ci_if_error: false
 
-      - name: Archive build artifacts
+      - name: Archive frontend build artifacts
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: build-artifacts
+          name: frontend-build
           path: dist/
           retention-days: 7

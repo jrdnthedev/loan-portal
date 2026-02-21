@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, output } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -13,7 +13,7 @@ import { LoginRequest } from '../../interfaces/auth.interface';
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })
-export class Login implements OnInit {
+export class Login implements OnInit, OnDestroy {
   private authService = inject(AuthService);
   private router = inject(Router);
   private fb = inject(FormBuilder);
@@ -24,6 +24,12 @@ export class Login implements OnInit {
 
   ngOnInit(): void {
     this.initializeForm();
+  }
+
+  ngOnDestroy(): void {
+    // Reset form when component is destroyed (modal closed)
+    this.loginForm?.reset();
+    this.loginError = '';
   }
 
   private initializeForm(): void {
@@ -52,8 +58,12 @@ export class Login implements OnInit {
 
       this.authService.login(loginData).subscribe({
         next: () => {
+          // Get returnUrl from current URL's query params if it exists
+          const urlTree = this.router.parseUrl(this.router.url);
+          const returnUrl = urlTree.queryParams['returnUrl'] || '/shell';
           this.loginSuccess.emit();
-          this.router.navigate(['/shell']);
+          // Navigate to returnUrl and clear query params
+          this.router.navigate([returnUrl], { queryParams: {} });
         },
         error: (error) => {
           this.loginError = error.error?.message || 'Login failed. Please try again.';

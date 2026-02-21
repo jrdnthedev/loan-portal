@@ -64,3 +64,9 @@ Get-Service *postgresql* | Stop-Service
 
 # Or change port in docker-compose.yml to "5433:5432" and update DATABASE_URL
 ```
+
+## Related Documentation
+
+- [Backend API](./backend-api.md) - Main backend documentation
+- [SQLite Setup](./backend-sqlite-setup.md) - Alternative lightweight database
+- [Migration Guide](./backend-migration.md) - Migrating from json-server

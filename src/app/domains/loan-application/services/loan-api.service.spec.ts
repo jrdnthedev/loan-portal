@@ -31,7 +31,8 @@ describe('LoanApiService', () => {
       {
         id: 'loan-001',
         type: 'personal',
-        amount: { requested: 25000, approved: 22000 },
+        requestedAmount: 25000,
+        approved: 22000,
         termMonths: 36,
         applicant: {
           id: 'applicant-001',
@@ -60,7 +61,8 @@ describe('LoanApiService', () => {
     const mockLoan: Loan = {
       id: 'loan-001',
       type: 'personal',
-      amount: { requested: 25000, approved: 22000 },
+      requestedAmount: 25000,
+      approved: 22000,
       termMonths: 36,
       applicant: {
         id: 'applicant-001',
@@ -87,14 +89,14 @@ describe('LoanApiService', () => {
   it('should create a loan', () => {
     const newLoanData: Partial<Loan> = {
       type: 'personal',
-      amount: { requested: 15000 },
+      requestedAmount: 15000,
       termMonths: 24,
     };
 
     const mockResponse: Loan = {
       id: 'loan-new',
       type: 'personal',
-      amount: { requested: 15000 },
+      requestedAmount: 15000,
       termMonths: 24,
       applicant: {
         id: 'applicant-001',
@@ -120,14 +122,14 @@ describe('LoanApiService', () => {
   it('should submit loan application', () => {
     const loanData: Partial<Loan> = {
       type: 'auto',
-      amount: { requested: 30000 },
+      requestedAmount: 30000,
       termMonths: 60,
     };
 
     const mockResponse: Loan = {
       id: 'loan-submitted',
       type: 'auto',
-      amount: { requested: 30000 },
+      requestedAmount: 30000,
       termMonths: 60,
       applicant: {
         id: 'applicant-001',
@@ -153,14 +155,16 @@ describe('LoanApiService', () => {
   it('should update a loan', () => {
     const loanId = 'loan-001';
     const updatedLoanData: Partial<Loan> = {
-      amount: { requested: 35000, approved: 30000 },
+      requestedAmount: 35000,
+      approved: 30000,
       status: 'approved',
     };
 
     const mockResponse: Loan = {
       id: loanId,
       type: 'personal',
-      amount: { requested: 35000, approved: 30000 },
+      requestedAmount: 35000,
+      approved: 30000,
       termMonths: 36,
       applicant: {
         id: 'applicant-001',
@@ -317,7 +321,7 @@ describe('LoanApiService', () => {
       {
         id: 'loan-search-1',
         type: 'personal',
-        amount: { requested: 15000 },
+        requestedAmount: 15000,
         termMonths: 24,
         applicant: {
           id: 'applicant-001',
@@ -353,7 +357,8 @@ describe('LoanApiService', () => {
       {
         id: 'loan-approved-1',
         type: 'auto',
-        amount: { requested: 25000, approved: 22000 },
+        requestedAmount: 25000,
+        approved: 22000,
         termMonths: 60,
         applicant: {
           id: 'applicant-001',
@@ -383,7 +388,7 @@ describe('LoanApiService', () => {
       {
         id: 'loan-applicant-1',
         type: 'personal',
-        amount: { requested: 20000 },
+        requestedAmount: 20000,
         termMonths: 36,
         applicant: {
           id: applicantId,
