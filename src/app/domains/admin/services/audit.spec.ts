@@ -41,7 +41,7 @@ describe('AuditService', () => {
 
       const req = httpMock.expectOne(`${apiUrl}/audit-logs`);
       expect(req.request.method).toBe('GET');
-      req.flush(mockLogs);
+      req.flush({ data: mockLogs, pagination: { total: 2, page: 1, limit: 10, totalPages: 1 } });
     });
 
     it('should return empty array when no logs exist', () => {
@@ -50,7 +50,7 @@ describe('AuditService', () => {
       });
 
       const req = httpMock.expectOne(`${apiUrl}/audit-logs`);
-      req.flush([]);
+      req.flush({ data: [], pagination: { total: 0, page: 1, limit: 10, totalPages: 0 } });
     });
   });
 

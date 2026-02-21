@@ -23,6 +23,8 @@ describe('Login', () => {
       events: EMPTY,
       createUrlTree: vi.fn(),
       serializeUrl: vi.fn(),
+      url: '/login',
+      parseUrl: vi.fn().mockReturnValue({ queryParams: {} }),
     };
 
     await TestBed.configureTestingModule({
@@ -134,7 +136,7 @@ describe('Login', () => {
 
     component.onSubmit();
 
-    expect(router.navigate).toHaveBeenCalledWith(['/shell']);
+    expect(router.navigate).toHaveBeenCalledWith(['/shell'], { queryParams: {} });
   });
 
   it('should emit loginSuccess on successful login', (done) => {
