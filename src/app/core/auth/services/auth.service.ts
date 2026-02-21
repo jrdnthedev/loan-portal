@@ -93,7 +93,8 @@ export class AuthService {
   logout(): void {
     this.tokenService.clearTokens();
     this.setUnauthenticatedState();
-    this.router.navigate(['/welcome']);
+    // Clear returnUrl query param by navigating without it
+    this.router.navigate(['/welcome'], { queryParams: {} });
   }
 
   refreshToken(): Observable<RefreshTokenResponse> {

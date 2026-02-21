@@ -132,7 +132,6 @@ export class LoanApplicationStore {
 
     this.loanApiService.getLoans().subscribe({
       next: (loans: Loan[]) => {
-        console.log(loans);
         this.updateState({
           userLoans: loans,
           isLoading: false,
