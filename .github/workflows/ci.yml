@@ -61,6 +61,22 @@ jobs:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/loan_portal_test
         run: npx prisma migrate deploy
 
+      - name: Run backend tests with coverage
+        working-directory: ./backend
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/loan_portal_test
+          NODE_ENV: test
+        run: npm run test:coverage
+
+      - name: Upload backend coverage reports
+        uses: codecov/codecov-action@v4
+        if: always()
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./backend/coverage/coverage-final.json
+          flags: backend
+          fail_ci_if_error: false
+
       - name: Build backend
         working-directory: ./backend
         run: npm run build
@@ -109,6 +125,7 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage/coverage-final.json
+          flags: frontend
           fail_ci_if_error: false
 
       - name: Archive frontend build artifacts
