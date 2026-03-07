@@ -15,7 +15,6 @@ import { AuditService } from '../../../admin/services/audit-service';
 export class LoanWizard {
   selectedLoanType: LoanType = 'auto';
   submittedLoan?: Loan;
-  savedDraft?: Partial<Loan>;
 
   private router = inject(Router);
   private store = inject(LoanApplicationStore);
@@ -44,7 +43,6 @@ export class LoanWizard {
       console.log('Draft saved:', draft);
       this.store.updateCurrentLoan(draft);
       this.store.saveCurrentLoanDraft();
-      this.savedDraft = draft;
     } catch (error) {
       console.log(error);
     }
