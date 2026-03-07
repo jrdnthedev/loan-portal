@@ -1,22 +1,22 @@
-import { Component, Input, OnInit, output } from '@angular/core';
+import { Component, OnInit, input, output, computed, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { LoanType } from '../../models/loan-type';
 import { Loan } from '../../models/loan';
 import { LoanTypeConfiguration } from '../../models/loan-form.interface';
 import { Button } from '../../../../shared/components/button/button';
+import { Card } from '../../../../shared/components/card/card';
 
 @Component({
   selector: 'app-loan-form',
-  imports: [ReactiveFormsModule, CommonModule, Button],
+  imports: [ReactiveFormsModule, CommonModule, Button, Card],
   templateUrl: './loan-form.html',
   styleUrl: './loan-form.scss',
 })
 export class LoanForm implements OnInit {
-  @Input() loanType: LoanType = 'personal';
-  @Input() initialData?: Partial<Loan>;
-  maxTerm = '';
-
+  loanType = input<LoanType>('personal');
+  initialData = input<Partial<Loan>>();
+  maxTerm = signal('');
   formSubmitted = output<Loan>();
   formSaved = output<Partial<Loan>>();
 
@@ -48,29 +48,31 @@ export class LoanForm implements OnInit {
 
   ngOnInit() {
     this.initializeForm();
-    if (this.initialData) {
-      this.populateForm(this.initialData);
+    const data = this.initialData();
+    if (data) {
+      this.populateForm(data);
     }
-    if (this.config.maxTermMonths >= 72) {
-      this.maxTerm = '6 years';
-    } else if (this.config.maxTermMonths >= 84) {
-      this.maxTerm = '7 years';
-    } else if (this.config.maxTermMonths >= 120) {
-      this.maxTerm = '10 years';
-    } else if (this.config.maxTermMonths >= 180) {
-      this.maxTerm = '15 years';
-    } else if (this.config.maxTermMonths >= 240) {
-      this.maxTerm = '20 years';
-    } else if (this.config.maxTermMonths >= 360) {
-      this.maxTerm = '30 years';
+    const maxTermMonths = this.config().maxTermMonths;
+    if (maxTermMonths >= 360) {
+      this.maxTerm.set('30 years');
+    } else if (maxTermMonths >= 240) {
+      this.maxTerm.set('20 years');
+    } else if (maxTermMonths >= 180) {
+      this.maxTerm.set('15 years');
+    } else if (maxTermMonths >= 120) {
+      this.maxTerm.set('10 years');
+    } else if (maxTermMonths >= 84) {
+      this.maxTerm.set('7 years');
+    } else if (maxTermMonths >= 72) {
+      this.maxTerm.set('6 years');
     }
   }
 
   private initializeForm() {
-    const config = this.loanTypeConfig[this.loanType];
+    const config = this.loanTypeConfig[this.loanType()];
 
     this.loanForm = this.fb.group({
-      type: [this.loanType, Validators.required],
+      type: [this.loanType(), Validators.required],
       amount: this.fb.group({
         requested: [
           '',
@@ -97,7 +99,7 @@ export class LoanForm implements OnInit {
   }
 
   private addConditionalFields() {
-    const config = this.loanTypeConfig[this.loanType];
+    const config = this.loanTypeConfig[this.loanType()];
 
     if (config.fields.includes('purpose')) {
       this.loanForm.addControl('purpose', this.fb.control('', Validators.required));
@@ -166,10 +168,11 @@ export class LoanForm implements OnInit {
   onSubmit() {
     if (this.loanForm.valid) {
       const formData = this.loanForm.value;
+      const data = this.initialData();
       const loan: Loan = {
-        id: this.initialData?.id || this.generateId(),
+        id: data?.id || this.generateId(),
         ...formData,
-        status: this.initialData?.status || 'draft',
+        status: data?.status || 'draft',
         submittedAt: new Date().toISOString(),
       };
       this.formSubmitted.emit(loan);
@@ -200,7 +203,7 @@ export class LoanForm implements OnInit {
 
   // Helper methods for template
   hasField(fieldName: string): boolean {
-    return this.loanTypeConfig[this.loanType].fields.includes(fieldName);
+    return this.loanTypeConfig[this.loanType()].fields.includes(fieldName);
   }
 
   getFieldError(fieldPath: string): string | null {
@@ -217,11 +220,7 @@ export class LoanForm implements OnInit {
     return null;
   }
 
-  get config() {
-    return this.loanTypeConfig[this.loanType];
-  }
+  config = computed(() => this.loanTypeConfig[this.loanType()]);
 
-  get currentYear() {
-    return new Date().getFullYear();
-  }
+  currentYear = computed(() => new Date().getFullYear());
 }
