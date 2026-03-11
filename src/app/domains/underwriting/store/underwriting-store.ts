@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, distinctUntilChanged, map, Observable } from 'rxjs';
+import { computed, Injectable, signal } from '@angular/core';
+import { catchError } from 'rxjs';
 import { initialUnderwritingState, UnderwritingState } from './underwriting-state';
 import { LoanApiService } from '../../loan-application/services/loan-api.service';
 import { RiskScoring } from '../services/risk-scoring';
@@ -9,27 +9,28 @@ import { Loan } from '../../loan-application/models/loan';
   providedIn: 'root',
 })
 export class UnderwritingStore {
-  private readonly _state$ = new BehaviorSubject<UnderwritingState>(initialUnderwritingState);
+  // State signal
+  private readonly _state = signal<UnderwritingState>(initialUnderwritingState);
 
-  // Public state observable
-  public readonly state$ = this._state$.asObservable();
+  // Public read-only state
+  public readonly state = this._state.asReadonly();
 
-  // Selectors - expose specific parts of state
-  public readonly loading$ = this.select((state) => state.loading);
+  // Computed signals - expose specific parts of state
+  public readonly loading = computed(() => this._state().loading);
+  public readonly queue = computed(() => this._state().queue);
+  public readonly selectedLoanId = computed(() => this._state().selectedLoanId);
+  public readonly sortOrder = computed(() => this._state().sortOrder);
 
   constructor(
     private loanApiService: LoanApiService,
     private riskScoringService: RiskScoring,
-  ) {}
+  ) {
+    this.loadSubmittedLoans();
+  }
 
   // State update methods
   private updateState(partialState: Partial<UnderwritingState>): void {
-    const currentState = this._state$.value;
-    this._state$.next({ ...currentState, ...partialState });
-  }
-
-  private select<T>(selector: (state: UnderwritingState) => T): Observable<T> {
-    return this.state$.pipe(map(selector), distinctUntilChanged());
+    this._state.update((currentState) => ({ ...currentState, ...partialState }));
   }
 
   //Actions

@@ -10,8 +10,8 @@ import { UnderwritingStore } from '../../store/underwriting-store';
 export class DecisionHistory {
   private store = inject(UnderwritingStore);
 
-  readonly loading$ = this.store.loading$;
-  readonly state$ = this.store.state$;
+  readonly loading = this.store.loading;
+  readonly state = this.store.state;
 
   constructor() {}
 }

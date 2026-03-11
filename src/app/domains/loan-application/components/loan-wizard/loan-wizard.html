@@ -1,11 +1,8 @@
 <div id="loan-wizard">
-  <!-- Form -->
-  <div>
-    <app-loan-form
-      [loanType]="selectedLoanType"
-      (formSubmitted)="onFormSubmitted($event)"
-      (formSaved)="onFormSaved($event)"
-    >
-    </app-loan-form>
-  </div>
+  <app-loan-form
+    [loanType]="selectedLoanType"
+    (formSubmitted)="onFormSubmitted($event)"
+    (formSaved)="onFormSaved($event)"
+  >
+  </app-loan-form>
 </div>
