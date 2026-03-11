@@ -1,8 +1,21 @@
 <div id="loan-details">
   <h2>Loan Details</h2>
-  @if (loading$ | async; as loading) {
-    <p>loading: {{ loading }}</p>
+  @if (loading()) {
+    <p>loading: {{ loading() }}</p>
   } @else {
-    <P>no items found</P>
+    @for (loan of loanQueue(); track loan.id) {
+      <app-card>
+        <p>ID: {{ loan.id }}</p>
+        <p>Type: {{ loan.type }}</p>
+        <p>Amount: {{ loan.requestedAmount }} {{ loan.currency || 'USD' }}</p>
+        <p>Term: {{ loan.termMonths }} months</p>
+        <p>Status: {{ loan.status }}</p>
+        <p>Applicant: {{ loan.applicant.fullName }}</p>
+      </app-card>
+    } @empty {
+      <app-card>
+        <p>No items found</p>
+      </app-card>
+    }
   }
 </div>

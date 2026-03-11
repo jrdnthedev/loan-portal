@@ -10,3 +10,16 @@
   gap: 4px;
   justify-content: flex-end;
 }
+
+@media screen and (min-width: 768px) {
+  app-loan-form {
+    width: 645px;
+    margin: 0 auto;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  app-loan-form {
+    width: 845px;
+  }
+}
