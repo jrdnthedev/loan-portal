@@ -6,6 +6,7 @@ export interface UnderwritingState {
   // filters: UnderwritingFilter;
   sortOrder: 'asc' | 'desc';
   loading: boolean;
+  submittedLoanCount: number;
 }
 
 export const initialUnderwritingState: UnderwritingState = {
@@ -13,4 +14,5 @@ export const initialUnderwritingState: UnderwritingState = {
   selectedLoanId: null,
   sortOrder: 'asc',
   loading: false,
+  submittedLoanCount: 0,
 };
