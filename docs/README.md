@@ -19,6 +19,8 @@ Welcome to the Loan Portal documentation. This guide will help you understand, s
 
 - **[Authentication System](./auth.md)** - JWT authentication and authorization
 - **[Loan Form Component](./loan-form-component.md)** - Reusable loan form documentation
+- **[Shared Components](./shared-components.md)** - Complete guide to reusable UI components
+- **[Testing Guide](./TESTING.md)** - Testing setup and best practices
 
 ### Legacy Documentation
 

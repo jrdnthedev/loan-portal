@@ -1,4 +1,12 @@
 <section id="review_queue">
   <h2>Review Queue <span>12 pending 3 Returned 1 escalated</span></h2>
-  <app-table [data]="loanQueue()" [columns]="columns"></app-table>
+
+  <app-pagination
+    [totalItems]="submittedLoanCount()"
+    [itemsPerPage]="itemsPerPage"
+    [currentPage]="currentPage()"
+    (pageChange)="onPageChange($event)"
+  >
+    <app-table [data]="paginatedData()" [columns]="columns"></app-table>
+  </app-pagination>
 </section>
