@@ -1,0 +1,37 @@
+<section>
+  <div>
+    <nav>
+      <ul>
+        @for (item of navItems; track item.route) {
+          <li>
+            <a [routerLink]="item.route">{{ item.label }}</a>
+          </li>
+        }
+      </ul>
+    </nav>
+  </div>
+  <div>
+    <app-card>
+      <!-- Show welcome content only when no child route is active -->
+      @if (showWelcome()) {
+        <div class="welcome-content">
+          <h2>{{ welcomeTitle }}</h2>
+          <p>{{ welcomeDescription }}</p>
+          @if (hasDescriptions) {
+            <ul class="nav-options">
+              @for (item of navItems; track item.route) {
+                @if (item.description) {
+                  <li>
+                    <strong>{{ item.label }}</strong> - {{ item.description }}
+                  </li>
+                }
+              }
+            </ul>
+          }
+        </div>
+      } @else {
+        <router-outlet></router-outlet>
+      }
+    </app-card>
+  </div>
+</section>
