@@ -1,35 +1,31 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { RouterLink, RouterOutlet, Router, NavigationEnd } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { filter, map } from 'rxjs/operators';
-import { Card } from '../../../../shared/components/card/card';
+import { Component } from '@angular/core';
+import {
+  ChildNavLayout,
+  NavItem,
+} from '../../../../shared/components/child-nav-layout/child-nav-layout';
 
 @Component({
   selector: 'app-admin-console',
-  imports: [RouterOutlet, RouterLink, CommonModule, Card],
+  imports: [ChildNavLayout],
   templateUrl: './admin-console.html',
   styleUrl: './admin-console.scss',
 })
-export class AdminConsole implements OnInit {
-  showWelcome = signal(true);
-  private router = inject(Router);
-
-  ngOnInit() {
-    // Check initial route
-    this.checkRouteState();
-
-    // Listen for route changes
-    this.router.events
-      .pipe(
-        filter((event) => event instanceof NavigationEnd),
-        map(() => this.checkRouteState()),
-      )
-      .subscribe();
-  }
-
-  private checkRouteState() {
-    const currentUrl = this.router.url;
-    // Show welcome only when we're exactly at /admin/admin_console with no child route
-    this.showWelcome.set(currentUrl.endsWith('/admin_console'));
-  }
+export class AdminConsole {
+  navItems: NavItem[] = [
+    {
+      label: 'Audit',
+      route: 'audit_log',
+      description: 'View system audit logs and activity history',
+    },
+    {
+      label: 'User Management',
+      route: 'user_management',
+      description: 'Manage user accounts and permissions',
+    },
+    // {
+    //   label: 'Feature Toggle',
+    //   route: 'feature_toggle',
+    //   description: 'Enable or disable application features'
+    // },
+  ];
 }
