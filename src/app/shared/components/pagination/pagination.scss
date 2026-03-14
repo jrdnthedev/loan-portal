@@ -7,6 +7,10 @@
   display: flex;
   gap: 4px;
 }
+#navigation-controlss {
+  display: flex;
+  justify-content: space-between;
+}
 button {
   padding: 5px 10px;
   border: 1px solid #ccc;
