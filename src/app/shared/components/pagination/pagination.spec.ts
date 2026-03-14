@@ -156,71 +156,79 @@ describe('Pagination', () => {
         expect(component.pages).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
       });
     });
-  });
 
-  describe('Page Change Method', () => {
-    beforeEach(async () => {
-      await TestBed.configureTestingModule({
-        imports: [Pagination],
-      }).compileComponents();
+    describe('startIndex getter', () => {
+      it('should calculate start index for first page', () => {
+        component.totalItems = 50;
+        component.itemsPerPage = 10;
+        component.currentPage = 1;
+        expect(component.startIndex).toBe(1);
+      });
 
-      fixture = TestBed.createComponent(Pagination);
-      component = fixture.componentInstance;
-      debugElement = fixture.debugElement;
+      it('should calculate start index for middle page', () => {
+        component.totalItems = 50;
+        component.itemsPerPage = 10;
+        component.currentPage = 3;
+        expect(component.startIndex).toBe(21);
+      });
+
+      it('should calculate start index for last page', () => {
+        component.totalItems = 50;
+        component.itemsPerPage = 10;
+        component.currentPage = 5;
+        expect(component.startIndex).toBe(41);
+      });
+
+      it('should calculate start index with different items per page', () => {
+        component.totalItems = 100;
+        component.itemsPerPage = 25;
+        component.currentPage = 2;
+        expect(component.startIndex).toBe(26);
+      });
     });
 
-    // Tests removed - spyOn not supported in Vitest
-    it.skip('should change to valid page within range', () => {
-      component.totalItems = 50;
-      component.itemsPerPage = 10;
-      component.currentPage = 1;
+    describe('endIndex getter', () => {
+      it('should calculate end index for first full page', () => {
+        component.totalItems = 50;
+        component.itemsPerPage = 10;
+        component.currentPage = 1;
+        expect(component.endIndex).toBe(10);
+      });
 
-      component.changePage(3);
+      it('should calculate end index for middle full page', () => {
+        component.totalItems = 50;
+        component.itemsPerPage = 10;
+        component.currentPage = 3;
+        expect(component.endIndex).toBe(30);
+      });
 
-      expect(component.currentPage).toBe(3);
-      expect(component.pageChange.emit).toHaveBeenCalledWith(3);
-    });
+      it('should calculate end index for last partial page', () => {
+        component.totalItems = 47;
+        component.itemsPerPage = 10;
+        component.currentPage = 5;
+        expect(component.endIndex).toBe(47);
+      });
 
-    it.skip('should not change to page less than 1', () => {
-      component.totalItems = 50;
-      component.itemsPerPage = 10;
-      component.currentPage = 1;
+      it('should calculate end index for last full page', () => {
+        component.totalItems = 50;
+        component.itemsPerPage = 10;
+        component.currentPage = 5;
+        expect(component.endIndex).toBe(50);
+      });
 
-      component.changePage(0);
+      it('should not exceed total items', () => {
+        component.totalItems = 23;
+        component.itemsPerPage = 10;
+        component.currentPage = 3;
+        expect(component.endIndex).toBe(23);
+      });
 
-      expect(component.currentPage).toBe(1);
-      expect(component.pageChange.emit).not.toHaveBeenCalled();
-    });
-
-    it.skip('should not change to page greater than total pages', () => {
-      component.totalItems = 50;
-      component.itemsPerPage = 10;
-      component.currentPage = 3;
-
-      component.changePage(10);
-
-      expect(component.currentPage).toBe(3);
-      expect(component.pageChange.emit).not.toHaveBeenCalled();
-    });
-
-    it.skip('should emit pageChange event for valid page changes', () => {
-      component.totalItems = 50;
-      component.itemsPerPage = 10;
-      component.currentPage = 2;
-
-      component.changePage(4);
-
-      expect(component.pageChange.emit).toHaveBeenCalledWith(4);
-    });
-
-    it.skip('should not emit pageChange event for invalid page changes', () => {
-      component.totalItems = 50;
-      component.itemsPerPage = 10;
-      component.currentPage = 5;
-
-      component.changePage(10);
-
-      expect(component.pageChange.emit).not.toHaveBeenCalled();
+      it('should handle single item on last page', () => {
+        component.totalItems = 21;
+        component.itemsPerPage = 10;
+        component.currentPage = 3;
+        expect(component.endIndex).toBe(21);
+      });
     });
   });
 
@@ -288,6 +296,47 @@ describe('Pagination', () => {
       expect(pageButtons[0].nativeElement.classList.contains('active')).toBeFalsy();
       expect(pageButtons[2].nativeElement.classList.contains('active')).toBeFalsy();
     });
+
+    it('should display pagination summary text', () => {
+      component.totalItems = 50;
+      component.itemsPerPage = 10;
+      component.currentPage = 1;
+      fixture.detectChanges();
+
+      const summary = debugElement.query(By.css('#navigation-controlss p'));
+      expect(summary).toBeTruthy();
+      expect(summary.nativeElement.textContent).toContain('Showing 1-10 of 50 Results');
+    });
+
+    it('should update pagination summary on page change', () => {
+      component.totalItems = 50;
+      component.itemsPerPage = 10;
+      component.currentPage = 3;
+      fixture.detectChanges();
+
+      const summary = debugElement.query(By.css('#navigation-controlss p'));
+      expect(summary.nativeElement.textContent).toContain('Showing 21-30 of 50 Results');
+    });
+
+    it('should show correct range for last partial page', () => {
+      component.totalItems = 47;
+      component.itemsPerPage = 10;
+      component.currentPage = 5;
+      fixture.detectChanges();
+
+      const summary = debugElement.query(By.css('#navigation-controlss p'));
+      expect(summary.nativeElement.textContent).toContain('Showing 41-47 of 47 Results');
+    });
+
+    it('should show correct range for single item page', () => {
+      component.totalItems = 5;
+      component.itemsPerPage = 10;
+      component.currentPage = 1;
+      fixture.detectChanges();
+
+      const summary = debugElement.query(By.css('#navigation-controlss p'));
+      expect(summary.nativeElement.textContent).toContain('Showing 1-5 of 5 Results');
+    });
   });
 
   describe('Button State Management', () => {
@@ -342,56 +391,6 @@ describe('Pagination', () => {
     });
   });
 
-  describe('Click Event Handling', () => {
-    beforeEach(async () => {
-      await TestBed.configureTestingModule({
-        imports: [Pagination],
-      }).compileComponents();
-
-      fixture = TestBed.createComponent(Pagination);
-      component = fixture.componentInstance;
-      debugElement = fixture.debugElement;
-    });
-
-    it.skip('should handle Previous button click', () => {
-      component.totalItems = 30;
-      component.itemsPerPage = 10;
-      component.currentPage = 2;
-      fixture.detectChanges();
-
-      const previousButton = debugElement.query(By.css('button:first-child'));
-      previousButton.nativeElement.click();
-
-      expect(component.changePage).toHaveBeenCalledWith(1);
-    });
-
-    it.skip('should handle Next button click', () => {
-      component.totalItems = 30;
-      component.itemsPerPage = 10;
-      component.currentPage = 2;
-      fixture.detectChanges();
-
-      const nextButton = debugElement.query(By.css('button:last-child'));
-      nextButton.nativeElement.click();
-
-      expect(component.changePage).toHaveBeenCalledWith(3);
-    });
-
-    it.skip('should handle page number button click', () => {
-      component.totalItems = 30;
-      component.itemsPerPage = 10;
-      component.currentPage = 1;
-      fixture.detectChanges();
-
-      const pageButtons = debugElement.queryAll(
-        By.css('button:not(:first-child):not(:last-child)'),
-      );
-      pageButtons[1].nativeElement.click(); // Click page 2 button
-
-      expect(component.changePage).toHaveBeenCalledWith(2);
-    });
-  });
-
   // With Projected Content tests removed - TestHostComponent configuration errors
 
   describe('Edge Cases', () => {
@@ -442,6 +441,26 @@ describe('Pagination', () => {
       expect(component.pages.length).toBe(100);
       expect(component.pages[0]).toBe(1);
       expect(component.pages[99]).toBe(100);
+    });
+
+    it('should handle zero items in pagination summary', () => {
+      component.totalItems = 0;
+      component.itemsPerPage = 10;
+      component.currentPage = 1;
+      fixture.detectChanges();
+
+      expect(component.startIndex).toBe(1);
+      expect(component.endIndex).toBe(0);
+    });
+
+    it('should handle pagination summary with custom items per page', () => {
+      component.totalItems = 75;
+      component.itemsPerPage = 25;
+      component.currentPage = 2;
+      fixture.detectChanges();
+
+      expect(component.startIndex).toBe(26);
+      expect(component.endIndex).toBe(50);
     });
   });
 });

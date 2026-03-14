@@ -20,7 +20,7 @@ export class UnderwritingStore {
   public readonly queue = computed(() => this._state().queue);
   public readonly selectedLoanId = computed(() => this._state().selectedLoanId);
   public readonly sortOrder = computed(() => this._state().sortOrder);
-
+  public readonly submittedLoanCount = computed(() => this._state().submittedLoanCount);
   constructor(
     private loanApiService: LoanApiService,
     private riskScoringService: RiskScoring,
@@ -45,7 +45,7 @@ export class UnderwritingStore {
       )
       .subscribe({
         next: (data: Loan[]) => {
-          this.updateState({ queue: data });
+          this.updateState({ queue: data, submittedLoanCount: data.length });
         },
       });
   }
