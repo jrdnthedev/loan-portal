@@ -1,6 +1,6 @@
-import { Component, effect, inject } from '@angular/core';
-import { UnderwritingStore } from '../../store/underwriting-store';
+import { Component, Input } from '@angular/core';
 import { Card } from '../../../../shared/components/card/card';
+import { Loan } from '../../../loan-application/models/loan';
 
 @Component({
   selector: 'app-loan-details',
@@ -9,15 +9,5 @@ import { Card } from '../../../../shared/components/card/card';
   styleUrl: './loan-details.scss',
 })
 export class LoanDetails {
-  private store = inject(UnderwritingStore);
-  readonly loading = this.store.loading;
-  readonly state = this.store.state;
-  readonly loanQueue = this.store.queue;
-
-  constructor() {
-    // Effect runs whenever loanQueue signal changes
-    effect(() => {
-      console.log('Loan queue updated:', this.loanQueue());
-    });
-  }
+  @Input() loan!: Loan;
 }

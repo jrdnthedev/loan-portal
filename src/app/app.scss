@@ -1,7 +1,7 @@
 @use '../styles/_variables' as vars;
 #wrapper {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 12px;
   background-color: vars.$linen;
   min-height: 100vh;
