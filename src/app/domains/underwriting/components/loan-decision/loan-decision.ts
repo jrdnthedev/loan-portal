@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { LoanDetails } from '../loan-details/loan-details';
-import { Loan } from '../../../loan-application/models/loan';
+import { Topbar } from '../../../../shared/components/topbar/topbar';
 
 @Component({
   selector: 'app-loan-decision',
-  imports: [LoanDetails],
+  imports: [LoanDetails, Topbar],
   templateUrl: './loan-decision.html',
   styleUrl: './loan-decision.scss',
 })
