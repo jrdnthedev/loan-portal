@@ -13,6 +13,12 @@ export class ReviewQueue {
   private store = inject(UnderwritingStore);
   readonly loanQueue = this.store.queue;
   readonly submittedLoanCount = this.store.submittedLoanCount;
+  readonly typeFrequency = this.store.getTypeFrequency;
+
+  readonly typeCounts = computed(() => {
+    const frequency = this.typeFrequency();
+    return Object.entries(frequency).map(([type, count]) => ({ type, count }));
+  });
 
   columns: TableColumn[] = [
     { key: 'applicantId', label: 'App ID' },
@@ -25,6 +31,12 @@ export class ReviewQueue {
   ];
   currentPage = signal(1);
   itemsPerPage = 4;
+
+  constructor() {
+    effect(() => {
+      console.log(this.typeFrequency());
+    });
+  }
 
   readonly paginatedData = computed(() => {
     const start = (this.currentPage() - 1) * this.itemsPerPage;

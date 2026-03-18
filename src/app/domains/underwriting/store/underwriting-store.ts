@@ -50,6 +50,18 @@ export class UnderwritingStore {
       });
   }
 
+  getTypeFrequency = computed(() => {
+    const loans = this._state().queue;
+    const frequency: Record<string, number> = {};
+
+    loans.forEach((loan) => {
+      const status = loan.status;
+      frequency[status] = (frequency[status] || 0) + 1;
+    });
+
+    return frequency;
+  });
+
   selectLoanForReview() {}
 
   applyUnderwritingFilters() {}
