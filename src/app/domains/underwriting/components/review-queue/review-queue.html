@@ -1,19 +1,21 @@
 <section id="review_queue">
-  <h2>
-    Review Queue
+  <app-topbar>
+    Review Queued
     <span>
       @for (item of typeCounts(); track item.type) {
         {{ item.count }} {{ item.type }}
       }
     </span>
-  </h2>
+  </app-topbar>
 
-  <app-pagination
-    [totalItems]="submittedLoanCount()"
-    [itemsPerPage]="itemsPerPage"
-    [currentPage]="currentPage()"
-    (pageChange)="onPageChange($event)"
-  >
-    <app-table [data]="paginatedData()" [columns]="columns"></app-table>
-  </app-pagination>
+  <div id="review_queue-content">
+    <app-pagination
+      [totalItems]="submittedLoanCount()"
+      [itemsPerPage]="itemsPerPage"
+      [currentPage]="currentPage()"
+      (pageChange)="onPageChange($event)"
+    >
+      <app-table [data]="paginatedData()" [columns]="columns"></app-table>
+    </app-pagination>
+  </div>
 </section>
