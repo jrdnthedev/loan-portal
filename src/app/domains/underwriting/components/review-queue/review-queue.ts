@@ -1,4 +1,4 @@
-import { Component, inject, effect, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed } from '@angular/core';
 import { Table, TableColumn } from '../../../../shared/components/table/table';
 import { UnderwritingStore } from '../../store/underwriting-store';
 import { Pagination } from '../../../../shared/components/pagination/pagination';
@@ -31,12 +31,6 @@ export class ReviewQueue {
   ];
   currentPage = signal(1);
   itemsPerPage = 4;
-
-  constructor() {
-    effect(() => {
-      console.log(this.typeFrequency());
-    });
-  }
 
   readonly paginatedData = computed(() => {
     const start = (this.currentPage() - 1) * this.itemsPerPage;
