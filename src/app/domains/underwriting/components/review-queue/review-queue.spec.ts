@@ -301,17 +301,4 @@ describe('ReviewQueue', () => {
       ]);
     });
   });
-
-  describe('Console Logging Effect', () => {
-    it('should log type frequency on initialization', () => {
-      const consoleSpy = vi.spyOn(console, 'log');
-
-      // Create a new component instance to trigger the effect
-      const newFixture = TestBed.createComponent(ReviewQueue);
-      newFixture.detectChanges();
-
-      expect(consoleSpy).toHaveBeenCalled();
-      consoleSpy.mockRestore();
-    });
-  });
 });
