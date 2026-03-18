@@ -50,7 +50,7 @@ export class UnderwritingStore {
       });
   }
 
-  getTypeFrequency = computed(() => {
+  getStatusFrequency = computed(() => {
     const loans = this._state().queue;
     const frequency: Record<string, number> = {};
 

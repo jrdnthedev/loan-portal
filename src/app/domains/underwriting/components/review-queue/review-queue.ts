@@ -13,7 +13,7 @@ export class ReviewQueue {
   private store = inject(UnderwritingStore);
   readonly loanQueue = this.store.queue;
   readonly submittedLoanCount = this.store.submittedLoanCount;
-  readonly typeFrequency = this.store.getTypeFrequency;
+  readonly typeFrequency = this.store.getStatusFrequency;
 
   readonly typeCounts = computed(() => {
     const frequency = this.typeFrequency();
