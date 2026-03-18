@@ -143,13 +143,25 @@ describe('Nav', () => {
       authService.hasRole.mockImplementation((role: string) => role === 'loan-officer');
 
       const items = component.navItems();
-      const underwritingItem = items.find((item) => item.label === 'Underwriting Panel');
+      const underwritingItem = items.find((item) => item.label === 'Underwriting');
       const adminItem = items.find((item) => item.label === 'Admin');
 
       expect(underwritingItem).toBeTruthy();
-      expect(underwritingItem?.route).toBe('/underwriting');
+      expect(underwritingItem?.children).toBeTruthy();
+      expect(underwritingItem?.children?.length).toBe(3);
+      expect(underwritingItem?.children?.[0].label).toBe('Review Queue');
+      expect(underwritingItem?.children?.[0].route).toBe('/underwriting/review_queue');
+      expect(underwritingItem?.children?.[1].label).toBe('Loan Decision');
+      expect(underwritingItem?.children?.[1].route).toBe('/underwriting/loan_decision');
+      expect(underwritingItem?.children?.[2].label).toBe('Decision History');
+      expect(underwritingItem?.children?.[2].route).toBe('/underwriting/decision_history');
       expect(adminItem).toBeTruthy();
-      expect(adminItem?.route).toBe('/admin');
+      expect(adminItem?.children).toBeTruthy();
+      expect(adminItem?.children?.length).toBe(2);
+      expect(adminItem?.children?.[0].label).toBe('Audit Log');
+      expect(adminItem?.children?.[0].route).toBe('/admin/audit_log');
+      expect(adminItem?.children?.[1].label).toBe('User Management');
+      expect(adminItem?.children?.[1].route).toBe('/admin/user_management');
     });
 
     it('should show Profile and Logout for authenticated users', () => {

@@ -1,0 +1,7 @@
+#decision-container {
+  display: flex;
+  gap: 12px;
+  > div {
+    flex: 1;
+  }
+}

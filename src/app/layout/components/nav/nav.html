@@ -18,7 +18,22 @@
   <ul id="nav-menu" [class.nav-menu-open]="isMenuOpen()">
     @for (item of navItems(); track item.label) {
       <li>
-        @if (item.route) {
+        @if (item.children) {
+          <div class="nav-label">{{ item.label }}</div>
+          <ul class="nav-submenu">
+            @for (child of item.children; track child.label) {
+              <li>
+                @if (child.route) {
+                  <a [routerLink]="child.route" (click)="closeMenu()">{{ child.label }}</a>
+                } @else if (child.action) {
+                  <a (click)="child.action()" (keydown.enter)="child.action()" tabindex="0">{{
+                    child.label
+                  }}</a>
+                }
+              </li>
+            }
+          </ul>
+        } @else if (item.route) {
           <a [routerLink]="item.route" (click)="closeMenu()">{{ item.label }}</a>
         } @else if (item.action) {
           <a (click)="item.action()" (keydown.enter)="item.action()" tabindex="0">{{

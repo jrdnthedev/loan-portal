@@ -1,4 +1,4 @@
-import { Component, inject, effect, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed } from '@angular/core';
 import { Table, TableColumn } from '../../../../shared/components/table/table';
 import { UnderwritingStore } from '../../store/underwriting-store';
 import { Pagination } from '../../../../shared/components/pagination/pagination';
@@ -13,6 +13,12 @@ export class ReviewQueue {
   private store = inject(UnderwritingStore);
   readonly loanQueue = this.store.queue;
   readonly submittedLoanCount = this.store.submittedLoanCount;
+  readonly typeFrequency = this.store.getStatusFrequency;
+
+  readonly typeCounts = computed(() => {
+    const frequency = this.typeFrequency();
+    return Object.entries(frequency).map(([type, count]) => ({ type, count }));
+  });
 
   columns: TableColumn[] = [
     { key: 'applicantId', label: 'App ID' },
