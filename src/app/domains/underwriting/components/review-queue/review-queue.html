@@ -1,5 +1,12 @@
 <section id="review_queue">
-  <h2>Review Queue <span>12 pending 3 Returned 1 escalated</span></h2>
+  <h2>
+    Review Queue
+    <span>
+      @for (item of typeCounts(); track item.type) {
+        {{ item.count }} {{ item.type }}
+      }
+    </span>
+  </h2>
 
   <app-pagination
     [totalItems]="submittedLoanCount()"

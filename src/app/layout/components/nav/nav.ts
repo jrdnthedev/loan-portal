@@ -11,6 +11,7 @@ interface NavItem {
   action?: () => void;
   requiresAuth?: boolean;
   roles?: string[];
+  children?: NavItem[];
 }
 
 @Component({
@@ -52,12 +53,34 @@ export class Nav {
       if (this.authService.hasRole('loan-officer')) {
         items.push(
           {
-            label: 'Underwriting Panel',
-            route: '/underwriting',
+            label: 'Underwriting',
+            children: [
+              {
+                label: 'Review Queue',
+                route: '/underwriting/review_queue',
+              },
+              {
+                label: 'Loan Decision',
+                route: '/underwriting/loan_decision',
+              },
+              {
+                label: 'Decision History',
+                route: '/underwriting/decision_history',
+              },
+            ],
           },
           {
             label: 'Admin',
-            route: '/admin',
+            children: [
+              {
+                label: 'Audit Log',
+                route: '/admin/audit_log',
+              },
+              {
+                label: 'User Management',
+                route: '/admin/user_management',
+              },
+            ],
           },
         );
       }
