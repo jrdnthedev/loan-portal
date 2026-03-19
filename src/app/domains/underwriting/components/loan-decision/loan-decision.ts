@@ -1,10 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { LoanDetails } from '../loan-details/loan-details';
 import { Topbar } from '../../../../shared/components/topbar/topbar';
+import { UnderwritingStore } from '../../store/underwriting-store';
+import { Card } from '../../../../shared/components/card/card';
 
 @Component({
   selector: 'app-loan-decision',
-  imports: [LoanDetails, Topbar],
+  imports: [LoanDetails, Topbar, Card],
   templateUrl: './loan-decision.html',
   styleUrl: './loan-decision.scss',
 })
@@ -57,4 +59,6 @@ export class LoanDecision {
       interestRate: 4.5,
     },
   };
+  private store = inject(UnderwritingStore);
+  readonly riskProfile = this.store.evaluateLoanRisk(this.loan);
 }

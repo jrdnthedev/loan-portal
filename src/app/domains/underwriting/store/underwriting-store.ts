@@ -21,6 +21,14 @@ export class UnderwritingStore {
   public readonly selectedLoanId = computed(() => this._state().selectedLoanId);
   public readonly sortOrder = computed(() => this._state().sortOrder);
   public readonly submittedLoanCount = computed(() => this._state().submittedLoanCount);
+
+  // Computed signal - loans enriched with risk profiles
+  public readonly queueWithRisk = computed(() => {
+    return this._state().queue.map((loan) => ({
+      ...loan,
+      riskProfile: this.riskScoringService.evaluate(loan),
+    }));
+  });
   constructor(
     private loanApiService: LoanApiService,
     private riskScoringService: RiskScoring,
@@ -69,4 +77,9 @@ export class UnderwritingStore {
   markLoanAsReviewed() {}
 
   prioritizeLoan() {}
+
+  // Risk evaluation methods
+  evaluateLoanRisk(loan: Loan) {
+    return this.riskScoringService.evaluate(loan);
+  }
 }
