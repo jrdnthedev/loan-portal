@@ -39,6 +39,10 @@ export class ReviewQueue {
     return this.loanQueue().slice(start, end);
   });
 
+  onSelectionChange(event: any) {
+    console.log(event);
+  }
+
   onPageChange(page: number) {
     this.currentPage.set(page);
   }
