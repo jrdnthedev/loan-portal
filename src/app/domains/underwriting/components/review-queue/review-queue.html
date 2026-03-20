@@ -1,11 +1,13 @@
 <section id="review_queue">
   <app-topbar>
-    Review Queued
-    <span>
-      @for (item of typeCounts(); track item.type) {
-        {{ item.count }} {{ item.type }}
-      }
-    </span>
+    <h1>
+      Review Queued
+      <span>
+        @for (item of typeCounts(); track item.type) {
+          {{ item.count }} {{ item.type }}
+        }
+      </span>
+    </h1>
   </app-topbar>
 
   <div id="review_queue-content">
