@@ -63,7 +63,7 @@ export class Table<T> {
     }
 
     this._selectedRows.set(newSelection);
-    this.selectionChange.emit(newSelection);
+    this.selectionChange(newSelection);
   }
 
   // Toggle all rows selection
@@ -73,6 +73,6 @@ export class Table<T> {
       : new Set(this.data()); // Select all
 
     this._selectedRows.set(newSelection);
-    this.selectionChange.emit(newSelection);
+    this.selectionChange(newSelection);
   }
 }

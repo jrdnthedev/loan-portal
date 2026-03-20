@@ -60,8 +60,8 @@ describe('Table', () => {
     });
 
     it('should have default values', () => {
-      expect(component.data).toEqual([]);
-      expect(component.columns).toEqual([]);
+      expect(component.data()).toEqual([]);
+      expect(component.columns()).toEqual([]);
     });
   });
 
@@ -78,8 +78,8 @@ describe('Table', () => {
 
     it('should accept data input', () => {
       const testData = [{ name: 'Test', value: 123 }];
-      component.data = testData;
-      expect(component.data).toBe(testData);
+      fixture.componentRef.setInput('data', testData);
+      expect(component.data()).toBe(testData);
     });
 
     it('should accept columns input', () => {
@@ -87,8 +87,8 @@ describe('Table', () => {
         { key: 'name', label: 'Name' },
         { key: 'value', label: 'Value' },
       ];
-      component.columns = testColumns;
-      expect(component.columns).toBe(testColumns);
+      fixture.componentRef.setInput('columns', testColumns);
+      expect(component.columns()).toBe(testColumns);
     });
   });
 
@@ -104,31 +104,31 @@ describe('Table', () => {
     });
 
     it('should generate headers from columns when provided', () => {
-      component.columns = [
+      fixture.componentRef.setInput('columns', [
         { key: 'id', label: 'ID' },
         { key: 'name', label: 'Name' },
-      ];
+      ]);
 
       expect(component.headers).toEqual(['id', 'name']);
     });
 
     it('should auto-generate headers from data when no columns provided', () => {
-      component.data = [{ firstName: 'John', lastName: 'Doe' }];
-      component.columns = [];
+      fixture.componentRef.setInput('data', [{ firstName: 'John', lastName: 'Doe' }]);
+      fixture.componentRef.setInput('columns', []);
 
       expect(component.headers).toEqual(['firstName', 'lastName']);
     });
 
     it('should return empty array when no data and no columns', () => {
-      component.data = [];
-      component.columns = [];
+      fixture.componentRef.setInput('data', []);
+      fixture.componentRef.setInput('columns', []);
 
       expect(component.headers).toEqual([]);
     });
 
     it('should prioritize columns over auto-generation', () => {
-      component.data = [{ firstName: 'John', lastName: 'Doe', age: 30 }];
-      component.columns = [{ key: 'firstName', label: 'First Name' }];
+      fixture.componentRef.setInput('data', [{ firstName: 'John', lastName: 'Doe', age: 30 }]);
+      fixture.componentRef.setInput('columns', [{ key: 'firstName', label: 'First Name' }]);
 
       expect(component.headers).toEqual(['firstName']);
     });
@@ -146,23 +146,23 @@ describe('Table', () => {
     });
 
     it('should return column label when column is defined', () => {
-      component.columns = [
+      fixture.componentRef.setInput('columns', [
         { key: 'firstName', label: 'First Name' },
         { key: 'email', label: 'Email Address' },
-      ];
+      ]);
 
       expect(component.getHeaderLabel('firstName')).toBe('First Name');
       expect(component.getHeaderLabel('email')).toBe('Email Address');
     });
 
     it('should return key as label when column is not found', () => {
-      component.columns = [{ key: 'name', label: 'Full Name' }];
+      fixture.componentRef.setInput('columns', [{ key: 'name', label: 'Full Name' }]);
 
       expect(component.getHeaderLabel('age')).toBe('age');
     });
 
     it('should return key as label when no columns are defined', () => {
-      component.columns = [];
+      fixture.componentRef.setInput('columns', []);
 
       expect(component.getHeaderLabel('firstName')).toBe('firstName');
     });
@@ -234,7 +234,7 @@ describe('Table', () => {
     });
 
     it('should render header cells when headers are present', () => {
-      component.data = [{ name: 'John', age: 30 }];
+      fixture.componentRef.setInput('data', [{ name: 'John', age: 30 }]);
       fixture.detectChanges();
 
       const headerCells = debugElement.queryAll(By.css('th'));
@@ -244,10 +244,10 @@ describe('Table', () => {
     });
 
     it('should render data rows', () => {
-      component.data = [
+      fixture.componentRef.setInput('data', [
         { name: 'John', age: 30 },
         { name: 'Jane', age: 25 },
-      ];
+      ]);
       fixture.detectChanges();
 
       const dataRows = debugElement.queryAll(By.css('tbody tr'));
@@ -255,7 +255,7 @@ describe('Table', () => {
     });
 
     it('should render data cells with correct values', () => {
-      component.data = [{ name: 'John', age: 30 }];
+      fixture.componentRef.setInput('data', [{ name: 'John', age: 30 }]);
       fixture.detectChanges();
 
       const dataCells = debugElement.queryAll(By.css('tbody td'));
@@ -265,11 +265,11 @@ describe('Table', () => {
     });
 
     it('should set data-label attributes on cells', () => {
-      component.data = [{ name: 'John', age: 30 }];
-      component.columns = [
+      fixture.componentRef.setInput('data', [{ name: 'John', age: 30 }]);
+      fixture.componentRef.setInput('columns', [
         { key: 'name', label: 'Full Name' },
         { key: 'age', label: 'Age' },
-      ];
+      ]);
       fixture.detectChanges();
 
       const dataCells = debugElement.queryAll(By.css('tbody td'));
@@ -294,8 +294,8 @@ describe('Table', () => {
     });
 
     it('should handle empty data array', () => {
-      component.data = [];
-      component.columns = [{ key: 'name', label: 'Name' }];
+      fixture.componentRef.setInput('data', []);
+      fixture.componentRef.setInput('columns', [{ key: 'name', label: 'Name' }]);
       fixture.detectChanges();
 
       const headerCells = debugElement.queryAll(By.css('th'));
@@ -306,11 +306,11 @@ describe('Table', () => {
     });
 
     it('should handle data with missing properties', () => {
-      component.data = [{ name: 'John' }];
-      component.columns = [
+      fixture.componentRef.setInput('data', [{ name: 'John' }]);
+      fixture.componentRef.setInput('columns', [
         { key: 'name', label: 'Name' },
         { key: 'age', label: 'Age' },
-      ];
+      ]);
       fixture.detectChanges();
 
       const dataCells = debugElement.queryAll(By.css('tbody td'));
@@ -319,7 +319,7 @@ describe('Table', () => {
     });
 
     it('should handle data with null and undefined values', () => {
-      component.data = [{ name: null, age: undefined, status: 'active' }];
+      fixture.componentRef.setInput('data', [{ name: null, age: undefined, status: 'active' }]);
       fixture.detectChanges();
 
       const dataCells = debugElement.queryAll(By.css('tbody td'));
@@ -329,10 +329,10 @@ describe('Table', () => {
     });
 
     it('should handle inconsistent data structures', () => {
-      component.data = [
+      fixture.componentRef.setInput('data', [
         { name: 'John', age: 30 },
         { name: 'Jane', email: 'jane@example.com' },
-      ];
+      ]);
       fixture.detectChanges();
 
       const headerCells = debugElement.queryAll(By.css('th'));
@@ -365,16 +365,16 @@ describe('Table', () => {
         { id: 2, username: 'janedoe', email: 'jane@example.com' },
       ];
 
-      userComponent.data = userData;
-      userComponent.columns = [
+      userFixture.componentRef.setInput('data', userData);
+      userFixture.componentRef.setInput('columns', [
         { key: 'id', label: 'User ID' },
         { key: 'username', label: 'Username' },
         { key: 'email', label: 'Email' },
-      ];
+      ]);
 
       userFixture.detectChanges();
 
-      expect(userComponent.data).toBe(userData);
+      expect(userComponent.data()).toBe(userData);
       expect(userComponent.getValue(userData[0], 'username')).toBe('johndoe');
     });
   });
