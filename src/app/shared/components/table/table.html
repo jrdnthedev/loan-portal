@@ -3,12 +3,19 @@
     <thead>
       <tr>
         @if (selectable()) {
-          <th>
-            <input type="checkbox" [checked]="isAllSelected()" (change)="toggleAll()" />
+          <th scope="col">
+            <label class="sr-only" for="select-all-checkbox">Select All</label>
+            <input
+              id="select-all-checkbox"
+              type="checkbox"
+              [checked]="isAllSelected()"
+              (change)="toggleAll()"
+              [attr.aria-label]="isAllSelected() ? 'Deselect all rows' : 'Select all rows'"
+            />
           </th>
         }
         @for (header of headers; track $index) {
-          <th>
+          <th scope="col">
             {{ getHeaderLabel(header) }}
           </th>
         }
@@ -19,7 +26,16 @@
         <tr>
           @if (selectable()) {
             <td>
-              <input type="checkbox" [checked]="isRowSelected(row)" (change)="toggleRow(row)" />
+              <label [attr.for]="'row-checkbox-' + $index" class="sr-only">
+                Select row {{ $index + 1 }}
+              </label>
+              <input
+                [id]="'row-checkbox-' + $index"
+                type="checkbox"
+                [checked]="isRowSelected(row)"
+                (change)="toggleRow(row)"
+                [attr.aria-label]="'Select row ' + ($index + 1)"
+              />
             </td>
           }
           @for (header of headers; track $index) {

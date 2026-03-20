@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement, Component } from '@angular/core';
 import { By } from '@angular/platform-browser';
+import { axe } from 'vitest-axe';
 
 import { Table, TableColumn } from './table';
 
@@ -376,6 +377,86 @@ describe('Table', () => {
 
       expect(userComponent.data()).toBe(userData);
       expect(userComponent.getValue(userData[0], 'username')).toBe('johndoe');
+    });
+  });
+
+  describe('Accessibility (a11y)', () => {
+    beforeEach(async () => {
+      await TestBed.configureTestingModule({
+        imports: [Table],
+      }).compileComponents();
+
+      fixture = TestBed.createComponent(Table);
+      component = fixture.componentInstance;
+      debugElement = fixture.debugElement;
+    });
+
+    it('should have no accessibility violations with empty table', async () => {
+      fixture.detectChanges();
+      const results = await axe(fixture.nativeElement);
+      expect(results).toHaveNoViolations();
+    });
+
+    it('should have no accessibility violations with populated table', async () => {
+      fixture.componentRef.setInput('data', [
+        { id: 1, name: 'John Doe', email: 'john@example.com' },
+        { id: 2, name: 'Jane Smith', email: 'jane@example.com' },
+      ]);
+      fixture.componentRef.setInput('columns', [
+        { key: 'id', label: 'ID' },
+        { key: 'name', label: 'Full Name' },
+        { key: 'email', label: 'Email Address' },
+      ]);
+      fixture.detectChanges();
+
+      const results = await axe(fixture.nativeElement);
+      expect(results).toHaveNoViolations();
+    });
+
+    it('should have no violations with selectable rows', async () => {
+      fixture.componentRef.setInput('data', [
+        { id: 1, name: 'John Doe' },
+        { id: 2, name: 'Jane Smith' },
+      ]);
+      fixture.componentRef.setInput('columns', [
+        { key: 'id', label: 'ID' },
+        { key: 'name', label: 'Name' },
+      ]);
+      fixture.componentRef.setInput('selectable', true);
+      fixture.detectChanges();
+
+      const results = await axe(fixture.nativeElement);
+      expect(results).toHaveNoViolations();
+    });
+
+    it('should have no violations with auto-generated headers', async () => {
+      fixture.componentRef.setInput('data', [
+        { firstName: 'John', lastName: 'Doe', age: 30 },
+        { firstName: 'Jane', lastName: 'Smith', age: 25 },
+      ]);
+      fixture.detectChanges();
+
+      const results = await axe(fixture.nativeElement);
+      expect(results).toHaveNoViolations();
+    });
+
+    it('should meet WCAG 2.1 Level AA standards', async () => {
+      fixture.componentRef.setInput('data', [{ id: 1, name: 'John Doe', status: 'Active' }]);
+      fixture.componentRef.setInput('columns', [
+        { key: 'id', label: 'ID' },
+        { key: 'name', label: 'Name' },
+        { key: 'status', label: 'Status' },
+      ]);
+      fixture.detectChanges();
+
+      const results = await axe(fixture.nativeElement, {
+        runOnly: {
+          type: 'tag',
+          values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'],
+        },
+      });
+
+      expect(results).toHaveNoViolations();
     });
   });
 });
