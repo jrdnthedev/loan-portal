@@ -15,7 +15,12 @@
       [currentPage]="currentPage()"
       (pageChange)="onPageChange($event)"
     >
-      <app-table [data]="paginatedData()" [columns]="columns"></app-table>
+      <app-table
+        [data]="paginatedData()"
+        [columns]="columns"
+        [selectable]="true"
+        (selectionChange)="onSelectionChange($event)"
+      ></app-table>
     </app-pagination>
   </div>
 </section>
