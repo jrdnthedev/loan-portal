@@ -1,12 +1,14 @@
 import { Component } from '@angular/core';
-import {
-  ChildNavLayout,
-  NavItem,
-} from '../../../../shared/components/child-nav-layout/child-nav-layout';
+
+interface NavItem {
+  label: string;
+  route: string;
+  description: string;
+}
 
 @Component({
   selector: 'app-admin-console',
-  imports: [ChildNavLayout],
+  imports: [],
   templateUrl: './admin-console.html',
   styleUrl: './admin-console.scss',
 })

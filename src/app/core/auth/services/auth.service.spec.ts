@@ -114,6 +114,126 @@ describe('AuthService', () => {
 
       consoleSpy.mockRestore();
     });
+
+    it('should use sub field as fallback for id in token payload', () => {
+      const payload = {
+        sub: 'sub-id-42',
+        email: 'sub@example.com',
+        firstName: 'Sub',
+        lastName: 'User',
+        role: 'user',
+        phone: '555-0000',
+      };
+      const mockToken = `header.${btoa(JSON.stringify(payload))}.signature`;
+
+      vi.spyOn(tokenService, 'hasValidAccessToken').mockReturnValue(true);
+      vi.spyOn(tokenService, 'getAccessToken').mockReturnValue(mockToken);
+
+      const newService = new AuthService(
+        TestBed.inject(HttpTestingController) as any,
+        tokenService,
+        router,
+      );
+
+      expect(newService.user()?.id).toBe('sub-id-42');
+    });
+
+    it('should prefer id over sub when both are present in token payload', () => {
+      const payload = {
+        id: 'primary-id',
+        sub: 'sub-id',
+        email: 'both@example.com',
+        firstName: 'Both',
+        lastName: 'Fields',
+        role: 'admin',
+        phone: '555-1111',
+      };
+      const mockToken = `header.${btoa(JSON.stringify(payload))}.signature`;
+
+      vi.spyOn(tokenService, 'hasValidAccessToken').mockReturnValue(true);
+      vi.spyOn(tokenService, 'getAccessToken').mockReturnValue(mockToken);
+
+      const newService = new AuthService(
+        TestBed.inject(HttpTestingController) as any,
+        tokenService,
+        router,
+      );
+
+      expect(newService.user()?.id).toBe('primary-id');
+    });
+
+    it('should not load user when getAccessToken returns null', () => {
+      vi.spyOn(tokenService, 'hasValidAccessToken').mockReturnValue(true);
+      vi.spyOn(tokenService, 'getAccessToken').mockReturnValue(null);
+
+      const newService = new AuthService(
+        TestBed.inject(HttpTestingController) as any,
+        tokenService,
+        router,
+      );
+
+      expect(newService.isAuthenticated()).toBeFalsy();
+      expect(newService.user()).toBeNull();
+    });
+
+    it('should map all user fields from token payload correctly', () => {
+      const payload = {
+        id: '99',
+        email: 'full@example.com',
+        firstName: 'Full',
+        lastName: 'Payload',
+        role: 'underwriter',
+        phone: '555-9999',
+      };
+      const mockToken = `header.${btoa(JSON.stringify(payload))}.signature`;
+
+      vi.spyOn(tokenService, 'hasValidAccessToken').mockReturnValue(true);
+      vi.spyOn(tokenService, 'getAccessToken').mockReturnValue(mockToken);
+
+      const newService = new AuthService(
+        TestBed.inject(HttpTestingController) as any,
+        tokenService,
+        router,
+      );
+
+      const user = newService.user();
+      expect(user).toEqual({
+        id: '99',
+        email: 'full@example.com',
+        firstName: 'Full',
+        lastName: 'Payload',
+        role: 'underwriter',
+        phone: '555-9999',
+      });
+    });
+
+    it('should emit user through user$ observable after loading from token', () => {
+      const payload = {
+        id: '1',
+        email: 'obs@example.com',
+        firstName: 'Obs',
+        lastName: 'User',
+        role: 'user',
+        phone: '555-2222',
+      };
+      const mockToken = `header.${btoa(JSON.stringify(payload))}.signature`;
+
+      vi.spyOn(tokenService, 'hasValidAccessToken').mockReturnValue(true);
+      vi.spyOn(tokenService, 'getAccessToken').mockReturnValue(mockToken);
+
+      const newService = new AuthService(
+        TestBed.inject(HttpTestingController) as any,
+        tokenService,
+        router,
+      );
+
+      let emittedUser: User | null | undefined;
+      newService.user$.subscribe((user) => {
+        emittedUser = user;
+      });
+
+      expect(emittedUser?.email).toBe('obs@example.com');
+    });
   });
 
   describe('Login', () => {
@@ -340,6 +460,99 @@ describe('AuthService', () => {
 
       const req = httpMock.expectOne(`${environment.apiUrl}/auth/register`);
       req.flush('Email already exists', { status: 400, statusText: 'Bad Request' });
+    });
+
+    it('should use token field as fallback when accessToken is not present', () => {
+      const userData = {
+        email: 'fallback@example.com',
+        password: 'password123',
+      };
+
+      const responseWithTokenOnly = {
+        user: mockUser,
+        token: 'fallback-token-value',
+        accessToken: undefined,
+        refreshToken: undefined,
+      };
+
+      vi.spyOn(tokenService, 'setTokens');
+
+      service.register(userData).subscribe({
+        next: () => {
+          expect(tokenService.setTokens).toHaveBeenCalledWith(
+            'fallback-token-value',
+            'fallback-token-value',
+          );
+        },
+      });
+
+      const req = httpMock.expectOne(`${environment.apiUrl}/auth/register`);
+      req.flush(responseWithTokenOnly);
+    });
+
+    it('should set loading state to true while registration is in progress', () => {
+      const userData = {
+        email: 'loading@example.com',
+        password: 'password123',
+      };
+
+      // Subscribe to start the request (which sets loading = true)
+      service.register(userData).subscribe();
+
+      // Before HTTP resolves, loading should be true
+      expect(service.isLoading()).toBeTruthy();
+
+      const req = httpMock.expectOne(`${environment.apiUrl}/auth/register`);
+      req.flush(mockLoginResponse);
+
+      // After response, loading should be false
+      expect(service.isLoading()).toBeFalsy();
+    });
+
+    it('should emit registered user through user$ observable', () => {
+      const userData = {
+        email: 'new@example.com',
+        password: 'password123',
+        firstName: 'New',
+        lastName: 'User',
+      };
+
+      const emittedUsers: (User | null)[] = [];
+      service.user$.subscribe((user) => {
+        emittedUsers.push(user);
+      });
+
+      service.register(userData).subscribe();
+
+      const req = httpMock.expectOne(`${environment.apiUrl}/auth/register`);
+      req.flush(mockLoginResponse);
+
+      expect(emittedUsers[emittedUsers.length - 1]).toEqual(mockUser);
+    });
+
+    it('should not set tokens when response has no token or accessToken', () => {
+      const userData = {
+        email: 'notoken@example.com',
+        password: 'password123',
+      };
+
+      const responseWithNoTokens = {
+        user: mockUser,
+        token: undefined,
+        accessToken: undefined,
+        refreshToken: undefined,
+      };
+
+      vi.spyOn(tokenService, 'setTokens');
+
+      service.register(userData).subscribe({
+        next: () => {
+          expect(tokenService.setTokens).not.toHaveBeenCalled();
+        },
+      });
+
+      const req = httpMock.expectOne(`${environment.apiUrl}/auth/register`);
+      req.flush(responseWithNoTokens);
     });
   });
 

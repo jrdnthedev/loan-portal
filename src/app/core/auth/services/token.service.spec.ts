@@ -55,6 +55,21 @@ describe('TokenService', () => {
       expect(token).toBeNull();
       expect(localStorage.getItem).toHaveBeenCalledWith('access_token');
     });
+
+    it('should return the exact stored value without modification', () => {
+      const jwtToken = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjMifQ.signature';
+      localStorageMock['access_token'] = jwtToken;
+
+      expect(service.getAccessToken()).toBe(jwtToken);
+    });
+
+    it('should not read from refresh_token key', () => {
+      localStorageMock['refresh_token'] = 'refresh-value';
+
+      const token = service.getAccessToken();
+
+      expect(token).toBeNull();
+    });
   });
 
   describe('getRefreshToken', () => {
@@ -73,6 +88,21 @@ describe('TokenService', () => {
 
       expect(token).toBeNull();
       expect(localStorage.getItem).toHaveBeenCalledWith('refresh_token');
+    });
+
+    it('should return the exact stored value without modification', () => {
+      const refreshValue = 'long-refresh-token-value-abc123';
+      localStorageMock['refresh_token'] = refreshValue;
+
+      expect(service.getRefreshToken()).toBe(refreshValue);
+    });
+
+    it('should not read from access_token key', () => {
+      localStorageMock['access_token'] = 'access-value';
+
+      const token = service.getRefreshToken();
+
+      expect(token).toBeNull();
     });
   });
 

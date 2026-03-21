@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ReactiveFormsModule } from '@angular/forms';
+import { By } from '@angular/platform-browser';
+import { axe } from 'vitest-axe';
 import { LoanForm } from './loan-form';
 import { Loan } from '../../models/loan';
 import { LoanType } from '../../models/loan-type';
