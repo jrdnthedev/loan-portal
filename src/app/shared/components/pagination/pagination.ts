@@ -2,6 +2,7 @@ import { Component, Input, output } from '@angular/core';
 
 @Component({
   selector: 'app-pagination',
+  standalone: true,
   imports: [],
   templateUrl: './pagination.html',
   styleUrl: './pagination.scss',

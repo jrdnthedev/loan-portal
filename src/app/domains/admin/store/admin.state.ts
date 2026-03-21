@@ -12,8 +12,6 @@ export interface AdminState {
 }
 
 const filters: AdminFilters = {
-  role: 'admin',
-  isActive: false,
   searchTerm: '',
 };
 export const initialAdminState: AdminState = {

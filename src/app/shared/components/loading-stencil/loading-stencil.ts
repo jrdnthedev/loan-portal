@@ -5,6 +5,7 @@ export type StencilType = 'card' | 'table' | 'form' | 'list';
 
 @Component({
   selector: 'app-loading-stencil',
+  standalone: true,
   imports: [CommonModule],
   templateUrl: './loading-stencil.html',
   styleUrl: './loading-stencil.scss',

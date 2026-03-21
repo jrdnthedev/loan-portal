@@ -9,8 +9,8 @@ import { User } from '../../../domains/admin/models/user';
 
 describe('RoleGuard', () => {
   let guard: RoleGuard;
-  let authService: jasmine.SpyObj<AuthService>;
-  let router: jasmine.SpyObj<Router>;
+  let authService: AuthService;
+  let router: Router;
   let userSubject: BehaviorSubject<User | null>;
 
   const mockAdminUser: User = {
@@ -60,8 +60,7 @@ describe('RoleGuard', () => {
     });
 
     guard = TestBed.inject(RoleGuard);
-    authService = TestBed.inject(AuthService) as jasmine.SpyObj<AuthService>;
-    router = TestBed.inject(Router) as jasmine.SpyObj<Router>;
+    router = TestBed.inject(Router);
   });
 
   it('should be created', () => {
