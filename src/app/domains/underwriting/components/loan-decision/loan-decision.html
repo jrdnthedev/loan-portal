@@ -1,23 +1,27 @@
-<app-topbar> Review Queue -> APP-0047853 </app-topbar>
-<div id="decision-container">
-  <div>
-    <app-loan-details [loan]="loan"></app-loan-details>
-    <app-card>
-      <h2>Risk Flags, {{ riskProfile.score }}</h2>
-      <div>
-        @for (flag of riskProfile.flags; track $index) {
-          <p>{{ flag }}</p>
-        }
-      </div>
-      <div>
-        {{ riskProfile.riskLevel }}
-      </div>
-      <div>
-        {{ riskProfile.explanation }}
-      </div>
-    </app-card>
+@if (currentLoan(); as loan) {
+  <app-topbar> Review Queue -> {{ loan.applicant.fullName }} </app-topbar>
+  <div id="decision-container">
+    <div>
+      <app-loan-details [loan]="loan"></app-loan-details>
+      @if (riskProfile(); as risk) {
+        <app-card>
+          <h2>Risk Flags, {{ risk.score }}</h2>
+          <div>
+            @for (flag of risk.flags; track $index) {
+              <p>{{ flag }}</p>
+            }
+          </div>
+          <div>
+            {{ risk.riskLevel }}
+          </div>
+          <div>
+            {{ risk.explanation }}
+          </div>
+        </app-card>
+      }
+    </div>
+    <div>
+      <app-loan-details [loan]="loan"></app-loan-details>
+    </div>
   </div>
-  <div>
-    <app-loan-details [loan]="loan"></app-loan-details>
-  </div>
-</div>
+}

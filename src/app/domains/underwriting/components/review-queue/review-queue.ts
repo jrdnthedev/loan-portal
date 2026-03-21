@@ -1,8 +1,10 @@
 import { Component, inject, signal, computed } from '@angular/core';
+import { Router } from '@angular/router';
 import { Table, TableColumn } from '../../../../shared/components/table/table';
 import { UnderwritingStore } from '../../store/underwriting-store';
 import { Pagination } from '../../../../shared/components/pagination/pagination';
 import { Topbar } from '../../../../shared/components/topbar/topbar';
+import { Loan } from '../../../loan-application/models/loan';
 
 @Component({
   selector: 'app-review-queue',
@@ -12,6 +14,7 @@ import { Topbar } from '../../../../shared/components/topbar/topbar';
 })
 export class ReviewQueue {
   private store = inject(UnderwritingStore);
+  private router = inject(Router);
   readonly loanQueue = this.store.queue;
   readonly submittedLoanCount = this.store.submittedLoanCount;
   readonly typeFrequency = this.store.getStatusFrequency;
@@ -39,8 +42,13 @@ export class ReviewQueue {
     return this.loanQueue().slice(start, end);
   });
 
-  onSelectionChange(event: any) {
-    console.log(event);
+  onSelectionChange(event: Set<Loan>) {
+    const ids = [...event].map((loan) => loan.id);
+    this.store.selectLoans(ids);
+  }
+
+  reviewSelected() {
+    this.router.navigate(['/underwriting/loan_decision']);
   }
 
   onPageChange(page: number) {
