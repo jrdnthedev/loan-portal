@@ -1,15 +1,100 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Register } from './register';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 import { LoginResponse } from '../../interfaces/auth.interface';
 import { provideRouter } from '@angular/router';
-import { vi } from 'vitest';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
 
 describe('Register', () => {
   let component: Register;
   let fixture: ComponentFixture<Register>;
+  let authServiceSpy: { register: ReturnType<typeof vi.fn>; isLoading: ReturnType<typeof vi.fn> };
+  let router: Router;
+
+  const mockRegisterResponse: LoginResponse = {
+    user: {
+      id: '1',
+      email: 'john@example.com',
+      firstName: 'John',
+      lastName: 'Doe',
+      role: 'loan-officer',
+      phone: '555-1234',
+    },
+    token: 'mock-token',
+    accessToken: 'mock-access-token',
+    refreshToken: 'mock-refresh-token',
+  };
+
+  describe('Component Initialization', () => {
+    beforeEach(() => {
+      TestBed.configureTestingModule({
+        imports: [Register],
+        providers: [provideRouter([])],
+      });
+
+      fixture = TestBed.createComponent(Register);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+    });
+
+    it('should create', () => {
+      expect(component).toBeTruthy();
+    });
+
+    it('should initialize form on ngOnInit', () => {
+      expect(component.registerForm).toBeDefined();
+      expect(component.registerForm.get('firstName')).toBeDefined();
+      expect(component.registerForm.get('lastName')).toBeDefined();
+      expect(component.registerForm.get('email')).toBeDefined();
+      expect(component.registerForm.get('password')).toBeDefined();
+      expect(component.registerForm.get('confirmPassword')).toBeDefined();
+    });
+
+    it('should have empty registerError on init', () => {
+      expect(component.registerError).toBe('');
+    });
+  });
+
+  describe('Component Cleanup', () => {
+    beforeEach(() => {
+      TestBed.configureTestingModule({
+        imports: [Register],
+        providers: [provideRouter([])],
+      });
+
+      fixture = TestBed.createComponent(Register);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+    });
+
+    it('should reset form on ngOnDestroy', () => {
+      component.registerForm.patchValue({
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john@example.com',
+        password: 'password123',
+        confirmPassword: 'password123',
+      });
+
+      component.ngOnDestroy();
+
+      expect(component.registerForm.get('firstName')?.value).toBeNull();
+      expect(component.registerForm.get('lastName')?.value).toBeNull();
+      expect(component.registerForm.get('email')?.value).toBeNull();
+      expect(component.registerForm.get('password')?.value).toBeNull();
+      expect(component.registerForm.get('confirmPassword')?.value).toBeNull();
+    });
+
+    it('should clear registerError on ngOnDestroy', () => {
+      component.registerError = 'Some error message';
+
+      component.ngOnDestroy();
+
+      expect(component.registerError).toBe('');
+    });
+  });
 
   describe('Form Validation', () => {
     beforeEach(() => {
@@ -66,6 +151,17 @@ describe('Register', () => {
       expect(lastName?.hasError('minlength')).toBeTruthy();
     });
 
+    it('should accept firstName and lastName with 2+ characters', () => {
+      const firstName = component.registerForm.get('firstName');
+      const lastName = component.registerForm.get('lastName');
+
+      firstName?.setValue('Jo');
+      lastName?.setValue('Do');
+
+      expect(firstName?.hasError('minlength')).toBeFalsy();
+      expect(lastName?.hasError('minlength')).toBeFalsy();
+    });
+
     it('should validate email format', () => {
       const email = component.registerForm.get('email');
 
@@ -76,6 +172,22 @@ describe('Register', () => {
       expect(email?.hasError('email')).toBeFalsy();
     });
 
+    it('should validate various email formats', () => {
+      const email = component.registerForm.get('email');
+
+      email?.setValue('test@test.com');
+      expect(email?.hasError('email')).toBeFalsy();
+
+      email?.setValue('test.name@example.co.uk');
+      expect(email?.hasError('email')).toBeFalsy();
+
+      email?.setValue('test');
+      expect(email?.hasError('email')).toBeTruthy();
+
+      email?.setValue('@example.com');
+      expect(email?.hasError('email')).toBeTruthy();
+    });
+
     it('should validate password minimum length', () => {
       const password = component.registerForm.get('password');
 
@@ -83,6 +195,13 @@ describe('Register', () => {
       expect(password?.hasError('minlength')).toBeTruthy();
 
       password?.setValue('longpassword');
+      expect(password?.hasError('minlength')).toBeFalsy();
+    });
+
+    it('should accept password with exactly 8 characters', () => {
+      const password = component.registerForm.get('password');
+
+      password?.setValue('pass1234');
       expect(password?.hasError('minlength')).toBeFalsy();
     });
 
@@ -101,6 +220,15 @@ describe('Register', () => {
       expect(component.registerForm.hasError('passwordMismatch')).toBeFalsy();
     });
 
+    it('should not show password mismatch when passwords are empty', () => {
+      component.registerForm.patchValue({
+        password: '',
+        confirmPassword: '',
+      });
+
+      expect(component.registerForm.hasError('passwordMismatch')).toBeFalsy();
+    });
+
     it('should validate form is valid with correct data', () => {
       component.registerForm.patchValue({
         firstName: 'John',
@@ -113,246 +241,6 @@ describe('Register', () => {
       expect(component.registerForm.valid).toBeTruthy();
     });
   });
-
-  // describe('onSubmit', () => {
-  //   let authServiceSpy: { register: ReturnType<typeof vi.fn>; isLoading: ReturnType<typeof vi.fn> };
-  //   let routerSpy: { navigate: ReturnType<typeof vi.fn> };
-
-  //   beforeEach(() => {
-  //     authServiceSpy = {
-  //       register: vi.fn(),
-  //       isLoading: vi.fn().mockReturnValue(false),
-  //     };
-  //     routerSpy = {
-  //       navigate: vi.fn(),
-  //     };
-
-  //     TestBed.configureTestingModule({
-  //       imports: [Register],
-  //       providers: [
-  //         { provide: AuthService, useValue: authServiceSpy },
-  //         { provide: Router, useValue: routerSpy },
-  //         { provide: ActivatedRoute, useValue: {} },
-  //       ],
-  //     });
-
-  //     fixture = TestBed.createComponent(Register);
-  //     component = fixture.componentInstance;
-  //     component.ngOnInit(); // Explicitly call ngOnInit
-  //     fixture.detectChanges();
-  //   });
-
-  //   it('should call authService.register with valid form data', (done) => {
-  //     const registerData = {
-  //       firstName: 'John',
-  //       lastName: 'Doe',
-  //       email: 'john@example.com',
-  //       password: 'password123',
-  //     };
-
-  //     component.registerForm.patchValue({
-  //       ...registerData,
-  //       confirmPassword: 'password123',
-  //     });
-
-  //     const mockResponse: LoginResponse = {
-  //       user: {
-  //         id: '1',
-  //         email: 'john@example.com',
-  //         firstName: 'John',
-  //         lastName: 'Doe',
-  //         role: 'loan-officer',
-  //         phone: '',
-  //       },
-  //       token: 'mock-token',
-  //       accessToken: 'mock-access-token',
-  //       refreshToken: 'mock-refresh-token',
-  //     };
-  //     authServiceSpy.register.mockReturnValue(of(mockResponse));
-
-  //     component.onSubmit();
-
-  //     // Wait for async operations
-  //     setTimeout(() => {
-  //       expect(authServiceSpy.register).toHaveBeenCalledWith(registerData);
-  //       done();
-  //     }, 0);
-  //   });
-
-  //   it('should navigate to /welcome on successful registration', (done) => {
-  //     component.registerForm.patchValue({
-  //       firstName: 'John',
-  //       lastName: 'Doe',
-  //       email: 'john@example.com',
-  //       password: 'password123',
-  //       confirmPassword: 'password123',
-  //     });
-
-  //     const mockResponse: LoginResponse = {
-  //       user: {
-  //         id: '1',
-  //         email: 'john@example.com',
-  //         firstName: 'John',
-  //         lastName: 'Doe',
-  //         role: 'loan-officer',
-  //         phone: '',
-  //       },
-  //       token: 'mock-token',
-  //       accessToken: 'mock-access-token',
-  //       refreshToken: 'mock-refresh-token',
-  //     };
-  //     authServiceSpy.register.mockReturnValue(of(mockResponse));
-
-  //     component.onSubmit();
-
-  //     setTimeout(() => {
-  //       expect(routerSpy.navigate).toHaveBeenCalledWith(['/welcome']);
-  //       done();
-  //     }, 0);
-  //   });
-
-  //   it('should emit registerSuccess on successful registration', (done) => {
-  //     let emitted = false;
-  //     component.registerSuccess.subscribe(() => {
-  //       emitted = true;
-  //     });
-
-  //     component.registerForm.patchValue({
-  //       firstName: 'John',
-  //       lastName: 'Doe',
-  //       email: 'john@example.com',
-  //       password: 'password123',
-  //       confirmPassword: 'password123',
-  //     });
-
-  //     const mockResponse: LoginResponse = {
-  //       user: {
-  //         id: '1',
-  //         email: 'john@example.com',
-  //         firstName: 'John',
-  //         lastName: 'Doe',
-  //         role: 'loan-officer',
-  //         phone: '',
-  //       },
-  //       token: 'mock-token',
-  //       accessToken: 'mock-access-token',
-  //       refreshToken: 'mock-refresh-token',
-  //     };
-  //     authServiceSpy.register.mockReturnValue(of(mockResponse));
-
-  //     component.onSubmit();
-
-  //     setTimeout(() => {
-  //       expect(emitted).toBeTruthy();
-  //       done();
-  //     }, 0);
-  //   });
-
-  //   it('should set registerError on registration failure', (done) => {
-  //     component.registerForm.patchValue({
-  //       firstName: 'John',
-  //       lastName: 'Doe',
-  //       email: 'john@example.com',
-  //       password: 'password123',
-  //       confirmPassword: 'password123',
-  //     });
-
-  //     const errorResponse = { error: { message: 'Email already exists' } };
-  //     authServiceSpy.register.mockReturnValue(throwError(() => errorResponse));
-
-  //     component.onSubmit();
-
-  //     setTimeout(() => {
-  //       expect(component.registerError).toBe('Email already exists');
-  //       done();
-  //     }, 0);
-  //   });
-
-  //   it('should set default error message when error has no message', (done) => {
-  //     component.registerForm.patchValue({
-  //       firstName: 'John',
-  //       lastName: 'Doe',
-  //       email: 'john@example.com',
-  //       password: 'password123',
-  //       confirmPassword: 'password123',
-  //     });
-
-  //     authServiceSpy.register.mockReturnValue(throwError(() => ({})));
-
-  //     component.onSubmit();
-
-  //     setTimeout(() => {
-  //       expect(component.registerError).toBe('Registration failed. Please try again.');
-  //       done();
-  //     }, 0);
-  //   });
-
-  //   it('should mark all fields as touched when form is invalid', () => {
-  //     component.registerForm.patchValue({
-  //       firstName: '',
-  //       lastName: '',
-  //       email: '',
-  //       password: '',
-  //       confirmPassword: '',
-  //     });
-
-  //     component.onSubmit();
-
-  //     expect(component.registerForm.get('firstName')?.touched).toBeTruthy();
-  //     expect(component.registerForm.get('lastName')?.touched).toBeTruthy();
-  //     expect(component.registerForm.get('email')?.touched).toBeTruthy();
-  //     expect(component.registerForm.get('password')?.touched).toBeTruthy();
-  //     expect(component.registerForm.get('confirmPassword')?.touched).toBeTruthy();
-  //   });
-
-  //   it('should not call authService.register when form is invalid', () => {
-  //     component.registerForm.patchValue({
-  //       firstName: '',
-  //       lastName: '',
-  //       email: 'invalid',
-  //       password: 'short',
-  //       confirmPassword: '',
-  //     });
-
-  //     component.onSubmit();
-
-  //     expect(authServiceSpy.register).not.toHaveBeenCalled();
-  //   });
-
-  //   it('should clear registerError on successful submit', (done) => {
-  //     component.registerError = 'Previous error';
-
-  //     component.registerForm.patchValue({
-  //       firstName: 'John',
-  //       lastName: 'Doe',
-  //       email: 'john@example.com',
-  //       password: 'password123',
-  //       confirmPassword: 'password123',
-  //     });
-
-  //     const mockResponse: LoginResponse = {
-  //       user: {
-  //         id: '1',
-  //         email: 'john@example.com',
-  //         firstName: 'John',
-  //         lastName: 'Doe',
-  //         role: 'loan-officer',
-  //         phone: '',
-  //       },
-  //       token: 'mock-token',
-  //       accessToken: 'mock-access-token',
-  //       refreshToken: 'mock-refresh-token',
-  //     };
-  //     authServiceSpy.register.mockReturnValue(of(mockResponse));
-
-  //     component.onSubmit();
-
-  //     setTimeout(() => {
-  //       expect(component.registerError).toBe('');
-  //       done();
-  //     }, 0);
-  //   });
-  // });
 
   describe('getFieldError', () => {
     beforeEach(() => {
@@ -414,11 +302,238 @@ describe('Register', () => {
 
       expect(component.getFieldError('firstName')).toBe('');
     });
+
+    it('should not show password mismatch on password field', () => {
+      component.registerForm.patchValue({
+        password: 'password123',
+        confirmPassword: 'different',
+      });
+      const control = component.registerForm.get('password');
+      control?.markAsTouched();
+
+      expect(component.getFieldError('password')).toBe('');
+    });
+  });
+
+  describe('onSubmit', () => {
+    beforeEach(() => {
+      authServiceSpy = {
+        register: vi.fn(),
+        isLoading: vi.fn().mockReturnValue(false),
+      };
+
+      TestBed.configureTestingModule({
+        imports: [Register],
+        providers: [{ provide: AuthService, useValue: authServiceSpy }, provideRouter([])],
+      });
+
+      fixture = TestBed.createComponent(Register);
+      component = fixture.componentInstance;
+      router = TestBed.inject(Router);
+      fixture.detectChanges();
+    });
+
+    it('should not submit when form is invalid', () => {
+      component.registerForm.patchValue({
+        firstName: '',
+        lastName: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+      });
+
+      component.onSubmit();
+
+      expect(authServiceSpy.register).not.toHaveBeenCalled();
+    });
+
+    it('should mark all fields as touched when form is invalid', () => {
+      component.registerForm.patchValue({
+        firstName: '',
+        lastName: 'Doe',
+        email: 'john@example.com',
+        password: 'password123',
+        confirmPassword: 'password123',
+      });
+
+      component.onSubmit();
+
+      expect(component.registerForm.get('firstName')?.touched).toBeTruthy();
+      expect(component.registerForm.get('lastName')?.touched).toBeTruthy();
+      expect(component.registerForm.get('email')?.touched).toBeTruthy();
+      expect(component.registerForm.get('password')?.touched).toBeTruthy();
+      expect(component.registerForm.get('confirmPassword')?.touched).toBeTruthy();
+    });
+
+    it('should submit when form is valid', () => {
+      authServiceSpy.register.mockReturnValue(of(mockRegisterResponse));
+
+      component.registerForm.patchValue({
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john@example.com',
+        password: 'password123',
+        confirmPassword: 'password123',
+      });
+
+      component.onSubmit();
+
+      expect(authServiceSpy.register).toHaveBeenCalled();
+    });
+
+    it('should exclude confirmPassword from registration data', () => {
+      authServiceSpy.register.mockReturnValue(of(mockRegisterResponse));
+
+      component.registerForm.patchValue({
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john@example.com',
+        password: 'password123',
+        confirmPassword: 'password123',
+      });
+
+      component.onSubmit();
+
+      const submitData = authServiceSpy.register.mock.calls[0][0];
+      expect(submitData).toEqual({
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john@example.com',
+        password: 'password123',
+      });
+      expect(submitData.confirmPassword).toBeUndefined();
+    });
+
+    it('should clear error message on submit', () => {
+      authServiceSpy.register.mockReturnValue(of(mockRegisterResponse));
+      component.registerError = 'Previous error';
+
+      component.registerForm.patchValue({
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john@example.com',
+        password: 'password123',
+        confirmPassword: 'password123',
+      });
+
+      component.onSubmit();
+
+      expect(component.registerError).toBe('');
+    });
+
+    it('should navigate to shell on successful registration', () => {
+      authServiceSpy.register.mockReturnValue(of(mockRegisterResponse));
+      const navigateSpy = vi.spyOn(router, 'navigate');
+
+      component.registerForm.patchValue({
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john@example.com',
+        password: 'password123',
+        confirmPassword: 'password123',
+      });
+
+      component.onSubmit();
+
+      expect(navigateSpy).toHaveBeenCalledWith(['/shell']);
+    });
+
+    it('should emit registerSuccess on successful registration', () => {
+      authServiceSpy.register.mockReturnValue(of(mockRegisterResponse));
+      let emitted = false;
+
+      component.registerSuccess.subscribe(() => {
+        emitted = true;
+      });
+
+      component.registerForm.patchValue({
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john@example.com',
+        password: 'password123',
+        confirmPassword: 'password123',
+      });
+
+      component.onSubmit();
+
+      expect(emitted).toBe(true);
+    });
+
+    it('should display error message on registration failure with message', () => {
+      const errorResponse = {
+        error: { message: 'Email already exists' },
+      };
+      authServiceSpy.register.mockReturnValue(throwError(() => errorResponse));
+
+      component.registerForm.patchValue({
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'existing@example.com',
+        password: 'password123',
+        confirmPassword: 'password123',
+      });
+
+      component.onSubmit();
+
+      expect(component.registerError).toBe('Email already exists');
+    });
+
+    it('should display default error message on registration failure without message', () => {
+      authServiceSpy.register.mockReturnValue(throwError(() => ({})));
+
+      component.registerForm.patchValue({
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john@example.com',
+        password: 'password123',
+        confirmPassword: 'password123',
+      });
+
+      component.onSubmit();
+
+      expect(component.registerError).toBe('Registration failed. Please try again.');
+    });
+
+    it('should not navigate on registration failure', () => {
+      authServiceSpy.register.mockReturnValue(throwError(() => ({ error: { message: 'Error' } })));
+      const navigateSpy = vi.spyOn(router, 'navigate');
+
+      component.registerForm.patchValue({
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john@example.com',
+        password: 'password123',
+        confirmPassword: 'password123',
+      });
+
+      component.onSubmit();
+
+      expect(navigateSpy).not.toHaveBeenCalled();
+    });
+
+    it('should not emit registerSuccess on registration failure', () => {
+      authServiceSpy.register.mockReturnValue(throwError(() => ({ error: { message: 'Error' } })));
+      let emitted = false;
+
+      component.registerSuccess.subscribe(() => {
+        emitted = true;
+      });
+
+      component.registerForm.patchValue({
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john@example.com',
+        password: 'password123',
+        confirmPassword: 'password123',
+      });
+
+      component.onSubmit();
+
+      expect(emitted).toBe(false);
+    });
   });
 
   describe('isLoading', () => {
-    let authServiceSpy: { register: ReturnType<typeof vi.fn>; isLoading: ReturnType<typeof vi.fn> };
-
     beforeEach(() => {
       authServiceSpy = {
         register: vi.fn(),

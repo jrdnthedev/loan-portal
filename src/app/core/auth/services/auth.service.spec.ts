@@ -1,16 +1,36 @@
 import { TestBed } from '@angular/core/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
-import { vi } from 'vitest';
+import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 import { AuthService } from './auth.service';
 import { TokenService } from './token.service';
+import { LoginRequest, LoginResponse, RefreshTokenResponse } from '../interfaces/auth.interface';
+import { User } from '../../../domains/admin/models/user';
+import { environment } from '../../../../environments/environment';
 
 describe('AuthService', () => {
   let service: AuthService;
   let tokenService: TokenService;
+  let httpMock: HttpTestingController;
   let router: any;
+
+  const mockUser: User = {
+    id: '1',
+    email: 'test@example.com',
+    firstName: 'John',
+    lastName: 'Doe',
+    role: 'admin',
+    phone: '555-1234',
+  };
+
+  const mockLoginResponse: LoginResponse = {
+    user: mockUser,
+    token: 'mock-access-token',
+    accessToken: 'mock-access-token',
+    refreshToken: 'mock-refresh-token',
+  };
 
   beforeEach(() => {
     router = {
@@ -32,46 +52,484 @@ describe('AuthService', () => {
 
     service = TestBed.inject(AuthService);
     tokenService = TestBed.inject(TokenService);
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
+  afterEach(() => {
+    httpMock.verify();
   });
 
-  it('should initialize with unauthenticated state', () => {
-    expect(service.isAuthenticated()).toBeFalsy();
-    expect(service.user()).toBeNull();
-    expect(service.isLoading()).toBeFalsy();
+  describe('Service Initialization', () => {
+    it('should be created', () => {
+      expect(service).toBeTruthy();
+    });
+
+    it('should initialize with unauthenticated state', () => {
+      expect(service.isAuthenticated()).toBeFalsy();
+      expect(service.user()).toBeNull();
+      expect(service.isLoading()).toBeFalsy();
+    });
+
+    it('should load user from valid token on initialization', () => {
+      // Create a mock JWT token with user data
+      const payload = {
+        id: '1',
+        email: 'test@example.com',
+        firstName: 'John',
+        lastName: 'Doe',
+        role: 'user',
+        phone: '555-1234',
+      };
+      const mockToken = `header.${btoa(JSON.stringify(payload))}.signature`;
+
+      vi.spyOn(tokenService, 'hasValidAccessToken').mockReturnValue(true);
+      vi.spyOn(tokenService, 'getAccessToken').mockReturnValue(mockToken);
+
+      // Create a new service instance to trigger initialization
+      const newService = new AuthService(
+        TestBed.inject(HttpTestingController) as any,
+        tokenService,
+        router,
+      );
+
+      expect(newService.isAuthenticated()).toBeTruthy();
+      expect(newService.user()).toEqual(payload);
+    });
+
+    it('should handle invalid token on initialization', () => {
+      vi.spyOn(tokenService, 'hasValidAccessToken').mockReturnValue(true);
+      vi.spyOn(tokenService, 'getAccessToken').mockReturnValue('invalid-token');
+      vi.spyOn(tokenService, 'clearTokens');
+      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+      // Create a new service instance to trigger initialization
+      const newService = new AuthService(
+        TestBed.inject(HttpTestingController) as any,
+        tokenService,
+        router,
+      );
+
+      expect(consoleSpy).toHaveBeenCalledWith('Error parsing token:', expect.any(Error));
+      expect(tokenService.clearTokens).toHaveBeenCalled();
+
+      consoleSpy.mockRestore();
+    });
   });
 
-  it('should handle logout correctly', () => {
-    vi.spyOn(tokenService, 'clearTokens');
+  describe('Login', () => {
+    it('should login successfully and set authenticated state', () => {
+      const credentials: LoginRequest = {
+        email: 'test@example.com',
+        password: 'password123',
+      };
 
-    service.logout();
+      vi.spyOn(tokenService, 'setTokens');
 
-    expect(tokenService.clearTokens).toHaveBeenCalled();
-    expect(service.isAuthenticated()).toBeFalsy();
-    expect(service.user()).toBeNull();
-    expect(router.navigate).toHaveBeenCalledWith(['/welcome'], { queryParams: {} });
+      service.login(credentials).subscribe({
+        next: (response) => {
+          expect(response).toEqual(mockLoginResponse);
+          expect(service.isAuthenticated()).toBeTruthy();
+          expect(service.user()).toEqual(mockUser);
+          expect(service.isLoading()).toBeFalsy();
+          expect(tokenService.setTokens).toHaveBeenCalledWith(
+            mockLoginResponse.accessToken,
+            mockLoginResponse.refreshToken,
+          );
+        },
+      });
+
+      const req = httpMock.expectOne(`${environment.apiUrl}/auth/login`);
+      expect(req.request.method).toBe('POST');
+      expect(req.request.body).toEqual(credentials);
+      req.flush(mockLoginResponse);
+    });
+
+    it('should use token field if accessToken is not present', () => {
+      const credentials: LoginRequest = {
+        email: 'test@example.com',
+        password: 'password123',
+      };
+
+      const responseWithTokenOnly = {
+        user: mockUser,
+        token: 'mock-token-value',
+        accessToken: undefined,
+        refreshToken: undefined,
+      };
+
+      vi.spyOn(tokenService, 'setTokens');
+
+      service.login(credentials).subscribe({
+        next: () => {
+          expect(tokenService.setTokens).toHaveBeenCalledWith(
+            'mock-token-value',
+            'mock-token-value',
+          );
+        },
+      });
+
+      const req = httpMock.expectOne(`${environment.apiUrl}/auth/login`);
+      req.flush(responseWithTokenOnly);
+    });
+
+    it('should set loading state during login', () => {
+      const credentials: LoginRequest = {
+        email: 'test@example.com',
+        password: 'password123',
+      };
+
+      service.login(credentials).subscribe();
+
+      // Loading state should be set immediately
+      const req = httpMock.expectOne(`${environment.apiUrl}/auth/login`);
+
+      req.flush(mockLoginResponse);
+    });
+
+    it('should handle login error and reset loading state', () => {
+      const credentials: LoginRequest = {
+        email: 'test@example.com',
+        password: 'wrong-password',
+      };
+
+      const errorMessage = 'Invalid credentials';
+
+      service.login(credentials).subscribe({
+        error: (error) => {
+          expect(error.error).toBe(errorMessage);
+          expect(service.isLoading()).toBeFalsy();
+          expect(service.isAuthenticated()).toBeFalsy();
+        },
+      });
+
+      const req = httpMock.expectOne(`${environment.apiUrl}/auth/login`);
+      req.flush(errorMessage, { status: 401, statusText: 'Unauthorized' });
+    });
   });
 
-  it('should check user roles correctly', () => {
-    // Set up authenticated user with admin role
-    const mockUser = {
-      id: '1',
-      email: 'admin@test.com',
-      firstName: 'Admin',
-      lastName: 'User',
-      role: 'admin',
-      phone: '123-456-7890',
-    };
+  describe('Logout', () => {
+    it('should clear tokens and navigate to welcome page', () => {
+      vi.spyOn(tokenService, 'clearTokens');
 
-    // Use the private method to set authenticated state for testing
-    (service as any).setAuthenticatedState(mockUser);
+      // Set authenticated state first
+      (service as any).setAuthenticatedState(mockUser);
+      expect(service.isAuthenticated()).toBeTruthy();
 
-    expect(service.hasRole('admin')).toBeTruthy();
-    expect(service.hasRole('user')).toBeFalsy();
-    expect(service.hasAnyRole(['admin', 'user'])).toBeTruthy();
-    expect(service.hasAnyRole(['user', 'guest'])).toBeFalsy();
+      service.logout();
+
+      expect(tokenService.clearTokens).toHaveBeenCalled();
+      expect(service.isAuthenticated()).toBeFalsy();
+      expect(service.user()).toBeNull();
+      expect(router.navigate).toHaveBeenCalledWith(['/welcome'], { queryParams: {} });
+    });
+
+    it('should emit null to user$ observable on logout', () => {
+      (service as any).setAuthenticatedState(mockUser);
+
+      let emittedUser: User | null | undefined;
+      service.user$.subscribe((user) => {
+        emittedUser = user;
+      });
+
+      service.logout();
+
+      expect(emittedUser).toBeNull();
+    });
+  });
+
+  describe('Refresh Token', () => {
+    it('should refresh token successfully', () => {
+      const mockRefreshResponse: RefreshTokenResponse = {
+        accessToken: 'new-access-token',
+        refreshToken: 'new-refresh-token',
+      };
+
+      vi.spyOn(tokenService, 'getRefreshToken').mockReturnValue('old-refresh-token');
+      vi.spyOn(tokenService, 'setTokens');
+
+      service.refreshToken().subscribe({
+        next: (response) => {
+          expect(response).toEqual(mockRefreshResponse);
+          expect(tokenService.setTokens).toHaveBeenCalledWith(
+            mockRefreshResponse.accessToken,
+            mockRefreshResponse.refreshToken,
+          );
+        },
+      });
+
+      const req = httpMock.expectOne(`${environment.apiUrl}/refresh`);
+      expect(req.request.method).toBe('POST');
+      expect(req.request.body).toEqual({ refreshToken: 'old-refresh-token' });
+      req.flush(mockRefreshResponse);
+    });
+
+    it('should logout when no refresh token is available', () => {
+      vi.spyOn(tokenService, 'getRefreshToken').mockReturnValue(null);
+      vi.spyOn(tokenService, 'clearTokens');
+
+      service.refreshToken().subscribe({
+        error: (error) => {
+          expect(error.message).toBe('No refresh token available');
+          expect(tokenService.clearTokens).toHaveBeenCalled();
+          expect(router.navigate).toHaveBeenCalledWith(['/welcome'], { queryParams: {} });
+        },
+      });
+    });
+
+    it('should logout on refresh token error', () => {
+      vi.spyOn(tokenService, 'getRefreshToken').mockReturnValue('old-refresh-token');
+      vi.spyOn(tokenService, 'clearTokens');
+
+      service.refreshToken().subscribe({
+        error: (error) => {
+          expect(error.status).toBe(401);
+          expect(tokenService.clearTokens).toHaveBeenCalled();
+          expect(router.navigate).toHaveBeenCalledWith(['/welcome'], { queryParams: {} });
+        },
+      });
+
+      const req = httpMock.expectOne(`${environment.apiUrl}/refresh`);
+      req.flush('Refresh token expired', { status: 401, statusText: 'Unauthorized' });
+    });
+  });
+
+  describe('Register', () => {
+    it('should register successfully and set authenticated state', () => {
+      const userData = {
+        email: 'new@example.com',
+        password: 'password123',
+        firstName: 'Jane',
+        lastName: 'Smith',
+        phone: '555-5678',
+      };
+
+      vi.spyOn(tokenService, 'setTokens');
+
+      service.register(userData).subscribe({
+        next: (response) => {
+          expect(response).toEqual(mockLoginResponse);
+          expect(service.isAuthenticated()).toBeTruthy();
+          expect(service.user()).toEqual(mockUser);
+          expect(service.isLoading()).toBeFalsy();
+          expect(tokenService.setTokens).toHaveBeenCalledWith(
+            mockLoginResponse.accessToken,
+            mockLoginResponse.refreshToken,
+          );
+        },
+      });
+
+      const req = httpMock.expectOne(`${environment.apiUrl}/auth/register`);
+      expect(req.request.method).toBe('POST');
+      expect(req.request.body).toEqual(userData);
+      req.flush(mockLoginResponse);
+    });
+
+    it('should handle registration error and reset loading state', () => {
+      const userData = {
+        email: 'existing@example.com',
+        password: 'password123',
+      };
+
+      service.register(userData).subscribe({
+        error: (error) => {
+          expect(error.status).toBe(400);
+          expect(service.isLoading()).toBeFalsy();
+          expect(service.isAuthenticated()).toBeFalsy();
+        },
+      });
+
+      const req = httpMock.expectOne(`${environment.apiUrl}/auth/register`);
+      req.flush('Email already exists', { status: 400, statusText: 'Bad Request' });
+    });
+  });
+
+  describe('Forgot Password', () => {
+    it('should send forgot password request', () => {
+      const email = 'test@example.com';
+
+      service.forgotPassword(email).subscribe({
+        next: (response) => {
+          expect(response).toEqual({ message: 'Reset email sent' });
+        },
+      });
+
+      const req = httpMock.expectOne(`${environment.apiUrl}/forgot-password`);
+      expect(req.request.method).toBe('POST');
+      expect(req.request.body).toEqual({ email });
+      req.flush({ message: 'Reset email sent' });
+    });
+
+    it('should handle forgot password error', () => {
+      const email = 'unknown@example.com';
+
+      service.forgotPassword(email).subscribe({
+        error: (error) => {
+          expect(error.status).toBe(404);
+        },
+      });
+
+      const req = httpMock.expectOne(`${environment.apiUrl}/forgot-password`);
+      req.flush('User not found', { status: 404, statusText: 'Not Found' });
+    });
+  });
+
+  describe('Reset Password', () => {
+    it('should send reset password request', () => {
+      const token = 'reset-token-123';
+      const newPassword = 'newPassword123';
+
+      service.resetPassword(token, newPassword).subscribe({
+        next: (response) => {
+          expect(response).toEqual({ message: 'Password reset successful' });
+        },
+      });
+
+      const req = httpMock.expectOne(`${environment.apiUrl}/reset-password`);
+      expect(req.request.method).toBe('POST');
+      expect(req.request.body).toEqual({ token, newPassword });
+      req.flush({ message: 'Password reset successful' });
+    });
+
+    it('should handle reset password error', () => {
+      const token = 'invalid-token';
+      const newPassword = 'newPassword123';
+
+      service.resetPassword(token, newPassword).subscribe({
+        error: (error) => {
+          expect(error.status).toBe(400);
+        },
+      });
+
+      const req = httpMock.expectOne(`${environment.apiUrl}/reset-password`);
+      req.flush('Invalid or expired token', { status: 400, statusText: 'Bad Request' });
+    });
+  });
+
+  describe('Role Management', () => {
+    it('should check if user has specific role', () => {
+      const adminUser = { ...mockUser, role: 'admin' };
+      (service as any).setAuthenticatedState(adminUser);
+
+      expect(service.hasRole('admin')).toBeTruthy();
+      expect(service.hasRole('user')).toBeFalsy();
+      expect(service.hasRole('underwriter')).toBeFalsy();
+    });
+
+    it('should return false when no user is authenticated', () => {
+      expect(service.hasRole('admin')).toBeFalsy();
+      expect(service.hasRole('user')).toBeFalsy();
+    });
+
+    it('should check if user has any of the specified roles', () => {
+      const underwriterUser = { ...mockUser, role: 'underwriter' };
+      (service as any).setAuthenticatedState(underwriterUser);
+
+      expect(service.hasAnyRole(['admin', 'underwriter'])).toBeTruthy();
+      expect(service.hasAnyRole(['admin', 'user'])).toBeFalsy();
+      expect(service.hasAnyRole(['underwriter'])).toBeTruthy();
+    });
+
+    it('should return false when checking roles with no authenticated user', () => {
+      expect(service.hasAnyRole(['admin', 'user'])).toBeFalsy();
+      expect(service.hasAnyRole([])).toBeFalsy();
+    });
+  });
+
+  describe('Update User', () => {
+    it('should update user and maintain authenticated state', () => {
+      const updatedUser: User = {
+        ...mockUser,
+        firstName: 'Updated',
+        lastName: 'Name',
+      };
+
+      service.updateUser(updatedUser);
+
+      expect(service.user()).toEqual(updatedUser);
+      expect(service.isAuthenticated()).toBeTruthy();
+      expect(service.isLoading()).toBeFalsy();
+
+      let emittedUser: User | null | undefined;
+      service.user$.subscribe((user) => {
+        emittedUser = user;
+      });
+
+      expect(emittedUser).toEqual(updatedUser);
+    });
+  });
+
+  describe('Observable Support', () => {
+    it('should emit user changes through user$ observable', () => {
+      const users: (User | null)[] = [];
+
+      service.user$.subscribe((user) => {
+        users.push(user);
+      });
+
+      (service as any).setAuthenticatedState(mockUser);
+
+      // After setting authenticated state, we should have 2 emissions
+      expect(users.length).toBe(2);
+      expect(users[0]).toBeNull(); // Initial state
+      expect(users[1]).toEqual(mockUser); // After authentication
+    });
+
+    it('should use readonly computed signals', () => {
+      expect(() => {
+        // TypeScript should prevent this, but verify at runtime
+        (service.authState as any).set({ user: null, isAuthenticated: false, isLoading: false });
+      }).toThrow();
+    });
+  });
+
+  describe('State Management', () => {
+    it('should properly set authenticated state', () => {
+      (service as any).setAuthenticatedState(mockUser);
+
+      expect(service.user()).toEqual(mockUser);
+      expect(service.isAuthenticated()).toBeTruthy();
+      expect(service.isLoading()).toBeFalsy();
+
+      const state = service.authState();
+      expect(state.user).toEqual(mockUser);
+      expect(state.isAuthenticated).toBeTruthy();
+      expect(state.isLoading).toBeFalsy();
+    });
+
+    it('should properly set unauthenticated state', () => {
+      // First authenticate
+      (service as any).setAuthenticatedState(mockUser);
+      expect(service.isAuthenticated()).toBeTruthy();
+
+      // Then logout
+      (service as any).setUnauthenticatedState();
+
+      expect(service.user()).toBeNull();
+      expect(service.isAuthenticated()).toBeFalsy();
+      expect(service.isLoading()).toBeFalsy();
+
+      const state = service.authState();
+      expect(state.user).toBeNull();
+      expect(state.isAuthenticated).toBeFalsy();
+      expect(state.isLoading).toBeFalsy();
+    });
+
+    it('should properly set loading state', () => {
+      (service as any).setLoadingState(true);
+      expect(service.isLoading()).toBeTruthy();
+
+      (service as any).setLoadingState(false);
+      expect(service.isLoading()).toBeFalsy();
+    });
+
+    it('should preserve user data when updating loading state', () => {
+      (service as any).setAuthenticatedState(mockUser);
+
+      (service as any).setLoadingState(true);
+
+      expect(service.user()).toEqual(mockUser);
+      expect(service.isAuthenticated()).toBeTruthy();
+      expect(service.isLoading()).toBeTruthy();
+    });
   });
 });

@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { RiskProfile } from '../models/risk-profile';
 import { Loan } from '../../loan-application/models/loan';
 import { RiskFlag } from '../models/risk-flag';
-import { RiskType } from '../models/riskt-type';
 
 @Injectable({
   providedIn: 'root',
