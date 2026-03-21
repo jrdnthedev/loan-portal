@@ -3,6 +3,7 @@ import { KeyTrap } from '../../directives/key-trap';
 
 @Component({
   selector: 'app-modal',
+  standalone: true,
   imports: [KeyTrap],
   templateUrl: './modal.html',
   styleUrl: './modal.scss',

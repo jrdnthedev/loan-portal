@@ -14,6 +14,7 @@ export type ButtonVariant =
 @Component({
   selector: 'app-button',
   imports: [],
+  standalone: true,
   templateUrl: './button.html',
   styleUrl: './button.scss',
 })
@@ -23,8 +24,6 @@ export class Button implements OnInit {
   @Input() variant: ButtonVariant = 'primary';
   clicked = output<void>();
   private submitClick = new Subject<void>();
-
-  constructor() {}
 
   ngOnInit(): void {
     this.submitClick.pipe(throttleTime(2000)).subscribe(() => {

@@ -70,14 +70,6 @@ export class UnderwritingStore {
     return frequency;
   });
 
-  selectLoanForReview() {}
-
-  applyUnderwritingFilters() {}
-
-  markLoanAsReviewed() {}
-
-  prioritizeLoan() {}
-
   // Risk evaluation methods
   evaluateLoanRisk(loan: Loan) {
     return this.riskScoringService.evaluate(loan);
