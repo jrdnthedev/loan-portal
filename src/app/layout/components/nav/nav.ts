@@ -60,10 +60,6 @@ export class Nav {
                 route: '/underwriting/review_queue',
               },
               {
-                label: 'Loan Decision',
-                route: '/underwriting/loan_decision',
-              },
-              {
                 label: 'Decision History',
                 route: '/underwriting/decision_history',
               },

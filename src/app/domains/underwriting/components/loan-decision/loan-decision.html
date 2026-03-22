@@ -1,23 +1,57 @@
-<app-topbar> Review Queue -> APP-0047853 </app-topbar>
-<div id="decision-container">
-  <div>
-    <app-loan-details [loan]="loan"></app-loan-details>
-    <app-card>
-      <h2>Risk Flags, {{ riskProfile.score }}</h2>
-      <div>
-        @for (flag of riskProfile.flags; track $index) {
-          <p>{{ flag }}</p>
-        }
-      </div>
-      <div>
-        {{ riskProfile.riskLevel }}
-      </div>
-      <div>
-        {{ riskProfile.explanation }}
-      </div>
-    </app-card>
+@if (currentLoan(); as loan) {
+  <app-topbar> Review Queue -> {{ loan.applicant.fullName }} </app-topbar>
+  <div id="decision-container">
+    <div>
+      <app-card>
+        <p>ID: {{ loan.id }}</p>
+        <p>Type: {{ loan.type }}</p>
+        <p>{{ loan.applicant.employmentStatus }}</p>
+        <p>Income {{ loan.applicant.income | currency }}</p>
+        <p>CoSigner: {{ loan.coSigner || 'N/A' }}</p>
+        <p>Requested Amount: {{ loan.requestedAmount | currency }}</p>
+        <p>Term: {{ loan.termMonths }} months</p>
+        <p>Status: {{ loan.status }}</p>
+        <p>Applicant: {{ loan.applicant.fullName }}</p>
+      </app-card>
+      @if (riskProfile(); as risk) {
+        <app-card>
+          <h2>Risk Flags, {{ risk.score }}</h2>
+          <div>
+            @for (flag of risk.flags; track $index) {
+              <p>{{ flag.type }}</p>
+              <p>{{ flag.description }}</p>
+            }
+          </div>
+          <div>
+            {{ risk.riskLevel }}
+          </div>
+          <div>
+            {{ risk.explanation }}
+          </div>
+        </app-card>
+      }
+      <app-card>
+        <h2>Credit Profile</h2>
+      </app-card>
+      <app-card>
+        <h2>Decision History</h2>
+      </app-card>
+    </div>
+    <div>
+      <app-card>
+        <h2>Review Notes</h2>
+        <input type="textarea" />
+      </app-card>
+      <app-card>
+        <h2>Action Panel</h2>
+        <app-button type="button" buttonText="Approve" variant="success"></app-button>
+        <app-button
+          type="button"
+          buttonText="Request More Information"
+          variant="primary"
+        ></app-button>
+        <app-button type="button" buttonText="Reject" variant="danger"></app-button>
+      </app-card>
+    </div>
   </div>
-  <div>
-    <app-loan-details [loan]="loan"></app-loan-details>
-  </div>
-</div>
+}

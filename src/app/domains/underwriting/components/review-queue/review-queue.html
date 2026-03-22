@@ -9,6 +9,13 @@
       </span>
     </h1>
   </app-topbar>
+  <app-topbar [isSecondary]="true">
+    <app-button
+      type="button"
+      buttonText="Review Selected"
+      (clicked)="reviewSelected()"
+    ></app-button>
+  </app-topbar>
 
   <div id="review_queue-content">
     <app-pagination

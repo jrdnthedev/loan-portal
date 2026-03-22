@@ -18,7 +18,7 @@ export class UnderwritingStore {
   // Computed signals - expose specific parts of state
   public readonly loading = computed(() => this._state().loading);
   public readonly queue = computed(() => this._state().queue);
-  public readonly selectedLoanId = computed(() => this._state().selectedLoanId);
+  public readonly selectedLoanIds = computed(() => this._state().selectedLoanIds);
   public readonly sortOrder = computed(() => this._state().sortOrder);
   public readonly submittedLoanCount = computed(() => this._state().submittedLoanCount);
 
@@ -70,8 +70,18 @@ export class UnderwritingStore {
     return frequency;
   });
 
+  // Computed signal - selected loans from queue
+  public readonly selectedLoans = computed(() => {
+    const ids = this._state().selectedLoanIds;
+    return this._state().queue.filter((loan) => ids.includes(loan.id));
+  });
+
   // Risk evaluation methods
   evaluateLoanRisk(loan: Loan) {
     return this.riskScoringService.evaluate(loan);
+  }
+
+  selectLoans(ids: string[]) {
+    this.updateState({ selectedLoanIds: ids });
   }
 }

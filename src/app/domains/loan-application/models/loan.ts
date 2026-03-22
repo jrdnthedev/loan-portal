@@ -10,6 +10,7 @@ export interface Loan {
   currency?: string;
   termMonths: number;
   applicant: Applicant;
+  loanType: LoanType;
   coSigner?: Applicant;
   status: LoanStatus;
   submittedAt?: string;

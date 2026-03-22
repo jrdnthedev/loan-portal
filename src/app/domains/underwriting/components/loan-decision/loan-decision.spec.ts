@@ -1,17 +1,59 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { DebugElement } from '@angular/core';
+import { DebugElement, signal, computed } from '@angular/core';
 import { By } from '@angular/platform-browser';
+import { Router } from '@angular/router';
+import { vi } from 'vitest';
 
 import { LoanDecision } from './loan-decision';
+import { UnderwritingStore } from '../../store/underwriting-store';
+import { Loan } from '../../../loan-application/models/loan';
+
+const mockLoan: Loan = {
+  id: 'cmmmnv4kh0002swlmryozx7p6',
+  type: 'auto',
+  requestedAmount: 20000,
+  approved: 0,
+  currency: 'USD',
+  termMonths: 12,
+  status: 'pending',
+  submittedAt: '2026-03-11T23:19:20.777Z',
+  loanType: 'auto',
+  applicant: {
+    id: 'cmmmnv4jb0000swlmev3lgkd9',
+    fullName: 'john stevens',
+    dateOfBirth: '1990-01-01',
+    ssn: '123-45-6789',
+    income: 80000,
+    employmentStatus: 'full-time',
+    creditScore: 850,
+  },
+};
 
 describe('LoanDecision', () => {
   let component: LoanDecision;
   let fixture: ComponentFixture<LoanDecision>;
   let debugElement: DebugElement;
+  let mockStore: any;
 
   beforeEach(async () => {
+    const selectedLoansSignal = signal<Loan[]>([mockLoan]);
+
+    mockStore = {
+      selectedLoans: computed(() => selectedLoansSignal()),
+      evaluateLoanRisk: vi.fn().mockReturnValue({
+        score: 75,
+        riskLevel: 'medium',
+        explanation: 'Moderate risk',
+        flags: [],
+      }),
+    };
+
     await TestBed.configureTestingModule({
       imports: [LoanDecision],
+      providers: [
+        { provide: UnderwritingStore, useValue: mockStore },
+        { provide: Router, useValue: { navigate: vi.fn() } },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(LoanDecision);
@@ -26,71 +68,54 @@ describe('LoanDecision', () => {
 
   describe('Loan Data', () => {
     it('should have loan data initialized', () => {
-      expect(component.loan).toBeTruthy();
+      expect(component.currentLoan()).toBeTruthy();
     });
 
     it('should have correct loan id', () => {
-      expect(component.loan.id).toBe('cmmmnv4kh0002swlmryozx7p6');
+      expect(component.currentLoan()!.id).toBe('cmmmnv4kh0002swlmryozx7p6');
     });
 
     it('should have correct loan type', () => {
-      expect(component.loan.type).toBe('auto');
+      expect(component.currentLoan()!.type).toBe('auto');
     });
 
     it('should have correct loan amounts', () => {
-      expect(component.loan.requestedAmount).toBe(20000);
-      expect(component.loan.approvedAmount).toBe(0);
-      expect(component.loan.downPayment).toBe(5000);
+      expect(component.currentLoan()!.requestedAmount).toBe(20000);
+      expect(component.currentLoan()!.approved).toBe(0);
     });
 
     it('should have correct loan term', () => {
-      expect(component.loan.termMonths).toBe(12);
+      expect(component.currentLoan()!.termMonths).toBe(12);
     });
 
     it('should have correct loan status', () => {
-      expect(component.loan.status).toBe('pending');
+      expect(component.currentLoan()!.status).toBe('pending');
     });
 
     it('should have correct currency', () => {
-      expect(component.loan.currency).toBe('USD');
+      expect(component.currentLoan()!.currency).toBe('USD');
     });
 
     it('should have applicant information', () => {
-      expect(component.loan.applicant).toBeTruthy();
-      expect(component.loan.applicant.id).toBe('cmmmnv4jb0000swlmev3lgkd9');
-      expect(component.loan.applicant.fullName).toBe('john stevens');
-      expect(component.loan.applicant.income).toBe(80000);
-      expect(component.loan.applicant.employmentStatus).toBe('full-time');
-      expect(component.loan.applicant.creditScore).toBe(850);
+      const loan = component.currentLoan()!;
+      expect(loan.applicant).toBeTruthy();
+      expect(loan.applicant.id).toBe('cmmmnv4jb0000swlmev3lgkd9');
+      expect(loan.applicant.fullName).toBe('john stevens');
+      expect(loan.applicant.income).toBe(80000);
+      expect(loan.applicant.employmentStatus).toBe('full-time');
+      expect(loan.applicant.creditScore).toBe(850);
     });
 
-    it('should have vehicle information for auto loan', () => {
-      expect(component.loan.vehicleInfo).toBeTruthy();
-      expect(component.loan.vehicleInfo.make).toBe('Lexus');
-      expect(component.loan.vehicleInfo.model).toBe('ES300');
-      expect(component.loan.vehicleInfo.year).toBe(2003);
-      expect(component.loan.vehicleInfo.vin).toBe('12345678987654321');
-      expect(component.loan.vehicleInfo.value).toBe(100000);
-    });
-
-    it('should have loan type information', () => {
-      expect(component.loan.loanType).toBeTruthy();
-      expect(component.loan.loanType.id).toBe('auto');
-      expect(component.loan.loanType.name).toBe('Auto Loan');
-      expect(component.loan.loanType.minAmount).toBe(5000);
-      expect(component.loan.loanType.maxAmount).toBe(100000);
-      expect(component.loan.loanType.interestRate).toBe(4.5);
+    it('should have correct loan type value', () => {
+      expect(component.currentLoan()!.loanType).toBe('auto');
     });
 
     it('should not have co-signer', () => {
-      expect(component.loan.coSigner).toBeUndefined();
-      expect(component.loan.coSignerId).toBe('');
+      expect(component.currentLoan()!.coSigner).toBeUndefined();
     });
 
     it('should have timestamp data', () => {
-      expect(component.loan.submittedAt).toBe('2026-03-11T23:19:20.777Z');
-      expect(component.loan.createdAt).toBe('2026-03-11T23:19:20.777Z');
-      expect(component.loan.updatedAt).toBe('2026-03-11T23:19:20.777Z');
+      expect(component.currentLoan()!.submittedAt).toBe('2026-03-11T23:19:20.777Z');
     });
   });
 
@@ -100,17 +125,15 @@ describe('LoanDecision', () => {
       expect(container).toBeTruthy();
     });
 
-    it('should render LoanDetails component', () => {
-      const loanDetailsComponents = debugElement.queryAll(By.css('app-loan-details'));
-      expect(loanDetailsComponents.length).toBeGreaterThan(0);
+    it('should render card components', () => {
+      const cards = debugElement.queryAll(By.css('app-card'));
+      expect(cards.length).toBeGreaterThan(0);
     });
 
-    it('should pass loan data to first LoanDetails component', () => {
-      const loanDetailsComponents = debugElement.queryAll(By.css('app-loan-details'));
-      expect(loanDetailsComponents.length).toBeGreaterThan(0);
-
-      const firstComponent = loanDetailsComponents[0].componentInstance;
-      expect(firstComponent.loan).toBe(component.loan);
+    it('should render topbar with applicant name', () => {
+      const topbar = debugElement.query(By.css('app-topbar'));
+      expect(topbar).toBeTruthy();
+      expect(topbar.nativeElement.textContent).toContain('john stevens');
     });
   });
 });
