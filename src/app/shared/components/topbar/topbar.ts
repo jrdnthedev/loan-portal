@@ -1,9 +1,12 @@
-import { Component } from '@angular/core';
+import { NgClass } from '@angular/common';
+import { Component, input } from '@angular/core';
 
 @Component({
   selector: 'app-topbar',
-  imports: [],
+  imports: [NgClass],
   templateUrl: './topbar.html',
   styleUrl: './topbar.scss',
 })
-export class Topbar {}
+export class Topbar {
+  isSecondary = input(false);
+}
