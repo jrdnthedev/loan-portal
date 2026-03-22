@@ -1,13 +1,14 @@
 import { Component, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { LoanDetails } from '../loan-details/loan-details';
 import { Topbar } from '../../../../shared/components/topbar/topbar';
 import { UnderwritingStore } from '../../store/underwriting-store';
 import { Card } from '../../../../shared/components/card/card';
+import { Button } from '../../../../shared/components/button/button';
+import { CurrencyPipe } from '@angular/common';
 
 @Component({
   selector: 'app-loan-decision',
-  imports: [LoanDetails, Topbar, Card],
+  imports: [Topbar, Card, Button, CurrencyPipe],
   templateUrl: './loan-decision.html',
   styleUrl: './loan-decision.scss',
 })
@@ -28,5 +29,6 @@ export class LoanDecision {
     if (!this.selectedLoans().length) {
       this.router.navigate(['/underwriting/review_queue']);
     }
+    console.log(this.currentLoan());
   }
 }

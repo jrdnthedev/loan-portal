@@ -5,10 +5,11 @@ import { UnderwritingStore } from '../../store/underwriting-store';
 import { Pagination } from '../../../../shared/components/pagination/pagination';
 import { Topbar } from '../../../../shared/components/topbar/topbar';
 import { Loan } from '../../../loan-application/models/loan';
+import { Button } from '../../../../shared/components/button/button';
 
 @Component({
   selector: 'app-review-queue',
-  imports: [Table, Pagination, Topbar],
+  imports: [Table, Pagination, Topbar, Button],
   templateUrl: './review-queue.html',
   styleUrl: './review-queue.scss',
 })
