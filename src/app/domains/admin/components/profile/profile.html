@@ -6,7 +6,9 @@
         <p id="">{{ user()?.firstName }} {{ user()?.lastName }}</p>
         <p>{{ user()?.email }}</p>
         <p>{{ user()?.phone }}</p>
-        <p><app-badge [title]="user()?.role || ''"></app-badge></p>
+        <p>
+          <app-badge>{{ user()?.role || '' }}</app-badge>
+        </p>
       </div>
       <div class="profile_body">
         <h2>Activity Summary</h2>

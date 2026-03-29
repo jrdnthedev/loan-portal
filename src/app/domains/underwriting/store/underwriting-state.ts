@@ -2,7 +2,7 @@ import { Loan } from '../../loan-application/models/loan';
 
 export interface UnderwritingState {
   queue: Loan[];
-  selectedLoanId: string | null;
+  selectedLoanIds: string[];
   // filters: UnderwritingFilter;
   sortOrder: 'asc' | 'desc';
   loading: boolean;
@@ -11,7 +11,7 @@ export interface UnderwritingState {
 
 export const initialUnderwritingState: UnderwritingState = {
   queue: [],
-  selectedLoanId: null,
+  selectedLoanIds: [],
   sortOrder: 'asc',
   loading: false,
   submittedLoanCount: 0,

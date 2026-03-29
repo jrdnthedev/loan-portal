@@ -1,23 +1,124 @@
-<app-topbar> Review Queue -> APP-0047853 </app-topbar>
-<div id="decision-container">
-  <div>
-    <app-loan-details [loan]="loan"></app-loan-details>
-    <app-card>
-      <h2>Risk Flags, {{ riskProfile.score }}</h2>
-      <div>
-        @for (flag of riskProfile.flags; track $index) {
-          <p>{{ flag }}</p>
-        }
-      </div>
-      <div>
-        {{ riskProfile.riskLevel }}
-      </div>
-      <div>
-        {{ riskProfile.explanation }}
-      </div>
-    </app-card>
+@if (currentLoan(); as loan) {
+  <app-topbar> Review Queue -> {{ loan.applicant.fullName }} </app-topbar>
+  <div id="decision-container">
+    <div>
+      <app-card>
+        <h2 class="decision-card-heading brd-bottom">Loan Details</h2>
+        <div class="decision-detail-row">
+          <app-form-input
+            label="FullName"
+            type="text"
+            [value]="loan.applicant.fullName"
+            [disabled]="true"
+          >
+          </app-form-input>
+          <app-form-input
+            label="Date of Birth"
+            type="text"
+            [value]="loan.applicant.dateOfBirth"
+            [disabled]="true"
+          >
+          </app-form-input>
+        </div>
+        <div class="decision-detail-row brd-bottom dotted">
+          <app-form-input
+            label="Annual Income"
+            type="text"
+            [value]="(loan.applicant.income | currency: loan.currency : 'symbol' : '1.2-2')!"
+            [disabled]="true"
+          >
+          </app-form-input>
+          <app-form-input
+            label="Employment"
+            type="text"
+            [value]="loan.applicant.employmentStatus"
+            [disabled]="true"
+          >
+          </app-form-input>
+          <app-form-input label="Status" type="text" [value]="loan.status" [disabled]="true">
+          </app-form-input>
+        </div>
+        <div class="decision-detail-row">
+          @let term = loan.termMonths.toString();
+          <app-form-input label="Loan Type" type="text" [value]="loan.type" [disabled]="true">
+          </app-form-input>
+
+          <app-form-input
+            label="Amount"
+            type="text"
+            [value]="(loan.requestedAmount | currency: loan.currency : 'symbol' : '1.2-2')!"
+            [disabled]="true"
+          >
+          </app-form-input>
+
+          <app-form-input label="Term (Months)" type="text" [value]="term" [disabled]="true">
+          </app-form-input>
+        </div>
+        <div class="decision-detail-row">
+          @let incomeCoSigner = loan.coSigner?.income?.toString();
+          <app-form-input
+            label="Co-Signer"
+            type="text"
+            [value]="loan.coSigner?.fullName!"
+            [disabled]="true"
+          >
+          </app-form-input>
+
+          <app-form-input label="Amount" type="text" [value]="incomeCoSigner!" [disabled]="true">
+          </app-form-input>
+        </div>
+        <!-- <p>ID: {{ loan.id }}</p>
+        <p>Type: {{ loan.type }}</p>
+        <p>{{ loan.applicant.employmentStatus }}</p>
+        <p>Income {{ loan.applicant.income | currency }}</p>
+        <p>CoSigner: {{ loan.coSigner || 'N/A' }}</p>
+        <p>Requested Amount: {{ loan.requestedAmount | currency }}</p>
+        <p>Term: {{ loan.termMonths }} months</p>
+        <p>Status: {{ loan.status }}</p>
+        <p>Applicant: {{ loan.applicant.fullName }}</p> -->
+      </app-card>
+      @if (riskProfile(); as risk) {
+        <app-card>
+          <h2 class="decision-card-heading brd-bottom">
+            <span>Risk Flags</span> <app-badge>{{ risk.flags.length }} flags</app-badge>
+          </h2>
+          <div id="flags-container" class="brd-bottom dotted">
+            @for (flag of risk.flags; track $index) {
+              <!-- <p>{{ flag.type }}</p> -->
+              <app-badge>{{ flag.description }}</app-badge>
+            }
+          </div>
+          <!-- <p>{{ risk.score }}</p> -->
+          <div class="brd-bottom dotted">
+            {{ risk.riskLevel }}
+          </div>
+          <div>
+            {{ risk.explanation }}
+          </div>
+        </app-card>
+      }
+      <app-card>
+        <h2 class="decision-card-heading brd-bottom">Credit Profile</h2>
+      </app-card>
+      <app-card>
+        <h2 class="decision-card-heading brd-bottom">Decision History</h2>
+      </app-card>
+    </div>
+    <div>
+      <app-card>
+        <h2 class="decision-card-heading brd-bottom">Review Notes</h2>
+        <app-form-input type="text"></app-form-input>
+      </app-card>
+      <app-card>
+        <h2 class="decision-card-heading brd-bottom">Action Panel</h2>
+        <app-button type="button" buttonText="Approve" variant="success"></app-button>
+        <app-button
+          type="button"
+          buttonText="Request More Information"
+          variant="primary"
+        ></app-button>
+        <app-button type="button" buttonText="Reject" variant="danger"></app-button>
+      </app-card>
+    </div>
   </div>
-  <div>
-    <app-loan-details [loan]="loan"></app-loan-details>
-  </div>
-</div>
+}

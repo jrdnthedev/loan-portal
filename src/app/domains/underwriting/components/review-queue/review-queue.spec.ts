@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { signal, computed } from '@angular/core';
+import { Router } from '@angular/router';
 import { vi } from 'vitest';
 
 import { ReviewQueue } from './review-queue';
@@ -10,11 +11,13 @@ describe('ReviewQueue', () => {
   let component: ReviewQueue;
   let fixture: ComponentFixture<ReviewQueue>;
   let mockStore: any;
+  let mockRouter: any;
 
   const mockLoans: Loan[] = [
     {
       id: '1',
       type: 'personal',
+      loanType: 'personal',
       requestedAmount: 10000,
       termMonths: 12,
       applicant: {
@@ -32,6 +35,7 @@ describe('ReviewQueue', () => {
     {
       id: '2',
       type: 'mortgage',
+      loanType: 'mortgage',
       requestedAmount: 200000,
       termMonths: 360,
       applicant: {
@@ -49,6 +53,7 @@ describe('ReviewQueue', () => {
     {
       id: '3',
       type: 'auto',
+      loanType: 'auto',
       requestedAmount: 25000,
       termMonths: 60,
       applicant: {
@@ -66,6 +71,7 @@ describe('ReviewQueue', () => {
     {
       id: '4',
       type: 'personal',
+      loanType: 'personal',
       requestedAmount: 5000,
       termMonths: 24,
       applicant: {
@@ -83,6 +89,7 @@ describe('ReviewQueue', () => {
     {
       id: '5',
       type: 'personal',
+      loanType: 'personal',
       requestedAmount: 15000,
       termMonths: 36,
       applicant: {
@@ -116,7 +123,12 @@ describe('ReviewQueue', () => {
       queue: computed(() => queueSignal()),
       submittedLoanCount: computed(() => queueSignal().length),
       getStatusFrequency: statusFrequencyComputed,
+      selectLoans: vi.fn(),
       _updateQueue: (loans: Loan[]) => queueSignal.set(loans),
+    };
+
+    mockRouter = {
+      navigate: vi.fn(),
     };
 
     await TestBed.configureTestingModule({
@@ -125,6 +137,10 @@ describe('ReviewQueue', () => {
         {
           provide: UnderwritingStore,
           useValue: mockStore,
+        },
+        {
+          provide: Router,
+          useValue: mockRouter,
         },
       ],
     }).compileComponents();
@@ -177,6 +193,7 @@ describe('ReviewQueue', () => {
         {
           id: '6',
           type: 'auto',
+          loanType: 'auto',
           requestedAmount: 30000,
           termMonths: 48,
           applicant: {
@@ -194,6 +211,7 @@ describe('ReviewQueue', () => {
         {
           id: '7',
           type: 'mortgage',
+          loanType: 'mortgage',
           requestedAmount: 300000,
           termMonths: 360,
           applicant: {
@@ -267,6 +285,26 @@ describe('ReviewQueue', () => {
       component.currentPage.set(1);
       const paginatedData = component.paginatedData();
       expect(paginatedData.length).toBe(2);
+    });
+  });
+
+  describe('Selection', () => {
+    it('should call store.selectLoans with loan ids on selection change', () => {
+      const selectedLoans = new Set<Loan>([mockLoans[0], mockLoans[2]]);
+      component.onSelectionChange(selectedLoans);
+      expect(mockStore.selectLoans).toHaveBeenCalledWith(['1', '3']);
+    });
+
+    it('should handle empty selection', () => {
+      component.onSelectionChange(new Set<Loan>());
+      expect(mockStore.selectLoans).toHaveBeenCalledWith([]);
+    });
+  });
+
+  describe('Review Selected', () => {
+    it('should navigate to loan_decision page', () => {
+      component.reviewSelected();
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/underwriting/loan_decision']);
     });
   });
 

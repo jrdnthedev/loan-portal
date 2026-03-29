@@ -148,13 +148,11 @@ describe('Nav', () => {
 
       expect(underwritingItem).toBeTruthy();
       expect(underwritingItem?.children).toBeTruthy();
-      expect(underwritingItem?.children?.length).toBe(3);
+      expect(underwritingItem?.children?.length).toBe(2);
       expect(underwritingItem?.children?.[0].label).toBe('Review Queue');
       expect(underwritingItem?.children?.[0].route).toBe('/underwriting/review_queue');
-      expect(underwritingItem?.children?.[1].label).toBe('Loan Decision');
-      expect(underwritingItem?.children?.[1].route).toBe('/underwriting/loan_decision');
-      expect(underwritingItem?.children?.[2].label).toBe('Decision History');
-      expect(underwritingItem?.children?.[2].route).toBe('/underwriting/decision_history');
+      expect(underwritingItem?.children?.[1].label).toBe('Decision History');
+      expect(underwritingItem?.children?.[1].route).toBe('/underwriting/decision_history');
       expect(adminItem).toBeTruthy();
       expect(adminItem?.children).toBeTruthy();
       expect(adminItem?.children?.length).toBe(2);

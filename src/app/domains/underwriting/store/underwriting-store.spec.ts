@@ -30,6 +30,7 @@ describe('UnderwritingStore', () => {
       },
       status: 'pending',
       submittedAt: '2024-03-01T10:00:00Z',
+      loanType: 'personal',
     },
     {
       id: 'loan-2',
@@ -48,6 +49,7 @@ describe('UnderwritingStore', () => {
       },
       status: 'approved',
       submittedAt: '2024-02-15T14:30:00Z',
+      loanType: 'mortgage',
     },
     {
       id: 'loan-3',
@@ -66,6 +68,7 @@ describe('UnderwritingStore', () => {
       },
       status: 'rejected',
       submittedAt: '2024-03-10T09:15:00Z',
+      loanType: 'auto',
     },
     {
       id: 'loan-4',
@@ -84,6 +87,7 @@ describe('UnderwritingStore', () => {
       },
       status: 'pending',
       submittedAt: '2024-03-15T11:00:00Z',
+      loanType: 'personal',
     },
   ];
 
@@ -130,7 +134,7 @@ describe('UnderwritingStore', () => {
 
     it('should initialize with correct default state', () => {
       expect(store.loading()).toBe(false);
-      expect(store.selectedLoanId()).toBeNull();
+      expect(store.selectedLoanIds()).toEqual([]);
       expect(store.sortOrder()).toBe('asc');
       expect(store.submittedLoanCount()).toBe(mockLoans.length);
     });
@@ -140,7 +144,7 @@ describe('UnderwritingStore', () => {
     it('should have all computed signals defined', () => {
       expect(store.loading()).toBeDefined();
       expect(store.queue()).toBeDefined();
-      expect(store.selectedLoanId()).toBeDefined();
+      expect(store.selectedLoanIds()).toBeDefined();
       expect(store.sortOrder()).toBeDefined();
       expect(store.submittedLoanCount()).toBeDefined();
     });
@@ -158,8 +162,8 @@ describe('UnderwritingStore', () => {
       expect(store.sortOrder()).toBe('asc');
     });
 
-    it('should return null for selected loan ID initially', () => {
-      expect(store.selectedLoanId()).toBeNull();
+    it('should return empty array for selected loan IDs initially', () => {
+      expect(store.selectedLoanIds()).toEqual([]);
     });
   });
 
@@ -257,6 +261,7 @@ describe('UnderwritingStore', () => {
           },
           status: 'pending',
           submittedAt: '2024-03-20T12:00:00Z',
+          loanType: 'personal',
         },
       ];
 
