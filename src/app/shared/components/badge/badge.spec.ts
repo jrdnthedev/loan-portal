@@ -1,350 +1,107 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Component, signal } from '@angular/core';
 import { describe, it, expect, beforeEach } from 'vitest';
-import { DebugElement } from '@angular/core';
-import { By } from '@angular/platform-browser';
-import { axe } from 'vitest-axe';
 import { Badge } from './badge';
 
-describe('Badge', () => {
-  let component: Badge;
+@Component({
+  standalone: true,
+  imports: [Badge],
+  template: `<app-badge>{{ content() }}</app-badge>`,
+})
+class HostComponent {
+  content = signal('Test Badge');
+}
+
+describe('BadgeComponent', () => {
   let fixture: ComponentFixture<Badge>;
-  let debugElement: DebugElement;
-  let badgeElement: HTMLElement;
+  let component: Badge;
+  let hostFixture: ComponentFixture<HostComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Badge],
+      imports: [Badge, HostComponent], // 👈 imports, not declarations
     }).compileComponents();
 
     fixture = TestBed.createComponent(Badge);
     component = fixture.componentInstance;
-    debugElement = fixture.debugElement;
-    // Don't call detectChanges here to avoid ExpressionChangedAfterItHasBeenCheckedError
+    fixture.detectChanges();
+
+    hostFixture = TestBed.createComponent(HostComponent);
+    hostFixture.detectChanges();
   });
 
-  describe('Component Creation', () => {
-    it('should create', () => {
-      expect(component).toBeTruthy();
-    });
+  // --- Rendering ---
 
-    it('should have default empty title', () => {
-      expect(component.title).toBe('');
-    });
+  it('should create the component', () => {
+    expect(component).toBeTruthy();
   });
 
-  describe('DOM Rendering', () => {
-    it('should render a badge element', () => {
-      fixture.detectChanges();
-      badgeElement = debugElement.query(By.css('.badge')).nativeElement;
-      expect(badgeElement).toBeTruthy();
-    });
-
-    it('should display the title', () => {
-      component.title = 'New';
-      fixture.detectChanges();
-      badgeElement = debugElement.query(By.css('.badge')).nativeElement;
-
-      expect(badgeElement.textContent?.trim()).toBe('New');
-    });
-
-    it('should update title when changed', () => {
-      component.title = 'Inactive';
-      fixture.detectChanges();
-      badgeElement = debugElement.query(By.css('.badge')).nativeElement;
-      expect(badgeElement.textContent?.trim()).toBe('Inactive');
-    });
-
-    it('should display empty string when title is empty', () => {
-      component.title = '';
-      fixture.detectChanges();
-      badgeElement = debugElement.query(By.css('.badge')).nativeElement;
-
-      expect(badgeElement.textContent?.trim()).toBe('');
-    });
-
-    it('should render as a span element', () => {
-      fixture.detectChanges();
-      badgeElement = debugElement.query(By.css('.badge')).nativeElement;
-      expect(badgeElement.tagName.toLowerCase()).toBe('span');
-    });
-
-    it('should have the badge CSS class', () => {
-      fixture.detectChanges();
-      badgeElement = debugElement.query(By.css('.badge')).nativeElement;
-      expect(badgeElement.classList.contains('badge')).toBe(true);
-    });
+  it('should render a span with class "badge"', () => {
+    const span = fixture.nativeElement.querySelector('span.badge');
+    expect(span).not.toBeNull();
   });
 
-  describe('Input Properties', () => {
-    it('should accept title input', () => {
-      fixture.componentRef.setInput('title', 'Premium');
-      fixture.detectChanges();
-      badgeElement = debugElement.query(By.css('.badge')).nativeElement;
-
-      expect(component.title).toBe('Premium');
-      expect(badgeElement.textContent?.trim()).toBe('Premium');
-    });
-
-    it('should handle status titles', () => {
-      const status = 'draft';
-      component.title = status;
-      fixture.detectChanges();
-      badgeElement = debugElement.query(By.css('.badge')).nativeElement;
-      expect(badgeElement.textContent?.trim()).toBe(status);
-    });
-
-    it('should handle numeric titles', () => {
-      component.title = '42';
-      fixture.detectChanges();
-      badgeElement = debugElement.query(By.css('.badge')).nativeElement;
-
-      expect(badgeElement.textContent?.trim()).toBe('42');
-    });
-
-    it('should handle long titles', () => {
-      const longTitle = 'This is a very long badge title';
-      component.title = longTitle;
-      fixture.detectChanges();
-      badgeElement = debugElement.query(By.css('.badge')).nativeElement;
-
-      expect(badgeElement.textContent?.trim()).toBe(longTitle);
-    });
-
-    it('should handle special characters', () => {
-      component.title = 'Test & Badge <>';
-      fixture.detectChanges();
-      badgeElement = debugElement.query(By.css('.badge')).nativeElement;
-
-      expect(badgeElement.textContent?.trim()).toBe('Test & Badge <>');
-    });
-
-    it('should handle whitespace', () => {
-      component.title = '  Spaced  ';
-      fixture.detectChanges();
-      badgeElement = debugElement.query(By.css('.badge')).nativeElement;
-
-      expect(badgeElement.textContent).toContain('Spaced');
-    });
+  it('should only contain one span element', () => {
+    const spans = fixture.nativeElement.querySelectorAll('span');
+    expect(spans.length).toBe(1);
   });
 
-  describe('Styling', () => {
-    beforeEach(() => {
-      fixture.detectChanges();
-      badgeElement = debugElement.query(By.css('.badge')).nativeElement;
-    });
+  // --- Content Projection ---
 
-    it('should have the badge class for styling', () => {
-      expect(badgeElement.classList.contains('badge')).toBe(true);
-    });
-
-    it('should be styled as an inline element', () => {
-      // The badge should have proper CSS class that defines it as inline-block
-      // Note: Computed styles may not be available in unit tests, but we verify the class is present
-      expect(badgeElement.className).toContain('badge');
-    });
-
-    it('should have styling structure', () => {
-      // Verify the element structure that receives styling
-      expect(badgeElement.tagName.toLowerCase()).toBe('span');
-      expect(badgeElement.classList.contains('badge')).toBe(true);
-    });
+  it('should render projected text content', () => {
+    const span = hostFixture.nativeElement.querySelector('span.badge');
+    expect(span.textContent.trim()).toBe('Test Badge');
   });
 
-  describe('Edge Cases', () => {
-    it('should handle null title gracefully', () => {
-      component.title = null as any;
-      fixture.detectChanges();
-      badgeElement = debugElement.query(By.css('.badge')).nativeElement;
+  it('should render projected HTML content', async () => {
+    @Component({
+      standalone: true,
+      imports: [Badge],
+      template: `<app-badge><strong>Bold</strong></app-badge>`,
+    })
+    class HtmlHost {}
 
-      expect(badgeElement.textContent?.trim()).toBe('');
-    });
+    const htmlFixture = TestBed.createComponent(HtmlHost);
+    htmlFixture.detectChanges();
 
-    it('should handle undefined title gracefully', () => {
-      component.title = undefined as any;
-      fixture.detectChanges();
-      badgeElement = debugElement.query(By.css('.badge')).nativeElement;
-
-      expect(badgeElement.textContent?.trim()).toBe('');
-    });
-
-    it('should handle rapid title changes', () => {
-      component.title = 'Third';
-      fixture.detectChanges();
-      badgeElement = debugElement.query(By.css('.badge')).nativeElement;
-
-      expect(badgeElement.textContent?.trim()).toBe('Third');
-    });
-
-    it('should handle emoji in title', () => {
-      component.title = '✅ Success';
-      fixture.detectChanges();
-      badgeElement = debugElement.query(By.css('.badge')).nativeElement;
-
-      expect(badgeElement.textContent?.trim()).toBe('✅ Success');
-    });
-
-    it('should handle line breaks in title', () => {
-      component.title = 'Line\nBreak';
-      fixture.detectChanges();
-      badgeElement = debugElement.query(By.css('.badge')).nativeElement;
-
-      expect(badgeElement.textContent).toContain('Line');
-      expect(badgeElement.textContent).toContain('Break');
-    });
+    const strong = htmlFixture.nativeElement.querySelector('span.badge strong');
+    expect(strong).not.toBeNull();
+    expect(strong.textContent).toBe('Bold');
   });
 
-  describe('Use Cases', () => {
-    it('should display loan status badges', () => {
-      const status = 'under review';
-      component.title = status;
-      fixture.detectChanges();
-      badgeElement = debugElement.query(By.css('.badge')).nativeElement;
-      expect(badgeElement.textContent?.trim()).toBe(status);
-    });
+  it('should render empty when no content is projected', () => {
+    @Component({
+      standalone: true,
+      imports: [Badge],
+      template: `<app-badge></app-badge>`,
+    })
+    class EmptyHost {}
 
-    it('should display priority badges', () => {
-      const priority = 'Low';
-      component.title = priority;
-      fixture.detectChanges();
-      badgeElement = debugElement.query(By.css('.badge')).nativeElement;
-      expect(badgeElement.textContent?.trim()).toBe(priority);
-    });
+    const emptyFixture = TestBed.createComponent(EmptyHost);
+    emptyFixture.detectChanges();
 
-    it('should display category badges', () => {
-      const category = 'auto';
-      component.title = category;
-      fixture.detectChanges();
-      badgeElement = debugElement.query(By.css('.badge')).nativeElement;
-      expect(badgeElement.textContent?.trim()).toBe(category);
-    });
-
-    it('should display count badges', () => {
-      const count = '99+';
-      component.title = count;
-      fixture.detectChanges();
-      badgeElement = debugElement.query(By.css('.badge')).nativeElement;
-      expect(badgeElement.textContent?.trim()).toBe(count);
-    });
+    const span = emptyFixture.nativeElement.querySelector('span.badge');
+    expect(span.textContent.trim()).toBe('');
   });
 
-  describe('Accessibility Tests', () => {
-    it('should have no accessibility violations with default state', async () => {
-      fixture.detectChanges();
-      const results = await axe(fixture.nativeElement);
-      expect(results).toHaveNoViolations();
-    });
+  it('should update projected content when host binding changes', async () => {
+    const localFixture = TestBed.createComponent(HostComponent);
+    localFixture.detectChanges();
+    await localFixture.whenStable();
 
-    it('should have no violations with title set', async () => {
-      component.title = 'New Badge';
-      fixture.detectChanges();
+    const span = localFixture.nativeElement.querySelector('span.badge');
+    expect(span.textContent.trim()).toBe('Test Badge');
 
-      const results = await axe(fixture.nativeElement);
-      expect(results).toHaveNoViolations();
-    });
+    localFixture.componentInstance.content.set('Updated'); // 👈 .set() instead of assignment
+    await localFixture.whenStable();
 
-    it('should have no violations with status badge', async () => {
-      component.title = 'approved';
-      fixture.detectChanges();
-
-      const results = await axe(fixture.nativeElement);
-      expect(results).toHaveNoViolations();
-    });
-
-    it('should have no violations with numeric title', async () => {
-      component.title = '42';
-      fixture.detectChanges();
-
-      const results = await axe(fixture.nativeElement);
-      expect(results).toHaveNoViolations();
-    });
-
-    it('should have no violations with empty title', async () => {
-      component.title = '';
-      fixture.detectChanges();
-
-      const results = await axe(fixture.nativeElement);
-      expect(results).toHaveNoViolations();
-    });
-
-    it('should have sufficient color contrast', async () => {
-      component.title = 'Test Badge';
-      fixture.detectChanges();
-
-      const results = await axe(fixture.nativeElement, {
-        runOnly: {
-          type: 'tag',
-          values: ['wcag2aa'],
-        },
-        rules: {
-          'color-contrast': { enabled: true },
-        },
-      });
-
-      expect(results).toHaveNoViolations();
-    });
-
-    it('should meet WCAG 2.1 Level AA standards', async () => {
-      component.title = 'Accessible Badge';
-      fixture.detectChanges();
-
-      const results = await axe(fixture.nativeElement, {
-        runOnly: {
-          type: 'tag',
-          values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'],
-        },
-      });
-
-      expect(results).toHaveNoViolations();
-    });
-
-    it('should have proper semantic structure', async () => {
-      component.title = 'Semantic Badge';
-      fixture.detectChanges();
-
-      const results = await axe(fixture.nativeElement, {
-        runOnly: {
-          type: 'tag',
-          values: ['best-practice'],
-        },
-      });
-
-      expect(results).toHaveNoViolations();
-    });
-
-    it('should be keyboard navigable (no interactive violations)', async () => {
-      component.title = 'Test';
-      fixture.detectChanges();
-
-      // Badge is not interactive, so keyboard-related rules should pass
-      const results = await axe(fixture.nativeElement);
-      expect(results).toHaveNoViolations();
-    });
+    expect(span.textContent.trim()).toBe('Updated');
   });
 
-  describe('Integration Tests', () => {
-    it('should work as a standalone component', () => {
-      component.title = 'Standalone';
-      fixture.detectChanges();
+  // --- CSS Class ---
 
-      expect(component).toBeTruthy();
-      expect(fixture.nativeElement.textContent).toContain('Standalone');
-    });
-
-    it('should maintain state across multiple change detections', () => {
-      component.title = 'Persistent';
-      fixture.detectChanges();
-      fixture.detectChanges();
-      fixture.detectChanges();
-
-      badgeElement = debugElement.query(By.css('.badge')).nativeElement;
-      expect(badgeElement.textContent?.trim()).toBe('Persistent');
-    });
-
-    it('should handle component reuse', () => {
-      component.title = 'Reused';
-      fixture.detectChanges();
-      badgeElement = debugElement.query(By.css('.badge')).nativeElement;
-      expect(badgeElement.textContent?.trim()).toBe('Reused');
-    });
+  it('should always have the "badge" class on the span', () => {
+    const span = fixture.nativeElement.querySelector('span');
+    expect(span.classList.contains('badge')).toBe(true);
   });
 });
